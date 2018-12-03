@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.huatu.tiku</groupId>
+        <artifactId>push</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>push-server</artifactId>
+
+    <properties>
+        <!-- filter -->
+        <server_name>push-server</server_name>
+        <log_dir>/app/logs/${server_name}</log_dir>
+        <pid_dir>/app/data/run</pid_dir>
+    </properties>
+
+
+    <dependencies>
+
+        <!-- springBoot 组件引用开始 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
+
+        <!-- 更换为undertow容器 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <!-- 日志相关 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-web</artifactId>
+        </dependency>
+
+        <!-- 自定义组件引用开始 -->
+        <!-- 系统基础信息 subject-Info -->
+        <dependency>
+            <groupId>com.huatu.tiku.springboot</groupId>
+            <artifactId>spring-boot-starter-tiku-basic</artifactId>
+        </dependency>
+
+        <!-- 基础工具 -->
+        <dependency>
+            <groupId>com.huatu.springboot</groupId>
+            <artifactId>spring-boot-starter-web-tools</artifactId>
+        </dependency>
+
+        <!-- 服务注册组件 -->
+        <dependency>
+            <groupId>com.huatu.springboot</groupId>
+            <artifactId>spring-boot-starter-web-register</artifactId>
+        </dependency>
+
+        <!-- user-token管理 -->
+        <dependency>
+            <groupId>com.huatu.tiku.springboot</groupId>
+            <artifactId>spring-boot-starter-users</artifactId>
+        </dependency>
+
+        <!-- 缓存管理组件 -->
+        <dependency>
+            <groupId>com.huatu.springboot</groupId>
+            <artifactId>spring-boot-starter-cache-manage</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
+
+        <!-- 日志上报 -->
+        <dependency>
+            <groupId>com.huatu.tiku.springboot</groupId>
+            <artifactId>spring-boot-starter-report</artifactId>
+        </dependency>
+
+        <!-- 自定义redisQueue -->
+        <dependency>
+            <groupId>com.huatu.springboot</groupId>
+            <artifactId>spring-boot-starter-redis-queue</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.huatu.springboot</groupId>
+            <artifactId>spring-boot-starter-executor</artifactId>
+        </dependency>
+        <!-- 自定义组件引用结束 -->
+
+        <!--监控-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- MQ -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>spring-context</artifactId>
+                    <groupId>org.springframework</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Cloud 相关引用开始 -->
+        <!-- httpclient不支持http2 -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-feign</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.httpcomponents</groupId>
+                    <artifactId>httpclient</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- feign -->
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-okhttp</artifactId>
+        </dependency>
+
+        <!-- hystrix -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-hystrix</artifactId>
+        </dependency>
+        <!-- Cloud 相关引用结束 -->
+        <!-- springBoot 组件引用结束 -->
+
+        <!-- 数据库相关引入开始-->
+        <!-- Redis -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!-- mongoDB -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-mongodb</artifactId>
+        </dependency>
+        <!-- mysql开始 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.huatu.springboot</groupId>
+            <artifactId>spring-boot-starter-druid</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>tk.mybatis</groupId>
+            <artifactId>mapper-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+        </dependency>
+        <!--自定义mybatis工具 -->
+        <dependency>
+            <groupId>com.huatu.commons.sdk</groupId>
+            <artifactId>common-baseMapper-helper</artifactId>
+            <version>${default.env.version}</version>
+        </dependency>
+        <!-- mysql结束 -->
+        <!-- 数据库相关引入结束-->
+
+        <!-- 第三方jar包引用开始 -->
+        <dependency>
+            <groupId>com.lmax</groupId>
+            <artifactId>disruptor</artifactId>
+        </dependency>
+
+
+        <dependency>
+            <groupId>com.esotericsoftware</groupId>
+            <artifactId>kryo</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.javakaffee</groupId>
+            <artifactId>kryo-serializers</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.huatu.commons.sdk</groupId>
+            <artifactId>common-jwt</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javassist/javassist 操作字节码 -->
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+        </dependency>
+    </dependencies>
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>deploy/*</exclude>
+                        <exclude>deploy</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <finalName>${server_name}</finalName>
+                    <layout>ZIP</layout>
+                    <embeddedLaunchScriptProperties>
+                        <!--默认的就可以-->
+                        <confFolder>./conf</confFolder>
+                        <logFolder>${log_dir}/</logFolder>
+                        <pidFolder>${pid_dir}/</pidFolder>
+                        <logFilename>${server_name}_inf.log</logFilename>
+                    </embeddedLaunchScriptProperties>
+                    <executable>true</executable>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <finalName>${server_name}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptors>
+                        <descriptor>src/main/resources/deploy/assembly.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
