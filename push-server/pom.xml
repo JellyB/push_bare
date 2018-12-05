@@ -192,6 +192,17 @@
             <artifactId>common-baseMapper-helper</artifactId>
             <version>${default.env.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.huatu.tiku</groupId>
+            <artifactId>push-common</artifactId>
+            <version>1.0-${project.environment}-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.huatu.commons</groupId>
+            <artifactId>common-test</artifactId>
+        </dependency>
+
         <!-- mysql结束 -->
         <!-- 数据库相关引入结束-->
 
@@ -222,6 +233,8 @@
             <artifactId>javassist</artifactId>
         </dependency>
     </dependencies>
+
+
     <build>
         <resources>
             <resource>
