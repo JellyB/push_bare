@@ -7,11 +7,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import tk.mybatis.spring.annotation.MapperScan;
 
-import javax.sql.DataSource;
 
 
 /**
@@ -26,19 +26,21 @@ public class MybatisConfig {
 
 
     @Autowired
-    private HikariDataSource dataSource;
+    @Qualifier(value = "hikariDataSource")
+    private HikariDataSource hikariDataSource;
+
 
     @Bean(name = "sqlSessionFactory")
     public SqlSessionFactory mysqlSqlSessionFactory()
             throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
-        bean.setDataSource(dataSource);
+        bean.setDataSource(hikariDataSource);
         TableSplitInterceptor tableSplitInterceptor = new TableSplitInterceptor();
         bean.setPlugins(new Interceptor[] { tableSplitInterceptor });
         return bean.getObject();
     }
 
-    @Bean
+    @Bean(value = "sqlSessionTemplate")
     public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory){
         return new SqlSessionTemplate(sqlSessionFactory);
     }
