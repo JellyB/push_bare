@@ -94,4 +94,23 @@ public class NoticePushErrors {
      */
     public static final ErrorResult JOB_DELETE_FAILED = ErrorResult.create(10000002, "删除job失败！");
 
+    /**
+     * 分表参数不存在
+     */
+    public static final ErrorResult TABLE_SPLIT_PARAMS_EMPTY = ErrorResult.create(10000002, "分表参数不存在！");
+    /**
+     * 分表参数类型错误
+     */
+    public static final ErrorResult TABLE_SPLIT_PARAMS_TYPE_ERROR = ErrorResult.create(10000003, "分表参数类型错误！");
+
+    /**
+     * 切面执行异常
+     */
+    public static final ErrorResult TABLE_SPLIT_PARAMS_AOP_ERROR = ErrorResult.create(10000003, "切面执行异常！");
+
+    /**
+     * 远程调用参数异常
+     */
+    public static final ErrorResult REMOVE_CALL_PARAM_ERROR = ErrorResult.create(10000004, "远程调用参数异常！！");
+
 }
