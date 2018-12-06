@@ -11,6 +11,6 @@ import org.springframework.context.annotation.Configuration;
  **/
 
 @Configuration
-@EnableFeignClients({ "com.huatu.ic.tiku.biz.client", "com.huatu.ic.userservice.biz.service.feign" })
+@EnableFeignClients
 public class FeignConfig {
 }

@@ -2,19 +2,15 @@ package com.huatu.tiku.push.manager;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.annotation.SplitParam;
 import com.huatu.tiku.push.constant.NoticePushErrors;
 import com.huatu.tiku.push.dao.NoticeEntityMapper;
 import com.huatu.tiku.push.dao.NoticeUserMapper;
-import com.huatu.tiku.push.dao.strategy.Strategy;
 import com.huatu.tiku.push.entity.NoticeEntity;
 import com.huatu.tiku.push.entity.NoticeUserRelation;
 import com.huatu.tiku.push.enums.NoticeStatusEnum;
 import com.huatu.tiku.push.request.NoticeReq;
-import com.huatu.tiku.push.util.ConsoleContext;
-import com.huatu.tiku.push.util.ThreadLocalManager;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -150,16 +145,14 @@ public class NoticeLandingManager {
         }
     }
 
-
-    @SplitParam(splitParams = "userId")
+    /**
+     * 参与分表
+     * @param userId
+     * @param noticeUserRelation
+     */
+    @SplitParam
     private void insertRelationUnderAnnotation(long userId, NoticeUserRelation noticeUserRelation) {
-        ConsoleContext consoleContext = new ConsoleContext();
-        Map<String, Object> params = Maps.newHashMap();
-        params.put(Strategy.USER_ID, noticeUserRelation.getUserId());
-        consoleContext.setRequestHeader(params);
-        ThreadLocalManager.setConsoleContext(consoleContext);
-
-        log.info("userId:{}", userId);
+        log.debug("user_id.value:{}", userId);
         noticeUserMapper.insertSelective(noticeUserRelation);
     }
 }

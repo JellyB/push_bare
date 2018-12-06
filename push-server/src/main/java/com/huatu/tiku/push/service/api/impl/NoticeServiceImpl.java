@@ -13,7 +13,6 @@ import com.huatu.tiku.push.constant.BaseMsg;
 import com.huatu.tiku.push.constant.NoticePushErrors;
 import com.huatu.tiku.push.dao.NoticeEntityMapper;
 import com.huatu.tiku.push.dao.NoticeUserMapper;
-import com.huatu.tiku.push.dao.strategy.Strategy;
 import com.huatu.tiku.push.entity.NoticeEntity;
 import com.huatu.tiku.push.entity.NoticeUserRelation;
 import com.huatu.tiku.push.enums.NoticeReadEnum;
@@ -22,12 +21,11 @@ import com.huatu.tiku.push.request.NoticeRelationReq;
 import com.huatu.tiku.push.request.NoticeReq;
 import com.huatu.tiku.push.response.NoticeResp;
 import com.huatu.tiku.push.service.api.NoticeService;
-import com.huatu.tiku.push.util.ConsoleContext;
 import com.huatu.tiku.push.util.NoticeTimeParseUtil;
-import com.huatu.tiku.push.util.ThreadLocalManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,8 +44,8 @@ import java.util.stream.Collectors;
  * @author biguodong
  * Create time 2018-11-07 上午10:48
  **/
-@Service
 @Slf4j
+@Service(value = "noticeService")
 public class NoticeServiceImpl implements NoticeService {
 
     @Autowired
@@ -67,15 +65,8 @@ public class NoticeServiceImpl implements NoticeService {
      * @throws BizException
      */
     @Override
-    @SplitParam(splitParams = "userId")
+    @SplitParam
     public PageInfo selectUserNotice(long userId, int page, int size) throws BizException{
-        ConsoleContext consoleContext = new ConsoleContext();
-        ThreadLocalManager.setConsoleContext(consoleContext);
-        Map<String, Object> params = Maps.newHashMap();
-        params.put(Strategy.USER_ID, userId);
-        consoleContext.setRequestHeader(params);
-        ThreadLocalManager.setConsoleContext(consoleContext);
-
 
         Example example = new Example(NoticeUserRelation.class);
         example.and()
@@ -146,7 +137,9 @@ public class NoticeServiceImpl implements NoticeService {
     @Override
     @Transactional(rollbackFor = BizException.class)
     public Object saveNotices(NoticeReq req) throws BizException {
-
+        if(CollectionUtils.isEmpty(req.getUsers())){
+            return null;
+        }
         NoticeEntity noticeEntity = NoticeEntity
                 .builder()
                 .type(req.getType())
@@ -154,26 +147,32 @@ public class NoticeServiceImpl implements NoticeService {
                 .title(req.getTitle())
                 .text(req.getText())
                 .custom(JSONObject.toJSON(req.getCustom()).toString())
+                .createTime(new Timestamp(System.currentTimeMillis()))
+                .updateTime(new Timestamp(System.currentTimeMillis()))
                 .displayType(req.getDisplayType())
                 .build();
 
         noticeEntityMapper.insertSelective(noticeEntity);
-        final Set<Long> userIds = obtainUsersByNotice(noticeEntity.getId());
-        if(!CollectionUtils.isEmpty(req.getUsers())){
-            req.getUsers().forEach( user -> {
-                if(userIds.contains(user.getUserId())){
-                    return;
-                }
-                NoticeUserRelation noticeUserRelation = NoticeUserRelation.
-                        builder()
-                        .noticeId(noticeEntity.getId())
-                        .userId(user.getUserId())
-                        .isRead(NoticeReadEnum.UN_READ.getValue())
-                        .build();
-                noticeUserMapper.insertSelective(noticeUserRelation);
-            });
+        //final Set<Long> userIds = obtainUsersByNotice(noticeEntity.getId());
+        for(NoticeReq.NoticeUserRelation user : req.getUsers()){
+            NoticeUserRelation noticeUserRelation = NoticeUserRelation.
+                    builder()
+                    .noticeId(noticeEntity.getId())
+                    .userId(user.getUserId())
+                    .createTime(new Timestamp(System.currentTimeMillis()))
+                    .updateTime(new Timestamp(System.currentTimeMillis()))
+                    .isRead(NoticeReadEnum.UN_READ.getValue())
+                    .build();
+            log.debug("noticeUserRelation:{}", JSONObject.toJSONString(noticeUserRelation));
+            ((NoticeServiceImpl) AopContext.currentProxy()).insertNoticeRelation(user.getUserId(), noticeUserRelation);
         }
         return noticeEntity.getId();
+    }
+
+    @SplitParam
+    public int insertNoticeRelation(long userId, NoticeUserRelation noticeUserRelation){
+        log.info("user.id.value:{}", userId);
+        return noticeUserMapper.insertSelective(noticeUserRelation);
     }
 
     /**
@@ -269,18 +268,9 @@ public class NoticeServiceImpl implements NoticeService {
      * @throws BizException
      */
     @Override
+    @Deprecated
     public Object hasRead(long noticeId) throws BizException {
-        Example example = new Example(NoticeUserRelation.class);
-        example.and()
-                .andEqualTo("id", noticeId)
-                .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
-
-        NoticeUserRelation noticeUserRelation = NoticeUserRelation
-                .builder()
-                .isRead(NoticeReadEnum.READ.getValue())
-                .updateTime(new Timestamp(System.currentTimeMillis()))
-                .build();
-        return noticeUserMapper.updateByExampleSelective(noticeUserRelation, example);
+        return null;
     }
 
     /**
@@ -291,6 +281,7 @@ public class NoticeServiceImpl implements NoticeService {
      * @throws BizException
      */
     @Override
+    @SplitParam
     public int unReadNum(long userId) throws BizException {
         Example example = new Example(NoticeUserRelation.class);
         example.and()
@@ -299,5 +290,30 @@ public class NoticeServiceImpl implements NoticeService {
                 .andEqualTo("isRead", NoticeReadEnum.UN_READ.getValue());
 
         return noticeUserMapper.selectCountByExample(example);
+    }
+
+    /**
+     * 消息已读
+     *
+     * @param userId
+     * @param noticeId
+     * @return
+     * @throws BizException
+     */
+    @Override
+    @SplitParam
+    public Object hasRead(long userId, long noticeId) throws BizException {
+        Example example = new Example(NoticeUserRelation.class);
+        example.and()
+                .andEqualTo("id", noticeId)
+                .andEqualTo("userId", userId)
+                .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
+
+        NoticeUserRelation noticeUserRelation = NoticeUserRelation
+                .builder()
+                .isRead(NoticeReadEnum.READ.getValue())
+                .updateTime(new Timestamp(System.currentTimeMillis()))
+                .build();
+        return noticeUserMapper.updateByExampleSelective(noticeUserRelation, example);
     }
 }

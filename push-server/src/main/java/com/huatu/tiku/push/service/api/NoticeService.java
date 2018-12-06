@@ -49,6 +49,15 @@ public interface NoticeService {
      */
     Object hasRead(long noticeId) throws BizException;
 
+    /**
+     * 消息已读
+     * @param userId
+     * @param noticeId
+     * @return
+     * @throws BizException
+     */
+    Object hasRead(long userId, long noticeId) throws BizException;
+
 
     /**
      * 获取我的消息未读数

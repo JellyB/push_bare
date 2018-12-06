@@ -10,15 +10,15 @@ import java.util.Map;
  */
 public class ConsoleContext implements Serializable {
 
-    public ConsoleContext(){}
+    private ConsoleContext(){}
 
     private static class SingletonHolder {
         private static final ConsoleContext INSTANCE = new ConsoleContext();
     }
+
     public static final ConsoleContext getInstance() {
         return SingletonHolder.INSTANCE;
     }
-
 
     private Map<String,Object> requestHeader = new HashMap();
 

@@ -49,7 +49,7 @@ public class TableSplitTest extends PushBaseTest {
         List<NoticeReq.NoticeUserRelation> noticeUserRelationList = Lists.newArrayList();
         boolean isDone = true;
         while (isDone){
-            if(noticeUserRelationList.size() == 500){
+            if(noticeUserRelationList.size() == 100){
                 isDone = false;
             }
             int userId = random.nextInt(200) + 1;
