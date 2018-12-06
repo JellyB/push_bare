@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 描述：
+ * 描述：有此注解的方法参与数据库分表
  *
  * @author biguodong
  * Create time 2018-12-04 下午8:34
@@ -18,8 +18,8 @@ public @interface SplitParam {
 
     /**
      *
-     * 分表字段数组
+     * 使用参数列表的索引
      * @return
      */
-    String splitParams() default "";
+    int index() default 0;
 }
