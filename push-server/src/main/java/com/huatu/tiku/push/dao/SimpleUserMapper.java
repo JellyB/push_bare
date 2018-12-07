@@ -1,4 +1,4 @@
-package com.huatu.tiku.push.dao.biz;
+package com.huatu.tiku.push.dao;
 
 
 import com.huatu.tiku.push.entity.SimpleUser;

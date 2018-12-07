@@ -1,7 +1,7 @@
 package com.huatu.tiku.push.manager;
 
 import com.google.common.collect.Sets;
-import com.huatu.tiku.push.dao.biz.SimpleUserMapper;
+import com.huatu.tiku.push.dao.SimpleUserMapper;
 import com.huatu.tiku.push.entity.SimpleUser;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
