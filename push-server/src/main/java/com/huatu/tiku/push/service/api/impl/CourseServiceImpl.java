@@ -6,7 +6,7 @@ import com.google.common.collect.Lists;
 import com.huatu.common.ErrorResult;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.constant.NoticePushErrors;
-import com.huatu.tiku.push.dao.biz.CourseInfoMapper;
+import com.huatu.tiku.push.dao.CourseInfoMapper;
 import com.huatu.tiku.push.entity.CourseInfo;
 import com.huatu.tiku.push.enums.JobScannedEnum;
 import com.huatu.tiku.push.enums.NoticeStatusEnum;
