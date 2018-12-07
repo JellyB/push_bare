@@ -24,7 +24,7 @@ import java.util.Properties;
 
 @Configuration
 @Slf4j
-public class SchedulerConfig {
+public class SchedulerInitConfig {
 
     @Value("${quartz.dataSource.qzDS.URL}")
     private String dataSourceQzDSURL;
