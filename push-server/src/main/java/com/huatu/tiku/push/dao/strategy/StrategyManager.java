@@ -9,12 +9,10 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 描述：
- *
+ * 描述：分表策略管理器
  * @author biguodong
  * Create time 2018-12-03 下午8:56
  **/
-
 @Component
 @Slf4j
 public class StrategyManager {
@@ -31,7 +29,6 @@ public class StrategyManager {
 
     @Resource
     private MoldStrategy moldStrategy;
-
 
     @PostConstruct
     public void init(){
@@ -52,7 +49,6 @@ public class StrategyManager {
         printDebugInfo();
     }
 
-
     private void printDebugInfo(){
         if(log.isDebugEnabled()){
             StringBuffer stringBuffer = new StringBuffer("初始化" + strategies.size() + "策略！");
@@ -65,6 +61,4 @@ public class StrategyManager {
             log.debug(stringBuffer.toString());
         }
     }
-
-
 }

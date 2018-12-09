@@ -23,12 +23,10 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * 描述：
- *
+ * 描述：mybatis 自定义拦截器实现数据库分表逻辑
  * @author biguodong
  * Create time 2018-12-03 下午9:15
  **/
-
 @Slf4j
 @Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
 public class TableSplitInterceptor implements Interceptor {

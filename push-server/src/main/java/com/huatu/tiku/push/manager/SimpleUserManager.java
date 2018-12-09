@@ -126,7 +126,8 @@ public class SimpleUserManager {
                 .andEqualTo("userId", userId)
                 .andEqualTo("userType", userType)
                 .andEqualTo("bizId", bizId);
-        return CollectionUtils.isNotEmpty(simpleUserMapper.selectByExample(example));
+        List<SimpleUser> list = simpleUserMapper.selectByExample(example);
+        return list.size() > 0;
     }
 
 
@@ -153,7 +154,8 @@ public class SimpleUserManager {
     public void saveSimpleUser(SimpleUser simpleUser){
         if(checkIdExist(simpleUser.getUserId(), simpleUser.getUserType(), simpleUser.getBizId())){
             return;
+        }else{
+            simpleUserMapper.insert(simpleUser);
         }
-        simpleUserMapper.insert(simpleUser);
     }
 }

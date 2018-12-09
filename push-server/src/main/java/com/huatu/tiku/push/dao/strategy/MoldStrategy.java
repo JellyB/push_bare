@@ -10,7 +10,6 @@ import java.util.Map;
 
 /**
  * 描述：取模策略
- *
  * @author biguodong
  * Create time 2018-12-03 下午9:07
  **/
@@ -18,8 +17,7 @@ import java.util.Map;
 public class MoldStrategy implements Strategy {
 
     /**
-     * CONVERT
-     *
+     * 根据参数 params 转换得到分表后的表名
      * @param params
      * @return
      */

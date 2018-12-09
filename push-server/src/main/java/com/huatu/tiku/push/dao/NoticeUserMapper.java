@@ -9,7 +9,7 @@ import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.provider.base.BaseInsertProvider;
 
 /**
- * 描述：
+ * 描述：消息关系表，数据库分表
  *
  * @author biguodong
  * Create time 2018-11-06 下午4:22
