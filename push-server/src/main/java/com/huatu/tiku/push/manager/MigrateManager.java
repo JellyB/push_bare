@@ -44,7 +44,7 @@ public class MigrateManager {
             NoticeUserRelation noticeUserRelation = JSONObject.parseObject(message, NoticeUserRelation.class);
             String key = NoticePushRedisKey.getDataMigrateNoticeCreateTime();
             HashOperations hashOperations = redisTemplate.opsForHash();
-            String value = String.valueOf(hashOperations.get(key, String.valueOf(noticeUserRelation.getId())));
+            String value = String.valueOf(hashOperations.get(key, String.valueOf(noticeUserRelation.getNoticeId())));
             Timestamp timestamp = new Timestamp(Long.valueOf(value));
             noticeUserRelation.setId(null);
             noticeUserRelation.setCreateTime(timestamp);
