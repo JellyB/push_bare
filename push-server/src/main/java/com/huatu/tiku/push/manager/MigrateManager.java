@@ -7,6 +7,7 @@ import com.huatu.tiku.push.dao.NoticeUserMapper;
 import com.huatu.tiku.push.entity.NoticeUserRelation;
 import com.huatu.tiku.push.enums.NoticeStatusEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import tk.mybatis.mapper.entity.Example;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 描述：
@@ -60,7 +62,7 @@ public class MigrateManager {
     @SplitParam
     public int insert(long userId, NoticeUserRelation noticeUserRelation){
         try{
-            noticeUserRelation.setId(null);
+            log.info("user.id.value:{}", userId);
             return noticeUserMapper.insert(noticeUserRelation);
         }catch (Exception e){
             log.error("*******************************");
@@ -87,8 +89,8 @@ public class MigrateManager {
                     .andEqualTo("noticeId", noticeId)
                     .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
 
-            Object object =  noticeUserMapper.selectOneByExample(example);
-            return null != object;
+            List<NoticeUserRelation> list =  noticeUserMapper.selectByExample(example);
+            return CollectionUtils.isNotEmpty(list);
         }catch (Exception e){
             log.error("*******************************");
             log.error(">>>>>> 检查数据是否存在异常 <<<<<<");
