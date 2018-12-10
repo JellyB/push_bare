@@ -65,7 +65,6 @@ public class TableSplitInterceptor implements Interceptor {
     private void doSplitTable(MetaObject metaStatementHandler) throws ClassNotFoundException{
         String originSql = (String) metaStatementHandler.getValue("delegate.boundSql.sql");
         if(StringUtils.isNotBlank(originSql)){
-            log.info("分表前语句:{}", originSql);
             MappedStatement  mappedStatement = (MappedStatement) metaStatementHandler.getValue("delegate.mappedStatement");
             String id = mappedStatement.getId();
             String className = id.substring(0, id.lastIndexOf("."));
@@ -76,6 +75,7 @@ public class TableSplitInterceptor implements Interceptor {
             TableSplit tableSplit = classObj.getAnnotation(TableSplit.class);
             if(null != tableSplit && tableSplit.split()){
                 if(tableSplit.value().equalsIgnoreCase(Strategy.NOTICE_RELATION)){
+                    log.info("关系表-分表前语句:{}", originSql);
                     Map<String, Object> params = Maps.newHashMap();
                     params.put(Strategy.TABLE_NAME, tableSplit.value());
                     StrategyManager strategyManager = ContextHelper.getBean(StrategyManager.class);
@@ -84,7 +84,7 @@ public class TableSplitInterceptor implements Interceptor {
                     String tableName = strategy.convert(params);
                     String convertedSql = originSql.replaceAll(tableSplit.value(), tableName);
                     metaStatementHandler.setValue("delegate.boundSql.sql", convertedSql);
-                    log.info("分表后语句:{}", convertedSql);
+                    log.info("关系表-分表后语句:{}", convertedSql);
                 }
             }
         }

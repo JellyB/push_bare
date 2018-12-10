@@ -2,7 +2,6 @@ package com.huatu.tiku.push.quartz.job;
 
 import com.huatu.tiku.push.service.api.impl.DataMigrateService;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.cms.PasswordRecipientId;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -22,8 +21,6 @@ import java.util.Date;
 @Component
 public class PandoraDataMoveJob implements BaseQuartzJob {
 
-    private static int DEFAULT_SIZE = 500;
-
     @Autowired
     private DataMigrateService dataMigrateService;
 
@@ -41,14 +38,14 @@ public class PandoraDataMoveJob implements BaseQuartzJob {
      */
     @Override
     public void execute(JobExecutionContext executionContext) throws JobExecutionException {
-        dataMigrateService.execute(DEFAULT_SIZE);
+        dataMigrateService.execute();
     }
 
 
     @PostConstruct
     public void init(){
         try{
-
+            initNoticeEntity();
             JobDetail jobDetail = JobBuilder
                     .newJob(PandoraDataMoveJob.class)
                     .withIdentity("pandoraMigrate2Push", "Migrate")
@@ -67,5 +64,12 @@ public class PandoraDataMoveJob implements BaseQuartzJob {
         }catch (Exception e){
             log.error("err!", e);
         }
+    }
+
+    /**
+     * 初始化notice entity 数据
+     */
+    private void initNoticeEntity(){
+        dataMigrateService.initNoticeEntityData2Redis();
     }
 }

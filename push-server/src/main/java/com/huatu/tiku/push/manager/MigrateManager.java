@@ -2,14 +2,19 @@ package com.huatu.tiku.push.manager;
 
 import com.alibaba.fastjson.JSONObject;
 import com.huatu.tiku.push.annotation.SplitParam;
+import com.huatu.tiku.push.constant.NoticePushRedisKey;
 import com.huatu.tiku.push.dao.NoticeUserMapper;
 import com.huatu.tiku.push.entity.NoticeUserRelation;
 import com.huatu.tiku.push.enums.NoticeStatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import tk.mybatis.mapper.entity.Example;
+
+import java.sql.Timestamp;
 
 /**
  * 描述：
@@ -24,6 +29,9 @@ public class MigrateManager {
     @Autowired
     private NoticeUserMapper noticeUserMapper;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
 
     /**
      * 关系表插入逻辑
@@ -32,7 +40,12 @@ public class MigrateManager {
     public void insertRelation(String message){
         try{
             NoticeUserRelation noticeUserRelation = JSONObject.parseObject(message, NoticeUserRelation.class);
+            String key = NoticePushRedisKey.getDataMigrateNoticeCreateTime();
+            HashOperations hashOperations = redisTemplate.opsForHash();
+            String value = String.valueOf(hashOperations.get(key, String.valueOf(noticeUserRelation.getId())));
+            Timestamp timestamp = new Timestamp(Long.valueOf(value));
             noticeUserRelation.setId(null);
+            noticeUserRelation.setCreateTime(timestamp);
             boolean checkExist = ((MigrateManager)AopContext.currentProxy()).checkDataExist(noticeUserRelation.getUserId(), noticeUserRelation.getNoticeId());
             if(checkExist){
                 return;
