@@ -19,7 +19,7 @@ import java.util.Map;
 @Slf4j
 public class SplitParamsUtil {
 
-    private static final String NOTICE_PANDORA_SEPARATOR = "00";
+    private static final String NOTICE_PANDORA_SEPARATOR = "9";
 
     /**
      * noticeId 转 userId 和 noticeId array
@@ -34,8 +34,10 @@ public class SplitParamsUtil {
         }
         String[] noticeArray = noticeIdStr.split(NOTICE_PANDORA_SEPARATOR);
         long[] noticeLongArray = new long[2];
-        noticeLongArray[0] = Long.valueOf(noticeArray[0]);
-        noticeLongArray[1] = Long.valueOf(noticeArray[1]);
+        long usrId10 = Long.valueOf(noticeArray[0], 8);
+        long noticeId10 = Long.valueOf(noticeArray[1], 8);
+        noticeLongArray[0] = usrId10;
+        noticeLongArray[1] = noticeId10;
         return noticeLongArray;
     }
 
@@ -43,7 +45,7 @@ public class SplitParamsUtil {
      * userId + 00 + noticeId装成复合id
      */
     public static long buildComplexNoticeId(long userId, long noticeId){
-        String complexId = Joiner.on(NOTICE_PANDORA_SEPARATOR).join(String.valueOf(userId), String.valueOf(noticeId));
+        String complexId = Joiner.on(NOTICE_PANDORA_SEPARATOR).join(Long.toOctalString(userId), Long.toOctalString(noticeId));
         log.debug("complexId:{}", complexId);
         return Long.valueOf(complexId);
     }
@@ -59,5 +61,16 @@ public class SplitParamsUtil {
         params.put(Strategy.USER_ID, userId);
         consoleContext.setRequestHeader(params);
         ThreadLocalManager.setConsoleContext(consoleContext);
+    }
+
+    public static void main(String[] args) {
+
+        long userId = 234934290L;
+        long noticeId = 29820L;
+        long complexId = buildComplexNoticeId(userId, noticeId);
+        System.err.println(complexId);
+        long[] result = obtainSplitArray(complexId);
+        System.err.println(result[0]);
+        System.err.println(result[1]);
     }
 }
