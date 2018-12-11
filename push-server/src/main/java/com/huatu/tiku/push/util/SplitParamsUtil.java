@@ -62,15 +62,4 @@ public class SplitParamsUtil {
         consoleContext.setRequestHeader(params);
         ThreadLocalManager.setConsoleContext(consoleContext);
     }
-
-    public static void main(String[] args) {
-
-        long userId = 234934290L;
-        long noticeId = 29820L;
-        long complexId = buildComplexNoticeId(userId, noticeId);
-        System.err.println(complexId);
-        long[] result = obtainSplitArray(complexId);
-        System.err.println(result[0]);
-        System.err.println(result[1]);
-    }
 }
