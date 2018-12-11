@@ -14,9 +14,16 @@ import java.util.List;
 public interface CorrectFeedbackService {
 
     /**
-     * 处理纠错消息通知
+     * 批量处理纠错消息通知
      * @param correctFeedbackInfoList
      * @throws BizException
      */
     void sendCorrectNotice(List<CorrectFeedbackInfo> correctFeedbackInfoList) throws BizException;
+
+    /**
+     * 处理单个纠错消息通知
+     * @param correctFeedbackInfo
+     * @throws BizException
+     */
+    void sendCorrectNotice(CorrectFeedbackInfo correctFeedbackInfo) throws BizException;
 }

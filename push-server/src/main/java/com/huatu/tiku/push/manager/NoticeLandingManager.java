@@ -12,6 +12,7 @@ import com.huatu.tiku.push.entity.NoticeUserRelation;
 import com.huatu.tiku.push.enums.NoticeStatusEnum;
 import com.huatu.tiku.push.request.NoticeReq;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -135,7 +136,7 @@ public class NoticeLandingManager {
                 noticeUserRelations.add(noticeUserRelation);
             });
             noticeUserRelations.forEach(item -> {
-                insertRelationUnderAnnotation(item.getUserId(), item);
+                ((NoticeLandingManager)AopContext.currentProxy()).insertRelationUnderAnnotation(item.getUserId(), item);
                 count.incrementAndGet();
             });
             return count.get();
@@ -151,7 +152,7 @@ public class NoticeLandingManager {
      * @param noticeUserRelation
      */
     @SplitParam
-    private void insertRelationUnderAnnotation(long userId, NoticeUserRelation noticeUserRelation) {
+    public void insertRelationUnderAnnotation(long userId, NoticeUserRelation noticeUserRelation) {
         log.debug("user_id.value:{}", userId);
         noticeUserMapper.insertSelective(noticeUserRelation);
     }

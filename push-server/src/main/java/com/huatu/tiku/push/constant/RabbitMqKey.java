@@ -19,6 +19,8 @@ public class RabbitMqKey {
 
     public static final String NOTICE_USER_STORING = "notice_push_storing";
 
+    public static final String NOTICE_FEEDBACK_CORRECT = "notice_push_feedback_correct";
+
     public static final String NOTICE_COURSE_USER_INFO_UNAME = "notice_course_userInfo_uName";
 
     public static final String NOTICE_COURSE_USER_INFO_UiD = "notice_course_userInfo_uId";
