@@ -7,11 +7,9 @@ import java.lang.annotation.Target;
 
 /**
  * 描述：分表注解
- *
  * @author biguodong
  * Create time 2018-12-03 下午9:06
  **/
-
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface TableSplit {
@@ -23,13 +21,13 @@ public @interface TableSplit {
     boolean split() default true;
 
     /**
-     * 标示
+     * 标示表名前缀
      * @return
      */
     String value();
 
     /**
-     * 策略
+     * 分表策略
      * @return
      */
     String strategy();

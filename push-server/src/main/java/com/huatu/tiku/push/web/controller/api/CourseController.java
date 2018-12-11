@@ -2,6 +2,7 @@ package com.huatu.tiku.push.web.controller.api;
 
 import com.huatu.common.SuccessMessage;
 import com.huatu.common.exception.BizException;
+import com.huatu.springboot.web.version.mapping.annotation.ApiVersion;
 import com.huatu.tiku.push.request.CourseInfoReq;
 import com.huatu.tiku.push.service.api.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import javax.validation.constraints.NotNull;
 
 @RestController
 @RequestMapping(value = "course")
+@ApiVersion("v2")
 public class CourseController {
 
 

@@ -33,4 +33,9 @@ public class NoticePushRabbitConfig {
         return new Queue(RabbitMqKey.NOTICE_COURSE_USER_INFO_UiD);
     }
 
+    @Bean
+    public Queue getNoticeCorrectFeedback(){
+        return new Queue(RabbitMqKey.NOTICE_FEEDBACK_CORRECT);
+    }
+
 }

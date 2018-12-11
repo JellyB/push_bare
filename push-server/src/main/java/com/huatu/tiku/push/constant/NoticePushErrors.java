@@ -113,4 +113,11 @@ public class NoticePushErrors {
      */
     public static final ErrorResult REMOVE_CALL_PARAM_ERROR = ErrorResult.create(10000004, "远程调用参数异常！！");
 
+    /**
+     * 必须设置数据转移分页数据
+     */
+    public static final ErrorResult MIGRATE_PAGE_INFO_EMPTY = ErrorResult.create(10000004, "必须设置数据转移分页数据！！");
+
+
+
 }

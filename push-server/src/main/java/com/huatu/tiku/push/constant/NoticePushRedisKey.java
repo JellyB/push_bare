@@ -22,6 +22,11 @@ public class NoticePushRedisKey {
 
     private static final String NOTICE_PUSH_RESULT = "notice.push.result";
 
+    private static final String DATA_MIGRATE_PAGE_NUM = "notice.push.migrate.page";
+
+    private static final String DATA_MIGRATE_SIZE_COUNT = "notice.push.migrate.size";
+
+    private static final String DATA_MIGRATE_NOTICE_CREATE_TIME = "notice.push.migrate.notice.create_time";
 
 
     /**
@@ -60,5 +65,30 @@ public class NoticePushRedisKey {
      */
     public static String getPushResultKey(String type, String detailType, String resultId){
         return Joiner.on(".").join(NOTICE_PUSH_RESULT, type, detailType, resultId);
+    }
+
+    /**
+     * 获取数据转移页码
+     * @return
+     */
+    public static String getDataMigratePageNum(){
+        return DATA_MIGRATE_PAGE_NUM;
+    }
+
+
+    /**
+     * 获取数据转移每页大小
+     * @return
+     */
+    public static String getDataMigrateSizeCount(){
+        return DATA_MIGRATE_SIZE_COUNT;
+    }
+
+    /**
+     * notice entity 创建时间数据转移key
+     * @return
+     */
+    public static String getDataMigrateNoticeCreateTime(){
+        return DATA_MIGRATE_NOTICE_CREATE_TIME;
     }
 }

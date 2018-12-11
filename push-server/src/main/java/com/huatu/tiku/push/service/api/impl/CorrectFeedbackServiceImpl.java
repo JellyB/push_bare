@@ -54,22 +54,33 @@ public class CorrectFeedbackServiceImpl implements CorrectFeedbackService {
          * 入库
          */
         correctFeedbackInfoList.forEach(correctFeedbackInfo -> {
-            List<NoticeReq> noticeReqList = Lists.newArrayList();
-            FeedBackParams.Builder builder = FeedBackCastFactory.feedbackParams(correctFeedbackInfo);
-            List<NoticeReq.NoticeUserRelation> noticeUserRelations = FeedBackCastFactory.noticeUserRelations(correctFeedbackInfo);
-            FeedBackCastFactory.noticeForPush(builder, noticeUserRelations, correctFeedbackInfo, noticeReqList);
-
-            List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(noticeReqList);
-            noticeLandingManager.insertBatch(noticeReqList);
-            customCastStrategyTemplate.setNotificationList(list);
-            notificationHandler.setDetailType(NoticeTypeEnum.CORRECT_FEEDBACK);
-            notificationHandler.setBizId(0L);
-            notificationHandler.setPushStrategy(customCastStrategyTemplate);
-            /**
-             * 发送
-             */
-            log.info("push correct feedback:{}", JSONObject.toJSONString(noticeReqList));
-            notificationHandler.push();
+            sendCorrectNotice(correctFeedbackInfo);
         });
+    }
+
+    /**
+     * 处理单个纠错消息通知
+     *
+     * @param correctFeedbackInfo
+     * @throws BizException
+     */
+    @Override
+    public void sendCorrectNotice(CorrectFeedbackInfo correctFeedbackInfo) throws BizException {
+        List<NoticeReq> noticeReqList = Lists.newArrayList();
+        FeedBackParams.Builder builder = FeedBackCastFactory.feedbackParams(correctFeedbackInfo);
+        List<NoticeReq.NoticeUserRelation> noticeUserRelations = FeedBackCastFactory.noticeUserRelations(correctFeedbackInfo);
+        FeedBackCastFactory.noticeForPush(builder, noticeUserRelations, correctFeedbackInfo, noticeReqList);
+
+        List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(noticeReqList);
+        noticeLandingManager.insertBatch(noticeReqList);
+        customCastStrategyTemplate.setNotificationList(list);
+        notificationHandler.setDetailType(NoticeTypeEnum.CORRECT_FEEDBACK);
+        notificationHandler.setBizId(0L);
+        notificationHandler.setPushStrategy(customCastStrategyTemplate);
+        /**
+         * 发送
+         */
+        log.info("push correct feedback:{}", JSONObject.toJSONString(noticeReqList));
+        notificationHandler.push();
     }
 }

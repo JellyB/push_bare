@@ -22,7 +22,7 @@ import java.util.Date;
 @Component
 public class BossJob {
 
-    public static final String BossJob = "bossJob";
+    public static final String BossJob = "bossJob_push";
 
     private static final String BossJobInterval = "*/59 * * * * ?";
 
