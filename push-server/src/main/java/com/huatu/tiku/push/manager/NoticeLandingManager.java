@@ -94,7 +94,7 @@ public class NoticeLandingManager {
      */
     public void insertNoticeRelation(NoticeUserRelation noticeUserRelation) throws BizException {
         noticeUserRelation.setStatus(NoticeStatusEnum.NORMAL.getValue());
-        noticeUserMapper.insertSelective(noticeUserRelation);
+        ((NoticeLandingManager)AopContext.currentProxy()).insertRelationUnderAnnotation(noticeUserRelation.getUserId(), noticeUserRelation);
     }
 
     /**
