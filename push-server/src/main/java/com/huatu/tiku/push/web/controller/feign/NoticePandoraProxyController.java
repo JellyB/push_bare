@@ -56,7 +56,7 @@ public class NoticePandoraProxyController {
      * @return
      * @throws BizException
      */
-    @GetMapping("hasRead")
+    @PutMapping("hasRead")
     public Object read(@RequestParam long noticeId) throws BizException{
         return noticePandoraProxy.hasRead(noticeId);
     }
