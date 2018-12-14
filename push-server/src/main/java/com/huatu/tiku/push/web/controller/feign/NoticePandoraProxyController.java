@@ -5,6 +5,7 @@ import com.huatu.common.exception.BizException;
 import com.huatu.springboot.web.version.mapping.annotation.ApiVersion;
 import com.huatu.tiku.push.service.feign.NoticePandoraProxy;
 import com.huatu.tiku.push.util.PageUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "feign")
 @ApiVersion("v1")
+@Slf4j
 public class NoticePandoraProxyController {
 
     @Autowired
@@ -36,6 +38,7 @@ public class NoticePandoraProxyController {
                        @RequestParam(value = "size", defaultValue = "20") int size){
 
         PageInfo pageInfo = noticePandoraProxy.selectUserNotice(userId, page, size);
+        log.info("noticeList.request params.userId:{}, page:{}, size:{}", userId, page, size);
         return PageUtil.parsePageInfo(pageInfo);
     }
 
@@ -46,7 +49,7 @@ public class NoticePandoraProxyController {
      */
     @GetMapping(value = "unReadCount")
     public Object list(@RequestParam(value = "userId") int userId){
-
+        log.info("unReadCount.request params.userId:{}", userId);
         return noticePandoraProxy.unReadNum(userId);
     }
 
@@ -58,6 +61,7 @@ public class NoticePandoraProxyController {
      */
     @PutMapping("hasRead")
     public Object read(@RequestParam long noticeId) throws BizException{
+        log.info("hasRead.request params.noticeId:{}", noticeId);
         return noticePandoraProxy.hasRead(noticeId);
     }
 
