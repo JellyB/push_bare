@@ -19,6 +19,7 @@ import com.huatu.tiku.push.quartz.factory.CourseCastFactory;
 import com.huatu.tiku.push.request.NoticeReq;
 import com.huatu.tiku.push.service.api.NoticeStoreService;
 import com.huatu.tiku.push.service.api.SimpleUserService;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,6 +33,7 @@ import java.util.Set;
  * @author biguodong
  * Create time 2018-11-21 下午9:18
  **/
+@Slf4j
 public abstract class AbstractCourseTemplate {
 
     @Autowired
@@ -147,6 +149,7 @@ public abstract class AbstractCourseTemplate {
             users.addAll(simpleUserManager.selectByBizId(CourseParams.TYPE, courseInfo.getClassId()));
         }
         if(CollectionUtils.isEmpty(users)){
+            log.error("course.class.id:{}.user.list.empty", courseInfo.getClassId());
             return;
         }else{
             setUserCountInRedis(users.size());
