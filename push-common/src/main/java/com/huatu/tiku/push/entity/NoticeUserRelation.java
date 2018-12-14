@@ -28,6 +28,16 @@ public class NoticeUserRelation {
     private Long id;
 
     /**
+     * 消息类型
+     */
+    private String type;
+
+    /**
+     * 具体消息类型
+     */
+    private String detailType;
+
+    /**
      * 消息id
      */
     private Long noticeId;
@@ -64,8 +74,10 @@ public class NoticeUserRelation {
 
 
     @Builder
-    public NoticeUserRelation(Long id, Long noticeId, Long userId, Integer isRead, Timestamp createTime, Timestamp updateTime, Integer status, Integer bizStatus) {
+    public NoticeUserRelation(Long id, String type, String detailType, Long noticeId, Long userId, Integer isRead, Timestamp createTime, Timestamp updateTime, Integer status, Integer bizStatus) {
         this.id = id;
+        this.type = type;
+        this.detailType = detailType;
         this.noticeId = noticeId;
         this.userId = userId;
         this.isRead = isRead;

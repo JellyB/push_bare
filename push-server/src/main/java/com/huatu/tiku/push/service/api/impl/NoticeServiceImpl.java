@@ -157,6 +157,8 @@ public class NoticeServiceImpl implements NoticeService {
         for(NoticeReq.NoticeUserRelation user : req.getUsers()){
             NoticeUserRelation noticeUserRelation = NoticeUserRelation.
                     builder()
+                    .type(req.getType())
+                    .detailType(req.getDetailType())
                     .noticeId(noticeEntity.getId())
                     .userId(user.getUserId())
                     .createTime(new Timestamp(System.currentTimeMillis()))
@@ -200,6 +202,8 @@ public class NoticeServiceImpl implements NoticeService {
                 NoticeUserRelation noticeUserRelation = NoticeUserRelation.
                         builder()
                         .noticeId(noticeRelationReq.getNoticeId())
+                        .type(noticeRelationReq.getType())
+                        .detailType(noticeRelationReq.getDetailType())
                         .userId(user)
                         .isRead(NoticeReadEnum.UN_READ.getValue())
                         .build();

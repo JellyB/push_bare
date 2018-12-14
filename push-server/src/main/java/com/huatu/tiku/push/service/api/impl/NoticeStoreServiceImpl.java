@@ -56,6 +56,8 @@ public class NoticeStoreServiceImpl implements NoticeStoreService {
                 NoticeUserRelation noticeUserRelation = NoticeUserRelation.builder()
                         .noticeId(noticeId)
                         .userId(item.getUserId())
+                        .type(noticeReq.getType())
+                        .detailType(noticeReq.getDetailType())
                         .createTime(new Timestamp(System.currentTimeMillis()))
                         .updateTime(new Timestamp(System.currentTimeMillis()))
                         .status(NoticeStatusEnum.NORMAL.getValue())

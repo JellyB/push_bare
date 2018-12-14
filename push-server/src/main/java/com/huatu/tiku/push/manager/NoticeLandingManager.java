@@ -126,8 +126,13 @@ public class NoticeLandingManager {
             List<NoticeReq.NoticeUserRelation> relations = noticeReq.getUsers();
             relations.forEach(notice -> {
 
-                NoticeUserRelation noticeUserRelation = NoticeUserRelation.builder()
+                NoticeUserRelation noticeUserRelation = NoticeUserRelation
+                        .builder()
+                        .type(noticeReq.getType())
+                        .detailType(noticeReq.getDetailType())
                         .userId(notice.getUserId())
+                        .type(noticeReq.getType())
+                        .detailType(noticeReq.getDetailType())
                         .updateTime(new Timestamp(System.currentTimeMillis()))
                         .status(NoticeStatusEnum.NORMAL.getValue())
                         .noticeId(noticeId)

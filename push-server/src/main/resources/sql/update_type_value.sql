@@ -1,0 +1,16 @@
+update r_notice_user_00 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_01 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_02 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_03 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_04 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_05 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_06 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_07 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_08 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_09 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_10 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_11 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_12 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_13 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_14 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;
+update r_notice_user_15 r, t_notice_entity t set r.type = t.type, r.detail_type = t.detail_type where r.notice_id = t.id;

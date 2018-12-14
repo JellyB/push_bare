@@ -18,11 +18,17 @@ public class NoticeRelationReq extends BaseReq{
 
     private Long noticeId;
 
+    private String type;
+
+    private String detailType;
+
     private Set<Long> users;
 
     @Builder
-    public NoticeRelationReq(Long noticeId, Set<Long> users) {
+    public NoticeRelationReq(Long noticeId, String type, String detailType, Set<Long> users) {
         this.noticeId = noticeId;
+        this.type = type;
+        this.detailType = detailType;
         this.users = users;
     }
 }
