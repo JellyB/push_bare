@@ -146,27 +146,28 @@ public abstract class AbstractCourseTemplate {
         if(CollectionUtils.isEmpty(users)){
             users.addAll(simpleUserManager.selectByBizId(CourseParams.TYPE, courseInfo.getClassId()));
         }
-        setUserCountInRedis(users.size());
-        CourseParams.Builder courseParams = CourseCastFactory.courseParams(courseInfo);
-        List<NoticeReq.NoticeUserRelation> noticeRelations = CourseCastFactory.noticeRelation(users);
-        List<NoticeReq> noticePushList = noticePush(courseInfo, courseParams, noticeRelations);
-        List<NoticeReq> noticeInsertList = noticeInsert(courseInfo, courseParams, noticeRelations);
-            // ---
-        if(getUserCountInRedis() < RabbitMqKey.PUSH_STRATEGY_THRESHOLD){
-            List<UmengNotification> notificationList = customCastNotification(noticePushList);
-            customCastStrategyTemplate.setNotificationList(notificationList);
-            notificationHandler.setPushStrategy(customCastStrategyTemplate);
+        if(CollectionUtils.isEmpty(users)){
+            return;
         }else{
-            NoticeReq noticeReq = noticePush(courseInfo, courseParams);
-            List<UmengNotification> notificationList = fileCastNotification(courseInfo.getClassId(), courseInfo.getLiveId(), noticeReq);
-            fileCastStrategyTemplate.setNotificationList(notificationList);
-            notificationHandler.setPushStrategy(fileCastStrategyTemplate);
+            setUserCountInRedis(users.size());
+            CourseParams.Builder courseParams = CourseCastFactory.courseParams(courseInfo);
+            List<NoticeReq.NoticeUserRelation> noticeRelations = CourseCastFactory.noticeRelation(users);
+            List<NoticeReq> noticePushList = noticePush(courseInfo, courseParams, noticeRelations);
+            List<NoticeReq> noticeInsertList = noticeInsert(courseInfo, courseParams, noticeRelations);
+            if(getUserCountInRedis() < RabbitMqKey.PUSH_STRATEGY_THRESHOLD){
+                List<UmengNotification> notificationList = customCastNotification(noticePushList);
+                customCastStrategyTemplate.setNotificationList(notificationList);
+                notificationHandler.setPushStrategy(customCastStrategyTemplate);
+            }else{
+                NoticeReq noticeReq = noticePush(courseInfo, courseParams);
+                List<UmengNotification> notificationList = fileCastNotification(courseInfo.getClassId(), courseInfo.getLiveId(), noticeReq);
+                fileCastStrategyTemplate.setNotificationList(notificationList);
+                notificationHandler.setPushStrategy(fileCastStrategyTemplate);
+            }
+            notificationHandler.setDetailType(noticeTypeEnum);
+            notificationHandler.setBizId(courseInfo.getLiveId());
+            notificationHandler.push();
+            noticeStoreService.store(noticeInsertList);
         }
-        notificationHandler.setDetailType(noticeTypeEnum);
-        notificationHandler.setBizId(courseInfo.getLiveId());
-        notificationHandler.push();
-            //  ====
-        //pushService.push(noticePushList);
-        noticeStoreService.store(noticeInsertList);
     }
 }
