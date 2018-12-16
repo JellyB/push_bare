@@ -43,8 +43,9 @@ public interface CourseService {
      * 创建时间倒排
      * @param page
      * @param size
+     * @param startTime
      * @return
      * @throws BizException
      */
-    Object list(int page, int size) throws BizException;
+    Object list(int page, int size, String startTime) throws BizException;
 }

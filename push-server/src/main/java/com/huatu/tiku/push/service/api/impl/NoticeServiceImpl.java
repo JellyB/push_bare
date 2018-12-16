@@ -54,8 +54,6 @@ public class NoticeServiceImpl implements NoticeService {
     @Autowired
     private NoticeUserMapper noticeUserMapper;
 
-
-
     /**
      * 我的消息列表封装
      * @param userId
@@ -84,48 +82,17 @@ public class NoticeServiceImpl implements NoticeService {
         }
 
         Set<Long> noticeIds = Sets.newHashSet();
-        pageInfo.getList().forEach(item -> {
-            NoticeUserRelation noticeUserRelation = (NoticeUserRelation) item;
+        List<NoticeUserRelation> noticeUserRelations = pageInfo.getList();
+        noticeUserRelations.forEach(noticeUserRelation -> {
             noticeIds.add(noticeUserRelation.getNoticeId());
         });
         Map<Long, NoticeEntity> maps = obtainNoticeMaps(noticeIds);
-        List<NoticeResp> list = Lists.newArrayList();
-        pageInfo.getList().forEach(relations -> {
-            NoticeUserRelation noticeUserRelation = (NoticeUserRelation) relations;
-            NoticeEntity noticeEntity = maps.get(noticeUserRelation.getNoticeId());
-
-            if(null == noticeEntity){
-                throw new BizException(NoticePushErrors.NOTICE_ENTITY_UN_EXIST);
-            }
-            BaseMsg baseMsg = BaseMsg
-                    .builder()
-                    .title(noticeEntity.getTitle())
-                    .text(noticeEntity.getText())
-                    .build();
-
-            if(StringUtils.isNoneBlank(noticeEntity.getCustom())){
-                JSONObject jsonObject = JSONObject.parseObject(noticeEntity.getCustom());
-                Map custom = jsonObject;
-                baseMsg.setCustom(custom);
-            }
-            String noticeTime = NoticeTimeParseUtil.parseTime(noticeUserRelation.getCreateTime().getTime());
-            NoticeResp noticeResp = NoticeResp
-                    .builder()
-                    .noticeId(noticeUserRelation.getId())
-                    .noticeTime(noticeTime)
-                    .display_type(1)
-                    .isRead(noticeUserRelation.getIsRead())
-                    .type(noticeEntity.getType())
-                    .detailType(noticeEntity.getDetailType())
-                    .userId(noticeUserRelation.getUserId())
-                    .payload(baseMsg)
-                    .build();
-
-            list.add(noticeResp);
-        });
+        List<NoticeResp> list = getNoticeResps(noticeUserRelations, maps);
         pageInfo.setList(list);
         return pageInfo;
     }
+
+
 
     /**
      * 保存消息列表
@@ -319,5 +286,81 @@ public class NoticeServiceImpl implements NoticeService {
                 .updateTime(new Timestamp(System.currentTimeMillis()))
                 .build();
         return noticeUserMapper.updateByExampleSelective(noticeUserRelation, example);
+    }
+
+    /**
+     * 获取用户指定type类型的消息列表
+     *
+     * @param userId
+     * @param type
+     * @param page
+     * @param size
+     * @return
+     * @throws BizException
+     */
+    @Override
+    @SplitParam
+    public Object noticeList4Pc(long userId, String type, int page, int size) throws BizException {
+        Example example = new Example(NoticeUserRelation.class);
+        example.and()
+                .andEqualTo("userId", userId)
+                .andEqualTo("type", type)
+                .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
+
+        PageInfo pageInfo = PageHelper.startPage(page, size).doSelectPageInfo(() -> noticeUserMapper.selectByExample(example));
+        if(CollectionUtils.isEmpty(pageInfo.getList())){
+            return pageInfo;
+        }
+        Set<Long> noticeIds = Sets.newHashSet();
+        List<NoticeUserRelation> noticeUserRelations = pageInfo.getList();
+        noticeUserRelations.forEach(noticeUserRelation -> noticeIds.add(noticeUserRelation.getNoticeId()));
+        Map<Long, NoticeEntity> maps = obtainNoticeMaps(noticeIds);
+        List<NoticeResp> list = getNoticeResps(noticeUserRelations, maps);
+        pageInfo.setList(list);
+        return pageInfo;
+    }
+
+
+    /**
+     * 返回移动端和pc消息list
+     * @param noticeUserRelations
+     * @param maps
+     * @return
+     */
+    private List<NoticeResp> getNoticeResps(List<NoticeUserRelation> noticeUserRelations, Map<Long, NoticeEntity> maps) {
+        List<NoticeResp> list = Lists.newArrayList();
+        noticeUserRelations.forEach(noticeUserRelation -> {
+            NoticeEntity noticeEntity = maps.get(noticeUserRelation.getNoticeId());
+
+            if(null == noticeEntity){
+                throw new BizException(NoticePushErrors.NOTICE_ENTITY_UN_EXIST);
+            }
+            BaseMsg baseMsg = BaseMsg
+                    .builder()
+                    .title(noticeEntity.getTitle())
+                    .text(noticeEntity.getText())
+                    .build();
+
+            if(StringUtils.isNoneBlank(noticeEntity.getCustom())){
+                JSONObject jsonObject = JSONObject.parseObject(noticeEntity.getCustom());
+                Map custom = jsonObject;
+                baseMsg.setCustom(custom);
+            }
+            String noticeTime = NoticeTimeParseUtil.parseTime(noticeUserRelation.getCreateTime().getTime());
+            NoticeResp noticeResp = NoticeResp
+                    .builder()
+                    .noticeId(noticeUserRelation.getId())
+                    .noticeTime(noticeTime)
+                    .display_type(1)
+                    .isRead(noticeUserRelation.getIsRead())
+                    .type(noticeEntity.getType())
+                    .detailType(noticeEntity.getDetailType())
+                    .userId(noticeUserRelation.getUserId())
+                    .payload(baseMsg)
+                    .build();
+
+            list.add(noticeResp);
+        });
+        return list;
     }
 }

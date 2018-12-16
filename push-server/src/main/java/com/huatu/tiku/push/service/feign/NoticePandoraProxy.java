@@ -112,4 +112,19 @@ public class NoticePandoraProxy implements NoticeService{
     public int unReadNum(long userId) throws BizException {
         return noticeService.unReadNum(userId);
     }
+
+    /**
+     * 获取用户指定type类型的消息列表
+     *
+     * @param userId
+     * @param type
+     * @param page
+     * @param size
+     * @return
+     * @throws BizException
+     */
+    @Override
+    public Object noticeList4Pc(long userId, String type, int page, int size) throws BizException {
+        return null;
+    }
 }

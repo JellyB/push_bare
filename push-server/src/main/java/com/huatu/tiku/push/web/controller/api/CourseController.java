@@ -55,8 +55,9 @@ public class CourseController {
 
     @GetMapping(value = "list")
     public Object list(@RequestParam(value = "page", defaultValue = "1") int page,
-                       @RequestParam(value = "size", defaultValue = "20") int size) throws BizException{
-        return courseService.list(page, size);
+                       @RequestParam(value = "size", defaultValue = "20") int size,
+                       @RequestParam(value = "startTime", defaultValue = "", required = false) String startTime) throws BizException{
+        return courseService.list(page, size, startTime);
     }
 
 

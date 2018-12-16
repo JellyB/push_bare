@@ -66,4 +66,15 @@ public interface NoticeService {
      * @throws BizException
      */
     int unReadNum(long userId)throws BizException;
+
+    /**
+     * 获取用户指定type类型的消息列表
+     * @param userId
+     * @param type
+     * @param page
+     * @param size
+     * @return
+     * @throws BizException
+     */
+    Object noticeList4Pc(long userId, String type, int page, int size)throws BizException;
 }

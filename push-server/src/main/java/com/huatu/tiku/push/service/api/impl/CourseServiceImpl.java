@@ -17,6 +17,7 @@ import com.huatu.tiku.push.service.api.QuartzJobInfoService;
 import com.huatu.tiku.push.util.NoticeTimeParseUtil;
 import com.huatu.tiku.push.util.PageUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -122,12 +123,17 @@ public class CourseServiceImpl implements CourseService {
      *
      * @param page
      * @param size
+     * @param startTime
      * @return
      * @throws BizException
      */
     @Override
-    public Object list(int page, int size) throws BizException {
+    public Object list(int page, int size, String startTime) throws BizException {
         Example example = new Example(CourseInfo.class);
+        Example.Criteria criteria = example.and();
+        if (StringUtils.isNotBlank(startTime)) {
+            criteria.andLike("startTime", startTime + "%");
+        }
         example.orderBy("startTime").desc();
 
         PageInfo pageInfo = PageHelper.startPage(page, size).doSelectPageInfo(() -> courseInfoMapper.selectByExample(example));

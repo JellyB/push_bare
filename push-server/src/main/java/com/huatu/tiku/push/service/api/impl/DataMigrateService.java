@@ -32,9 +32,10 @@ public class DataMigrateService {
     private NoticeEntityMapper noticeEntityMapper;
 
     /**
+     * 预处理方法
      * 刷入消息数据 id && create_time to redis
      */
-    @PostConstruct
+    //@PostConstruct
     public void preLoadingNoticeEntityData2Redis(){
         HashOperations hashOperations = redisTemplate.opsForHash();
         String key = NoticePushRedisKey.getDataMigrateNoticeCreateTime();
