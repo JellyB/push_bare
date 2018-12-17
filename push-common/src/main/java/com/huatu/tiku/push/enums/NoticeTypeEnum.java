@@ -1,9 +1,6 @@
 package com.huatu.tiku.push.enums;
 
-import com.huatu.tiku.push.constant.CourseParams;
-import com.huatu.tiku.push.constant.FeedBackParams;
-import com.huatu.tiku.push.constant.MockParams;
-import com.huatu.tiku.push.constant.OrderParams;
+import com.huatu.tiku.push.constant.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -25,8 +22,8 @@ public enum NoticeTypeEnum{
     MOCK_REPORT("%报告出炉", "", NoticeParentTypeEnum.MOCK, MockParams.REPORT),
     ORDER_SEND("发货提醒", "", NoticeParentTypeEnum.ORDER, OrderParams.SEND),
     ORDER_SIGN("订单已签收", "", NoticeParentTypeEnum.ORDER, OrderParams.SIGN),
-    CORRECT_FEEDBACK("您的纠错有反馈啦~", "%s，图币奖励在【我的图币】-【账户明细】查看哦~", NoticeParentTypeEnum.FEEDBACK, FeedBackParams.CORRECT),
-    SUGGEST_FEEDBACK("您的建议有反馈啦~", "非常感谢您的宝贵意见!", NoticeParentTypeEnum.FEEDBACK, FeedBackParams.SUGGEST);
+    CORRECT_FEEDBACK("您的纠错有反馈啦~", "%s，图币奖励在【我的图币】-【账户明细】查看哦~", NoticeParentTypeEnum.FEEDBACK, FeedBackCorrectParams.DETAIL_TYPE),
+    SUGGEST_FEEDBACK("您的建议有反馈啦~", "非常感谢您的宝贵意见!", NoticeParentTypeEnum.FEEDBACK, FeedBackSuggestParams.DETAIL_TYPE);
 
     private String title;
 

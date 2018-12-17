@@ -77,4 +77,13 @@ public interface NoticeService {
      * @throws BizException
      */
     Object noticeList4Pc(long userId, String type, int page, int size)throws BizException;
+
+    /**
+     * 逻辑删除noticeID
+     * @param userId
+     * @param noticeId
+     * @return
+     * @throws BizException
+     */
+    Object deleteNotice(long userId, long noticeId) throws BizException;
 }

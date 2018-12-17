@@ -363,4 +363,27 @@ public class NoticeServiceImpl implements NoticeService {
         });
         return list;
     }
+
+    /**
+     * 逻辑删除noticeId
+     *
+     * @param userId
+     * @param noticeId
+     * @return
+     * @throws BizException
+     */
+    @Override
+    @SplitParam
+    public Object deleteNotice(long userId, long noticeId) throws BizException {
+        Example example = new Example(NoticeUserRelation.class);
+        example.and()
+                .andEqualTo("id", noticeId);
+
+        NoticeUserRelation noticeUserRelation = NoticeUserRelation
+                .builder()
+                .updateTime(new Timestamp(System.currentTimeMillis()))
+                .status(NoticeStatusEnum.DELETE_LOGIC.getValue())
+                .build();
+        return noticeUserMapper.updateByExampleSelective(noticeUserRelation, example);
+    }
 }

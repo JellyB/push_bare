@@ -7,7 +7,7 @@ import com.huatu.tiku.push.cast.UmengNotification;
 import com.huatu.tiku.push.cast.strategy.CustomAliasCastStrategyTemplate;
 import com.huatu.tiku.push.cast.strategy.NotificationHandler;
 import com.huatu.tiku.push.constant.CorrectFeedbackInfo;
-import com.huatu.tiku.push.constant.FeedBackParams;
+import com.huatu.tiku.push.constant.FeedBackCorrectParams;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.manager.NoticeLandingManager;
 import com.huatu.tiku.push.quartz.factory.FeedBackCastFactory;
@@ -67,9 +67,9 @@ public class CorrectFeedbackServiceImpl implements CorrectFeedbackService {
     @Override
     public void sendCorrectNotice(CorrectFeedbackInfo correctFeedbackInfo) throws BizException {
         List<NoticeReq> noticeReqList = Lists.newArrayList();
-        FeedBackParams.Builder builder = FeedBackCastFactory.feedbackParams(correctFeedbackInfo);
-        List<NoticeReq.NoticeUserRelation> noticeUserRelations = FeedBackCastFactory.noticeUserRelations(correctFeedbackInfo);
-        FeedBackCastFactory.noticeForPush(builder, noticeUserRelations, correctFeedbackInfo, noticeReqList);
+        FeedBackCorrectParams.Builder builder = FeedBackCastFactory.feedbackCorrectParams(correctFeedbackInfo);
+        List<NoticeReq.NoticeUserRelation> noticeUserRelations = FeedBackCastFactory.correctNoticeUserRelations(correctFeedbackInfo);
+        FeedBackCastFactory.correctNoticeForPush(builder, noticeUserRelations, correctFeedbackInfo, noticeReqList);
 
         List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(noticeReqList);
         noticeLandingManager.insertBatch(noticeReqList);

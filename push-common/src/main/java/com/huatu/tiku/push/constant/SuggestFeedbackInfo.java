@@ -17,11 +17,39 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class SuggestFeedbackInfo implements Serializable {
 
+    /**
+     * 反馈id
+     */
     private long bizId;
 
-    private long uid;
+    /**
+     * 用户id
+     */
+    private long userId;
 
-    private String content;
+    /**
+     * 建议title
+     */
+    private String suggestTitle;
 
-    private String reply;
+    /**
+     * 建议内容
+     */
+    private String suggestContent;
+
+    /**
+     * 回复title
+     */
+    private String replyTitle;
+
+    /**
+     * 回复内容
+     */
+    private String replyContent;
+
+    /**
+     * 创建时间
+     */
+    private long createTime;
+
 }

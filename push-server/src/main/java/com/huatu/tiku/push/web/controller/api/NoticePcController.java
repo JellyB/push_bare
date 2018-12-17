@@ -30,4 +30,12 @@ public class NoticePcController {
         return noticeService.noticeList4Pc(userId, type, page, size);
 
     }
+
+    @DeleteMapping(value = "{noticeId}")
+    public Object deleteNoticeLogic(@Token UserSession userSession,
+                                    @PathVariable(value = "noticeId") long noticeId){
+        long userId = userSession.getId();
+        return noticeService.deleteNotice(userId, noticeId);
+
+    }
 }

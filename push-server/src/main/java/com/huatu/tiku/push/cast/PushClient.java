@@ -25,7 +25,7 @@ import java.io.InputStreamReader;
 
 @Slf4j
 @Component
-public class PushClient{
+public class PushClient implements Push{
 
 	/**
 	 * The user agent
@@ -54,6 +54,7 @@ public class PushClient{
 
 	protected static final String TASK_STATUS = "/api/status";
 
+	@Override
 	public PushResult send(UmengNotification msg) throws BizException {
 		PushResult pushResult = null;
 		try{
@@ -95,6 +96,7 @@ public class PushClient{
 		return pushResult;
 	}
 
+
 	/**
 	 * Upload file with device_tokens to Umeng
 	 * @param appkey
@@ -103,6 +105,7 @@ public class PushClient{
 	 * @return
 	 * @throws Exception
 	 */
+	@Override
 	public String uploadContents(String appkey,String appMasterSecret,String contents) throws Exception {
 		JSONObject uploadJson = new JSONObject();
 		uploadJson.put("appkey", appkey);
@@ -194,29 +197,5 @@ public class PushClient{
 		JSONObject data = respJson.getJSONObject("data");
 		log.info("task status data:{}", data);
 		return data.toJSONString();
-	}
-
-
-	public void send(String webHook_token){
-		try{
-
-			HttpClient httpclient = HttpClients.createDefault();
-
-			HttpPost httppost = new HttpPost(webHook_token);
-			httppost.addHeader("Content-Type", "application/json; charset=utf-8");
-
-			String textMsg = "{ \"msgtype\": \"text\", \"text\": {\"content\": \"小段你说啥, 是不一样的烟火\"}}";
-			StringEntity se = new StringEntity(textMsg, "utf-8");
-			httppost.setEntity(se);
-
-			HttpResponse response = httpclient.execute(httppost);
-			if (response.getStatusLine().getStatusCode()== HttpStatus.SC_OK){
-				String result= EntityUtils.toString(response.getEntity(), "utf-8");
-				System.err.println(result);
-			}
-		}catch (Exception e){
-
-		}
-
 	}
 }

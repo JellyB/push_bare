@@ -10,13 +10,11 @@ import java.util.Map;
  * @author biguodong
  * Create time 2018-11-08 上午11:23
  **/
-public class FeedBackParams extends Params {
+public class FeedBackSuggestParams extends Params {
 
     public static final String TYPE = "feedback";
 
-    public static final String CORRECT = "correct";
-
-    public static final String SUGGEST = "suggest";
+    public static final String DETAIL_TYPE = "suggest";
 
     /**
      * notice type
@@ -35,34 +33,29 @@ public class FeedBackParams extends Params {
             return params;
         }
 
-        public static FeedBackParams.Builder builder(String type){
-            Builder builder = new FeedBackParams.Builder();
+        public static FeedBackSuggestParams.Builder builder(String type){
+            Builder builder = new FeedBackSuggestParams.Builder();
             builder.getParams().put("type", type);
             return builder;
         }
 
-        public FeedBackParams.Builder feedBackId(long feedBackId){
-            this.params.put(BIZ_ID, feedBackId);
+        public FeedBackSuggestParams.Builder suggestId(long suggestId){
+            this.params.put(BIZ_ID, suggestId);
             return this;
         }
 
-        public FeedBackParams.Builder questionId(long questionId){
-            this.params.put("questionId", questionId);
+        public FeedBackSuggestParams.Builder title(String title){
+            this.params.put("title", title);
             return this;
         }
 
-        public FeedBackParams.Builder source(String source){
-            this.params.put("source", source);
-            return this;
-        }
-
-        public FeedBackParams.Builder reply(String reply){
+        public FeedBackSuggestParams.Builder reply(String reply){
             this.params.put("reply", reply);
             return this;
         }
 
 
-        public FeedBackParams.Builder build(){
+        public FeedBackSuggestParams.Builder build(){
             return this;
         }
     }

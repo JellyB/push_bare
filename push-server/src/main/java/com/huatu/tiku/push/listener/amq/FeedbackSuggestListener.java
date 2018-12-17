@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
  * Create time 2018-12-11 下午1:51
  **/
 @Component
-//@RabbitListener(queues = RabbitMqKey.NOTICE_FEEDBACK_SUGGEST)
+@RabbitListener(queues = RabbitMqKey.NOTICE_FEEDBACK_SUGGEST)
 @Slf4j
 public class FeedbackSuggestListener {
 
@@ -29,9 +29,8 @@ public class FeedbackSuggestListener {
 
     @RabbitHandler
     public void onMessage(String message){
-        //SuggestFeedbackInfo suggestFeedbackInfo = JSONObject.parseObject(message, CorrectFeedbackInfo.class);
-
-        //suggestFeedbackService.sendSuggestNotice(correctFeedbackInfo);
+        SuggestFeedbackInfo suggestFeedbackInfo = JSONObject.parseObject(message, SuggestFeedbackInfo.class);
+        suggestFeedbackService.sendSuggestNotice(suggestFeedbackInfo);
     }
 
 }
