@@ -1,8 +1,9 @@
 package com.huatu.tiku.push.cast.strategy;
 
 import com.google.common.base.Joiner;
-import com.huatu.tiku.push.cast.PushClient;
+import com.huatu.tiku.push.cast.HttpClientStrategy;
 import com.huatu.tiku.push.cast.PushResult;
+import com.huatu.tiku.push.cast.RestTemplateStrategy;
 import com.huatu.tiku.push.cast.UmengNotification;
 import com.huatu.tiku.push.constant.NoticePushRedisKey;
 import com.huatu.tiku.push.enums.NoticeParentTypeEnum;
@@ -14,7 +15,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 
 import java.util.List;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,14 +28,14 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractPushTemplate implements PushStrategy{
 
 
-    public static ScheduledThreadPoolExecutor threadPoolExecutor = new ScheduledThreadPoolExecutor(3);
-
-
     @Autowired
     public RedisTemplate redisTemplate;
 
     @Autowired
-    private PushClient pushClient;
+    private HttpClientStrategy httpClientStrategy;
+
+    @Autowired
+    private RestTemplateStrategy restTemplateStrategy;
 
     private List<UmengNotification> notificationList;
 
@@ -102,12 +103,13 @@ public abstract class AbstractPushTemplate implements PushStrategy{
     @Override
     public final void push(NoticeTypeEnum noticeTypeEnum, long bizId) {
         try{
+            log.info("current Thread name:{}", Thread.currentThread().getName());
             if(CollectionUtils.isEmpty(getNotificationList())){
                 log.error("notifications can not be empty!!");
             }
             getNotificationList().forEach(item->{
                 String simpleName = item.getClass().getSimpleName();
-                PushResult pushResult = pushClient.send(item);
+                PushResult pushResult = httpClientStrategy.send(item);
                 dealPushResult(simpleName, noticeTypeEnum, bizId, pushResult);
             });
         }catch (Exception e){

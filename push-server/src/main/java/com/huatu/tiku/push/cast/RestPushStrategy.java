@@ -8,7 +8,7 @@ import com.huatu.common.exception.BizException;
  * @author biguodong
  * Create time 2018-12-17 上午11:15
  **/
-public interface Push {
+public interface RestPushStrategy {
 
     /**
      * 单个消息推送

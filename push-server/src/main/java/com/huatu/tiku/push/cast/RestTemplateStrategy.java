@@ -13,8 +13,8 @@ import org.springframework.web.client.RestTemplate;
  * Create time 2018-12-17 上午11:18
  **/
 @Slf4j
-@Component(value = "pushClientProxy")
-public class PushClientProxy implements Push{
+@Component(value = "restTemplateStrategy")
+public class RestTemplateStrategy implements RestPushStrategy {
 
     @Autowired
     private RestTemplate restTemplate;

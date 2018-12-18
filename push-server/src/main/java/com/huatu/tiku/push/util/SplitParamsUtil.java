@@ -49,17 +49,4 @@ public class SplitParamsUtil {
         log.debug("complexId:{}", complexId);
         return Long.valueOf(complexId);
     }
-
-
-    /**
-     * 参与分表的参数放入thread local
-     * @param userId
-     */
-    public static void putSplitParam2ThreadLocal(long userId){
-        ConsoleContext consoleContext = ConsoleContext.getInstance();
-        Map<String, Object> params = Maps.newHashMap();
-        params.put(Strategy.USER_ID, userId);
-        consoleContext.setRequestHeader(params);
-        ThreadLocalManager.setConsoleContext(consoleContext);
-    }
 }

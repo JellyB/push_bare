@@ -43,9 +43,6 @@ public abstract class AbstractCourseTemplate {
     private SimpleUserManager simpleUserManager;
 
     @Autowired
-    private PushService pushService;
-
-    @Autowired
     private SimpleUserService simpleUserService;
 
     @Autowired
@@ -161,11 +158,13 @@ public abstract class AbstractCourseTemplate {
                 List<UmengNotification> notificationList = customCastNotification(noticePushList);
                 customCastStrategyTemplate.setNotificationList(notificationList);
                 notificationHandler.setPushStrategy(customCastStrategyTemplate);
+                notificationHandler.setConcurrent(true);
             }else{
                 NoticeReq noticeReq = noticePush(courseInfo, courseParams);
                 List<UmengNotification> notificationList = fileCastNotification(courseInfo.getClassId(), courseInfo.getLiveId(), noticeReq);
                 fileCastStrategyTemplate.setNotificationList(notificationList);
                 notificationHandler.setPushStrategy(fileCastStrategyTemplate);
+                notificationHandler.setConcurrent(false);
             }
             notificationHandler.setDetailType(noticeTypeEnum);
             notificationHandler.setBizId(courseInfo.getLiveId());

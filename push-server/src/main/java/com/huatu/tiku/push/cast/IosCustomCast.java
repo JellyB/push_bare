@@ -25,7 +25,7 @@ public class IosCustomCast extends AbstractIOSNotification{
     private String iosMasterSecret;
 
     @Autowired
-    private PushClient pushClient;
+    private HttpClientStrategy pushClient;
 
 
     @PostConstruct

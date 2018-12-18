@@ -27,7 +27,7 @@ public class AndroidCustomCast extends AbstractAndroidNotification{
 
 
     @Autowired
-    private PushClient pushClient;
+    private HttpClientStrategy pushClient;
 
     @PostConstruct
     public void AndroidCustomCast() throws Exception {

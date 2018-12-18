@@ -2,7 +2,10 @@ package com.huatu.tiku.push.cast.strategy;
 
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.ExecutorService;
 
 
 /**
@@ -16,9 +19,22 @@ import org.springframework.stereotype.Component;
 public class NotificationHandler {
 
 
+    @Autowired
+    private ExecutorService executorService;
+
     private PushStrategy pushStrategy;
 
     private long bizId;
+
+    private boolean isConcurrent;
+
+    public boolean isConcurrent() {
+        return isConcurrent;
+    }
+
+    public void setConcurrent(boolean concurrent) {
+        isConcurrent = concurrent;
+    }
 
     private NoticeTypeEnum detailType;
 
@@ -44,6 +60,10 @@ public class NotificationHandler {
 
 
     public void push(){
-        pushStrategy.push(getDetailType(), getBizId());
+        if(isConcurrent()){
+            executorService.execute(()-> pushStrategy.push(getDetailType(), getBizId()));
+        }else{
+            pushStrategy.push(getDetailType(), getBizId());
+        }
     }
 }

@@ -34,7 +34,7 @@ public class PushServiceImpl<T> implements PushService<T>{
     private IosCustomCast iosCustomCast;
 
     @Autowired
-    private PushClient pushClient;
+    private HttpClientStrategy pushClient;
 
     @Autowired
     private RedisTemplate redisTemplate;

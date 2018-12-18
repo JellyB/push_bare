@@ -56,6 +56,7 @@ public class SuggestFeedbackServiceImpl implements SuggestFeedbackService{
         customCastStrategyTemplate.setNotificationList(list);
         notificationHandler.setDetailType(NoticeTypeEnum.SUGGEST_FEEDBACK);
         notificationHandler.setBizId(0L);
+        notificationHandler.setConcurrent(false);
         notificationHandler.setPushStrategy(customCastStrategyTemplate);
         /**
          * 发送

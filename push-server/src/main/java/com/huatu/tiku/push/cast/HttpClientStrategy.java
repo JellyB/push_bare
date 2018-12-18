@@ -5,13 +5,11 @@ import com.huatu.common.exception.BizException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -25,7 +23,8 @@ import java.io.InputStreamReader;
 
 @Slf4j
 @Component
-public class PushClient implements Push{
+@Primary
+public class HttpClientStrategy implements RestPushStrategy {
 
 	/**
 	 * The user agent
@@ -35,22 +34,22 @@ public class PushClient implements Push{
 	/**
 	 * This object is used for sending the post request to Umeng
 	 */
-	protected HttpClient client = new DefaultHttpClient();
+	protected HttpClient defaultHttpClient = new DefaultHttpClient();
 
 	/**
 	 * The host
 	 */
-	protected static final String host = "http://msg.umeng.com";
+	protected static final String HOST = "http://msg.umeng.com";
 
 	/**
 	 * The upload path
 	 */
-	protected static final String uploadPath = "/upload";
+	protected static final String UPLOAD_PATH = "/upload";
 
 	/**
 	 * The post path
 	 */
-	protected static final String postPath = "/api/send";
+	protected static final String POST_PATH = "/api/send";
 
 	protected static final String TASK_STATUS = "/api/status";
 
@@ -60,7 +59,7 @@ public class PushClient implements Push{
 		try{
 			String timestamp = Integer.toString((int)(System.currentTimeMillis() / 1000));
 			msg.setPredefinedKeyValue("timestamp", timestamp);
-			String url = host + postPath;
+			String url = HOST + POST_PATH;
 			String postBody = msg.getPostBody();
 			String sign = DigestUtils.md5Hex(("POST" + url + postBody + msg.getAppMasterSecret()).getBytes("utf8"));
 			url = url + "?sign=" + sign;
@@ -71,7 +70,7 @@ public class PushClient implements Push{
 			/**
 			 * Send the post request and get the response
 			 */
-			HttpResponse response = client.execute(post);
+			HttpResponse response = defaultHttpClient.execute(post);
 			log.info("post body:{}>>>>>>>>>>>>>>>", postBody);
 			log.info("post content:{}>>>>>>>>>>>>>", JSONObject.toJSON(post));
 			int status = response.getStatusLine().getStatusCode();
@@ -113,7 +112,7 @@ public class PushClient implements Push{
 		uploadJson.put("timestamp", timestamp);
 		uploadJson.put("content", contents);
 		// Construct the request
-		String url = host + uploadPath;
+		String url = HOST + UPLOAD_PATH;
 		String postBody = uploadJson.toString();
 		String sign = DigestUtils.md5Hex(("POST" + url + postBody + appMasterSecret).getBytes("utf8"));
 		url = url + "?sign=" + sign;
@@ -124,7 +123,7 @@ public class PushClient implements Push{
 		/**
 		 * Send the post request and get the response
 		 */
-		HttpResponse response = client.execute(post);
+		HttpResponse response = defaultHttpClient.execute(post);
 		System.out.println("Response Code : " + response.getStatusLine().getStatusCode());
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 		StringBuffer result = new StringBuffer();
@@ -166,7 +165,7 @@ public class PushClient implements Push{
 		uploadJson.put("timestamp", timestamp);
 		uploadJson.put("task_id", taskId);
 		// Construct the request
-		String url = host + TASK_STATUS;
+		String url = HOST + TASK_STATUS;
 		String postBody = uploadJson.toString();
 		String sign = DigestUtils.md5Hex(("POST" + url + postBody + appMasterSecret).getBytes("utf8"));
 		url = url + "?sign=" + sign;
@@ -177,7 +176,7 @@ public class PushClient implements Push{
 		/**
 		 * Send the post request and get the response
 		 */
-		HttpResponse response = client.execute(post);
+		HttpResponse response = defaultHttpClient.execute(post);
 		log.info("Response Code:{}", response.getStatusLine().getStatusCode());
 		BufferedReader rd = new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
 		StringBuffer result = new StringBuffer();

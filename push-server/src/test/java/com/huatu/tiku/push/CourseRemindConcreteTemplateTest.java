@@ -1,13 +1,19 @@
 package com.huatu.tiku.push;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.Lists;
+import com.huatu.tiku.push.constant.NoticePushRedisKey;
 import com.huatu.tiku.push.entity.CourseInfo;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.quartz.template.CourseRemindConcreteTemplate;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * 描述：创建课程提醒推送
@@ -15,10 +21,30 @@ import java.sql.Timestamp;
  * @author biguodong
  * Create time 2018-11-22 下午6:04
  **/
+@Slf4j
 public class CourseRemindConcreteTemplateTest extends PushBaseTest{
 
     @Autowired
     private CourseRemindConcreteTemplate courseRemindConcreteTemplate;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Test
+    public void addMembers(){
+        long classId = 86980l;
+        long startValue = 233982024L;
+        List<Long> userIds = Lists.newArrayList();
+        String key = NoticePushRedisKey.getCourseClassId(classId);
+        SetOperations setOperations = redisTemplate.opsForSet();
+        for(int i = 0 ; i < 400; i ++){
+            startValue = startValue + i;
+            userIds.add(startValue);
+        }
+        userIds.add(233906356L);
+        setOperations.add(key, userIds.toArray());
+        log.error("当前课程报名用户量:{}", setOperations.size(key));
+    }
 
 
     @Test
