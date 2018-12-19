@@ -21,6 +21,12 @@
 
     <dependencies>
 
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
+
         <!-- springBoot 组件引用开始 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -186,17 +192,18 @@
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
         </dependency>
-        <!--自定义mybatis工具 -->
-        <dependency>
-            <groupId>com.huatu.commons.sdk</groupId>
-            <artifactId>common-baseMapper-helper</artifactId>
-            <version>${default.env.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.huatu.tiku</groupId>
             <artifactId>push-common</artifactId>
             <version>1.0-${project.environment}-SNAPSHOT</version>
         </dependency>
+        <!--自定义mybatis工具 -->
+        <dependency>
+            <groupId>com.huatu.commons.sdk</groupId>
+            <artifactId>common-baseMapper-helper</artifactId>
+            <version>1.0-${project.environment}-SNAPSHOT</version>
+        </dependency>
+
 
         <dependency>
             <groupId>com.huatu.commons</groupId>
@@ -232,8 +239,16 @@
             <groupId>org.javassist</groupId>
             <artifactId>javassist</artifactId>
         </dependency>
-        <!--quartz 相关-->
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-quartz -->
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+            <version>2.0.0.M2</version>
+        </dependency>
+
+        <!--quartz 相关-->
+        <!--<dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
             <version>2.2.1</version>
@@ -242,7 +257,7 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz-jobs</artifactId>
             <version>2.2.1</version>
-        </dependency>
+        </dependency>-->
         <!--友盟 push 相关-->
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
