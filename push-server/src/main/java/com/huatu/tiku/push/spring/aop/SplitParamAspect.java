@@ -74,9 +74,9 @@ public class SplitParamAspect {
         ThreadLocalManager.clear();
     }
 
-    @AfterThrowing(value = "pointCut()")
-    public void afterException(){
-        log.error("run aspect caught an error!");
+    @AfterThrowing(value = "pointCut()", throwing = "throwable")
+    public void afterException(Throwable throwable){
+        log.error(" run aspect caught an error:{}", throwable.getCause().getMessage());
         throw new BizException(NoticePushErrors.TABLE_SPLIT_PARAMS_AOP_ERROR);
     }
 }
