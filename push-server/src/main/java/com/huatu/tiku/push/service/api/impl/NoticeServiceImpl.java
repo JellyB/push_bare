@@ -89,13 +89,19 @@ public class NoticeServiceImpl implements NoticeService {
             noticeIds.add(noticeUserRelation.getNoticeId());
         });
         Map<Long, NoticeEntity> maps = obtainNoticeMaps(noticeIds);
+        reConstructPagInfo(pageInfo, maps);
+        return pageInfo;
+    }
+
+    private void reConstructPagInfo(PageInfo pageInfo, Map<Long, NoticeEntity> maps) {
         List<NoticeResp> list = Lists.newArrayList();
         pageInfo.getList().forEach(relations -> {
             NoticeUserRelation noticeUserRelation = (NoticeUserRelation) relations;
             NoticeEntity noticeEntity = maps.get(noticeUserRelation.getNoticeId());
 
             if(null == noticeEntity){
-                throw new BizException(NoticePushErrors.NOTICE_ENTITY_UN_EXIST);
+                log.error("notice entity is null, noticeID:{}", noticeUserRelation.getNoticeId());
+                return;
             }
             BaseMsg baseMsg = BaseMsg
                     .builder()
@@ -124,7 +130,6 @@ public class NoticeServiceImpl implements NoticeService {
             list.add(noticeResp);
         });
         pageInfo.setList(list);
-        return pageInfo;
     }
 
     /**
