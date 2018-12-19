@@ -1,5 +1,6 @@
 package com.huatu.tiku.push.web.controller.feign;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.huatu.common.exception.BizException;
 import com.huatu.springboot.web.version.mapping.annotation.ApiVersion;
@@ -37,8 +38,9 @@ public class NoticePandoraProxyController {
                        @RequestParam(value = "page", defaultValue = "1") int page,
                        @RequestParam(value = "size", defaultValue = "20") int size){
 
-        PageInfo pageInfo = noticePandoraProxy.selectUserNotice(userId, page, size);
         log.info("noticeList.request params.userId:{}, page:{}, size:{}", userId, page, size);
+        PageInfo pageInfo = noticePandoraProxy.selectUserNotice(userId, page, size);
+        log.info("page info:{}", JSONObject.toJSONString(PageUtil.parsePageInfo(pageInfo)));
         return PageUtil.parsePageInfo(pageInfo);
     }
 
