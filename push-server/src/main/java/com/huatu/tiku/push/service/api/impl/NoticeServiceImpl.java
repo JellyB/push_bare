@@ -88,8 +88,47 @@ public class NoticeServiceImpl implements NoticeService {
         });
         Map<Long, NoticeEntity> maps = obtainNoticeMaps(noticeIds);
         List<NoticeResp> list = getNoticeResps(noticeUserRelations, maps);
-        pageInfo.setList(list);
+        reConstructPagInfo(pageInfo, maps);
         return pageInfo;
+    }
+
+    private void reConstructPagInfo(PageInfo pageInfo, Map<Long, NoticeEntity> maps) {
+        List<NoticeResp> list = Lists.newArrayList();
+        pageInfo.getList().forEach(relations -> {
+            NoticeUserRelation noticeUserRelation = (NoticeUserRelation) relations;
+            NoticeEntity noticeEntity = maps.get(noticeUserRelation.getNoticeId());
+
+            if(null == noticeEntity){
+                log.error("notice entity is null, noticeID:{}", noticeUserRelation.getNoticeId());
+                return;
+            }
+            BaseMsg baseMsg = BaseMsg
+                    .builder()
+                    .title(noticeEntity.getTitle())
+                    .text(noticeEntity.getText())
+                    .build();
+
+            if(StringUtils.isNoneBlank(noticeEntity.getCustom())){
+                JSONObject jsonObject = JSONObject.parseObject(noticeEntity.getCustom());
+                Map custom = jsonObject;
+                baseMsg.setCustom(custom);
+            }
+            String noticeTime = NoticeTimeParseUtil.parseTime(noticeUserRelation.getCreateTime().getTime());
+            NoticeResp noticeResp = NoticeResp
+                    .builder()
+                    .noticeId(noticeUserRelation.getId())
+                    .noticeTime(noticeTime)
+                    .display_type(1)
+                    .isRead(noticeUserRelation.getIsRead())
+                    .type(noticeEntity.getType())
+                    .detailType(noticeEntity.getDetailType())
+                    .userId(noticeUserRelation.getUserId())
+                    .payload(baseMsg)
+                    .build();
+
+            list.add(noticeResp);
+        });
+        pageInfo.setList(list);
     }
 
 
