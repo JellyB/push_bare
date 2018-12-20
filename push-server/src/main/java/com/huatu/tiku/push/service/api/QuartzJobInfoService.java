@@ -50,6 +50,15 @@ public interface QuartzJobInfoService {
     Object addCourseRemindJob(QuartzJobInfoServiceImpl.CourseJob courseJob) throws BizException;
 
     /**
+     * 添加课程readyjob
+     * @param courseJob
+     * @return
+     * @throws BizException
+     */
+    Object addCourseReadyJob(QuartzJobInfoServiceImpl.CourseJob courseJob) throws BizException;
+
+
+    /**
      * 使用cron 调度添加job
      * @param jobName
      * @param cron

@@ -14,10 +14,7 @@ import com.huatu.tiku.push.entity.quartz.JobAndTriggersResp;
 import com.huatu.tiku.push.entity.quartz.QrtzTriggers;
 import com.huatu.tiku.push.enums.GroupNameEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
-import com.huatu.tiku.push.quartz.job.BaseQuartzJob;
-import com.huatu.tiku.push.quartz.job.CourseRemindConcreteJob;
-import com.huatu.tiku.push.quartz.job.ManagerJob;
-import com.huatu.tiku.push.quartz.job.PrintJobDemo;
+import com.huatu.tiku.push.quartz.job.*;
 import com.huatu.tiku.push.quartz.listener.QuartzTriggerListener;
 import com.huatu.tiku.push.service.api.QuartzJobInfoService;
 import com.huatu.tiku.push.util.JobKeyUtil;
@@ -118,6 +115,40 @@ public class QuartzJobInfoServiceImpl implements QuartzJobInfoService {
 
         }catch (Exception e){
             log.error("add remind job error ",e);
+        }
+        return SuccessMessage.create("创建成功！！");
+    }
+
+
+    /**
+     * 添加课程ready job
+     *
+     * @param courseJob
+     * @return
+     * @throws BizException
+     */
+    @Override
+    public Object addCourseReadyJob(CourseJob courseJob) throws BizException {
+        NoticeTypeEnum noticeTypeEnum = NoticeTypeEnum.COURSE_READY;
+        long jobStartTime = System.currentTimeMillis() + courseJob.getTime() * 1000L;
+        CourseInfo courseInfo = courseJob.getCourseInfo();
+        try {
+            JobDetail jobDetail = JobBuilder
+                    .newJob(CourseReadyConcreteJob.class)
+                    .withIdentity(JobKeyUtil.jobName(noticeTypeEnum, String.valueOf(courseInfo.getLiveId())), JobKeyUtil.jobGroup(noticeTypeEnum))
+                    .usingJobData(BaseQuartzJob.CourseBizData, JSONObject.toJSONString(courseInfo))
+                    .usingJobData(BaseQuartzJob.BizDataClass, CourseInfo.class.getName())
+                    .build();
+
+            SimpleTrigger simpleTrigger = (SimpleTrigger) TriggerBuilder.newTrigger()
+                    .withIdentity(JobKeyUtil.triggerName(noticeTypeEnum, String.valueOf(courseInfo.getLiveId())), JobKeyUtil.triggerGroup(noticeTypeEnum))
+                    .startAt(new Date(jobStartTime))
+                    .build();
+            scheduler.getListenerManager().addTriggerListener(quartzTriggerListener);
+            scheduler.scheduleJob(jobDetail, simpleTrigger);
+
+        }catch (Exception e){
+            log.error("add ready job error ",e);
         }
         return SuccessMessage.create("创建成功！！");
     }

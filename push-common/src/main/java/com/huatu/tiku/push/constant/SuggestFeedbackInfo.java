@@ -30,6 +30,7 @@ public class SuggestFeedbackInfo implements Serializable {
     /**
      * 建议title
      */
+    @Deprecated
     private String suggestTitle;
 
     /**

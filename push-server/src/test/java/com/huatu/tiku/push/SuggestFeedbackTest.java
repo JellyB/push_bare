@@ -31,7 +31,7 @@ public class SuggestFeedbackTest extends PushBaseTest{
         suggestFeedbackInfo.setBizId(10000123L);
         suggestFeedbackInfo.setUserId(233982024L);
         suggestFeedbackInfo.setCreateTime(System.currentTimeMillis());
-        suggestFeedbackInfo.setSuggestTitle("有个问题");
+        //suggestFeedbackInfo.setSuggestTitle("有个问题");
         suggestFeedbackInfo.setSuggestContent("题目不能正常加载！");
         suggestFeedbackInfo.setReplyTitle("你好已修正！");
         suggestFeedbackInfo.setReplyContent("感谢您的建议！！");

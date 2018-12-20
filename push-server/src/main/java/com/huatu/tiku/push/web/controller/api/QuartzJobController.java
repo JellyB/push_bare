@@ -45,6 +45,16 @@ public class QuartzJobController {
         return quartzJobInfoService.addCourseRemindJob(courseJob);
     }
 
+    /**
+     * add course ready job
+     * @param courseJob
+     * @return
+     */
+    @PostMapping(value = "addReady")
+    public Object addReady(@RequestBody QuartzJobInfoServiceImpl.CourseJob courseJob) {
+        return quartzJobInfoService.addCourseReadyJob(courseJob);
+    }
+
 
 
     @PostMapping(value = "cron/{jobName}/{cron}")
