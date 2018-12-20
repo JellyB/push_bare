@@ -9,6 +9,7 @@ import com.huatu.tiku.push.constant.SuggestFeedbackInfo;
 import com.huatu.tiku.push.enums.DisplayTypeEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.request.NoticeReq;
+import com.huatu.tiku.push.util.NoticeTimeParseUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
@@ -61,8 +62,8 @@ public class FeedBackCastFactory extends AbstractFactory{
         FeedBackSuggestParams.Builder builder = FeedBackSuggestParams.Builder
                 .builder(FeedBackSuggestParams.DETAIL_TYPE)
                 .suggestId(suggestFeedbackInfo.getBizId())
-                .title(StringUtils.trimToEmpty(suggestFeedbackInfo.getSuggestTitle()) + StringUtils.trimToEmpty(suggestFeedbackInfo.getSuggestContent()))
-                .reply(StringUtils.trimToEmpty(suggestFeedbackInfo.getReplyTitle()) + StringUtils.trimToEmpty(suggestFeedbackInfo.getReplyContent()))
+                .title(StringUtils.trimToEmpty(suggestFeedbackInfo.getReplyTitle()))
+                .reply(StringUtils.trimToEmpty(suggestFeedbackInfo.getReplyContent()))
                 .build();
 
         return builder;
@@ -154,22 +155,19 @@ public class FeedBackCastFactory extends AbstractFactory{
     public static void suggestNoticeForPush(FeedBackSuggestParams.Builder builder, List<NoticeReq.NoticeUserRelation> noticeUserRelations,
                                             SuggestFeedbackInfo suggestFeedbackInfo, List<NoticeReq> noticeReqList ){
         List<String> text = Lists.newArrayList();
-        if(StringUtils.isNotBlank(suggestFeedbackInfo.getSuggestTitle())){
-            text.add(suggestFeedbackInfo.getSuggestTitle());
-        }
-        if(StringUtils.isNotBlank(suggestFeedbackInfo.getSuggestContent())){
-            text.add(suggestFeedbackInfo.getReplyContent());
-        }
         if(StringUtils.isNotBlank(suggestFeedbackInfo.getReplyTitle())){
             text.add(suggestFeedbackInfo.getReplyTitle());
         }
         if(StringUtils.isNotBlank(suggestFeedbackInfo.getReplyContent())){
             text.add(suggestFeedbackInfo.getReplyContent());
         }
+        String replyContent = Joiner.on("#").join(text);
+        long time = suggestFeedbackInfo.getCreateTime() == 0 ? System.currentTimeMillis() : suggestFeedbackInfo.getCreateTime();
+        String replyTime = NoticeTimeParseUtil.dayTimeDateFormat.format(new Date(time));
 
         NoticeReq noticeReq = NoticeReq.builder()
                 .title(NoticeTypeEnum.SUGGEST_FEEDBACK.getTitle())
-                .text(Joiner.on("#").join(text))
+                .text(String.format(NoticeTypeEnum.SUGGEST_FEEDBACK.getText(), replyTime, replyContent))
                 .custom(builder.getParams())
                 .type(FeedBackSuggestParams.TYPE)
                 .detailType(FeedBackSuggestParams.DETAIL_TYPE)

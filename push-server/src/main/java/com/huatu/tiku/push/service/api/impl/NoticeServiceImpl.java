@@ -87,7 +87,7 @@ public class NoticeServiceImpl implements NoticeService {
             noticeIds.add(noticeUserRelation.getNoticeId());
         });
         Map<Long, NoticeEntity> maps = obtainNoticeMaps(noticeIds);
-        List<NoticeResp> list = getNoticeResps(noticeUserRelations, maps);
+        //List<NoticeResp> list = getNoticeResps(noticeUserRelations, maps);
         reConstructPagInfo(pageInfo, maps);
         return pageInfo;
     }
@@ -354,8 +354,7 @@ public class NoticeServiceImpl implements NoticeService {
         List<NoticeUserRelation> noticeUserRelations = pageInfo.getList();
         noticeUserRelations.forEach(noticeUserRelation -> noticeIds.add(noticeUserRelation.getNoticeId()));
         Map<Long, NoticeEntity> maps = obtainNoticeMaps(noticeIds);
-        List<NoticeResp> list = getNoticeResps(noticeUserRelations, maps);
-        pageInfo.setList(list);
+        reConstructPagInfo(pageInfo, maps);
         return pageInfo;
     }
 
