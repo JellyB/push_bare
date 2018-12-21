@@ -30,7 +30,7 @@ public class ConsumerNoticeQueue{
     public void longPolling(){
         ThreadFactory threadFactory =  new  ThreadFactoryBuilder().setNameFormat("notice-cs-%s").build();
         ExecutorService executorService =new ThreadPoolExecutor(FIX_NUM, FIX_NUM,
-                0L, TimeUnit.MILLISECONDS,
+                100, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<>(), threadFactory, new ThreadPoolExecutor.AbortPolicy());
 
         executorService.submit(new PollNotice(baseModelService));
@@ -51,7 +51,7 @@ public class ConsumerNoticeQueue{
                 try{
                     BaseModel baseModel = NoticeQueue.instance().consume();
                     baseModelService.info(baseModel);
-                    log.error("baseModel:{}", JSONObject.toJSONString(baseModel));
+                    log.debug("baseModel:{}", JSONObject.toJSONString(baseModel));
                     log.info("queue size:{}", NoticeQueue.instance().size());
                 }catch (InterruptedException e){
                     log.error("consumer notice caught an exception");

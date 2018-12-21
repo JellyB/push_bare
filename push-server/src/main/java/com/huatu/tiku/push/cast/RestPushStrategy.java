@@ -10,6 +10,12 @@ import com.huatu.common.exception.BizException;
  **/
 public interface RestPushStrategy {
 
+    String HOST = "http://msg.umeng.com";
+
+    String UPLOAD_PATH = "/upload";
+
+    String POST_PATH = "/api/send";
+
     /**
      * 单个消息推送
      * @param msg

@@ -7,10 +7,7 @@ import com.huatu.tiku.push.service.api.WayBillService;
 import com.huatu.tiku.push.util.NoticeQueue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 描述：
@@ -55,5 +52,10 @@ public class WayBillController {
             log.error("interruption error!", e);
         }
         return SuccessMessage.create("测试用例");
+    }
+
+    @GetMapping(value = "count")
+    public Object getCount(){
+        return NoticeQueue.instance().size();
     }
 }

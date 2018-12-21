@@ -57,6 +57,7 @@ public class WayBillFactory extends AbstractFactory {
         WayBillSignParams.Builder builder = WayBillSignParams.Builder.builder()
                 .orderId(req.getWayBillNo())
                 .orderTime(req.getCreateTime())
+                .bizId(req.getWayBillNo())
                 .build();
 
         builder.setNoticeTypeEnum(NoticeTypeEnum.ORDER_SIGN);
@@ -72,6 +73,7 @@ public class WayBillFactory extends AbstractFactory {
         WayBillSendParams.Builder builder = WayBillSendParams.Builder.builder()
                 .orderId(req.getWayBillNo())
                 .orderTime(req.getCreateTime())
+                .bizId(req.getWayBillNo())
                 .build();
 
         builder.setNoticeTypeEnum(NoticeTypeEnum.ORDER_SEND);

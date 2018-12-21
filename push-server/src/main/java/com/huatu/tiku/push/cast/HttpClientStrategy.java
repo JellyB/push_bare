@@ -32,11 +32,6 @@ public class HttpClientStrategy implements RestPushStrategy {
 	protected final String USER_AGENT = "Mozilla/5.0";
 
 	/**
-	 * This object is used for sending the post request to Umeng
-	 */
-	protected HttpClient defaultHttpClient = new DefaultHttpClient();
-
-	/**
 	 * The host
 	 */
 	protected static final String HOST = "http://msg.umeng.com";
@@ -55,6 +50,7 @@ public class HttpClientStrategy implements RestPushStrategy {
 
 	@Override
 	public PushResult send(UmengNotification msg) throws BizException {
+		HttpClient defaultHttpClient = new DefaultHttpClient();
 		PushResult pushResult = null;
 		try{
 			String timestamp = Integer.toString((int)(System.currentTimeMillis() / 1000));
@@ -106,6 +102,7 @@ public class HttpClientStrategy implements RestPushStrategy {
 	 */
 	@Override
 	public String uploadContents(String appkey,String appMasterSecret,String contents) throws Exception {
+		HttpClient defaultHttpClient = new DefaultHttpClient();
 		JSONObject uploadJson = new JSONObject();
 		uploadJson.put("appkey", appkey);
 		String timestamp = Integer.toString((int)(System.currentTimeMillis() / 1000));
@@ -159,6 +156,7 @@ public class HttpClientStrategy implements RestPushStrategy {
 	 * @throws Exception
 	 */
 	public String obtainTaskStatus(String appkey,String appMasterSecret,String taskId) throws Exception {
+		HttpClient defaultHttpClient = new DefaultHttpClient();
 		JSONObject uploadJson = new JSONObject();
 		uploadJson.put("appkey", appkey);
 		String timestamp = Integer.toString((int)(System.currentTimeMillis() / 1000));

@@ -48,6 +48,11 @@ public class WayBillSignParams extends WayBillParams{
             return new WayBillSignParams.Builder();
         }
 
+        public WayBillSignParams.Builder bizId(String bizId){
+            this.params.put(BIZ_ID, bizId);
+            return this;
+        }
+
         public WayBillSignParams.Builder orderId(String orderId){
             this.params.put("orderId", orderId);
             return this;

@@ -49,6 +49,10 @@ public class WayBillSendParams extends WayBillParams {
             return new WayBillSendParams.Builder();
         }
 
+        public WayBillSendParams.Builder bizId(String bizId){
+            this.params.put(BIZ_ID, bizId);
+            return this;
+        }
         public WayBillSendParams.Builder orderId(String orderId){
             this.params.put("orderId", orderId);
             return this;
