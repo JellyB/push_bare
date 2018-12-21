@@ -1,7 +1,7 @@
 package com.huatu.tiku.push;
 
 import com.huatu.tiku.push.constant.CourseQueueEntity;
-import com.huatu.tiku.push.service.api.CourseUserInfoComponent;
+import com.huatu.tiku.push.service.api.UserInfoComponent;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,7 +18,7 @@ public class CourseUserInfoComponentTest extends PushBaseTest{
 
 
     @Autowired
-    private CourseUserInfoComponent courseUserInfoComponent;
+    private UserInfoComponent courseUserInfoComponent;
 
     @Test
     public void test(){

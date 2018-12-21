@@ -1,12 +1,9 @@
 package com.huatu.tiku.push.service.api.impl;
 
 import com.google.common.collect.Lists;
-import com.huatu.tiku.push.constant.CourseParams;
-import com.huatu.tiku.push.constant.CourseQueueEntity;
-import com.huatu.tiku.push.constant.SimpleUserInfo;
-import com.huatu.tiku.push.constant.SimpleUserWithBizId;
+import com.huatu.tiku.push.constant.*;
 import com.huatu.tiku.push.entity.SimpleUser;
-import com.huatu.tiku.push.service.api.CourseUserInfoComponent;
+import com.huatu.tiku.push.service.api.UserInfoComponent;
 import com.huatu.tiku.push.service.api.SimpleUserService;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -35,8 +32,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  **/
 @Slf4j
 @Service
-public class CourseUserInfoComponentImpl implements CourseUserInfoComponent {
-
+public class UserInfoComponentImpl implements UserInfoComponent {
 
     @Autowired
     private RestTemplate restTemplate;
@@ -54,11 +50,6 @@ public class CourseUserInfoComponentImpl implements CourseUserInfoComponent {
 
     private static final String PAGE = "page";
 
-
-    private static final long SUCCESS_FLAG_USER = 1000000;
-
-    private static final long SUCCESS_FLAG_PHP = 10000;
-
     private static final int HasNext = 1;
 
 
@@ -67,15 +58,7 @@ public class CourseUserInfoComponentImpl implements CourseUserInfoComponent {
     public void fetchUserName(CourseQueueEntity courseQueueEntity) {
         try {
 
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
-
-            UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(orderBuyUser);
-            uriComponentsBuilder.queryParam(CLASS_ID, courseQueueEntity.getClassId());
-            uriComponentsBuilder.queryParam(PAGE, courseQueueEntity.getDealPage().get());
-            HttpEntity<?> entity = new HttpEntity<>(headers);
-            HttpEntity<PhpResponse> exchange = restTemplate.exchange(uriComponentsBuilder.toUriString(), HttpMethod.GET, entity, PhpResponse.class);
-            PhpResponse response = exchange.getBody();
+            PhpResponse response = getPhpResponse(courseQueueEntity);
             if(null != response && null != response.getData() && response.getCode() == SUCCESS_FLAG_PHP){
                 List<String> userNames = response.getData().getUserName();
                 if(CollectionUtils.isNotEmpty(userNames)){
@@ -107,6 +90,17 @@ public class CourseUserInfoComponentImpl implements CourseUserInfoComponent {
         }
     }
 
+    private PhpResponse getPhpResponse(CourseQueueEntity courseQueueEntity) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+        UriComponentsBuilder uriComponentsBuilder = UriComponentsBuilder.fromUriString(orderBuyUser);
+        uriComponentsBuilder.queryParam(CLASS_ID, courseQueueEntity.getClassId());
+        uriComponentsBuilder.queryParam(PAGE, courseQueueEntity.getDealPage().get());
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+        HttpEntity<PhpResponse> exchange = restTemplate.exchange(uriComponentsBuilder.toUriString(), HttpMethod.GET, entity, PhpResponse.class);
+        return exchange.getBody();
+    }
 
 
     @Override
@@ -114,15 +108,7 @@ public class CourseUserInfoComponentImpl implements CourseUserInfoComponent {
         try {
             List<String> userNames = Lists.newArrayList();
             simpleUserWithBizId.getData().forEach(item -> userNames.add(item.getUserName()));
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            MultiValueMap<String, List> map= new LinkedMultiValueMap<>();
-            map.add("userNames", userNames);
-            HttpEntity<List<String>> request = new HttpEntity<>(userNames, headers);
-
-            ResponseEntity<UserResponse> responseEntity = restTemplate.postForEntity(orderBuyUserIdsUrl, request, UserResponse.class);
-            UserResponse userResponse = responseEntity.getBody();
+            UserResponse userResponse = getUserIdResponse(userNames);
 
             if(Long.valueOf(userResponse.getCode()) == SUCCESS_FLAG_USER && CollectionUtils.isNotEmpty(userResponse.getData())){
                 storeUserInfo(simpleUserWithBizId.getClassId(), simpleUserWithBizId.getLiveId(), userResponse, simpleUserWithBizId.getEndTime());
@@ -131,6 +117,24 @@ public class CourseUserInfoComponentImpl implements CourseUserInfoComponent {
         }catch (Exception e){
             log.error("get user id from user service error", e);
         }
+    }
+
+    /**
+     * 获取用户id response
+     * @param userNames
+     * @return
+     */
+    @Override
+    public UserResponse getUserIdResponse(List<String> userNames) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        MultiValueMap<String, List> map= new LinkedMultiValueMap<>();
+        map.add("userNames", userNames);
+        HttpEntity<List<String>> request = new HttpEntity<>(userNames, headers);
+
+        ResponseEntity<UserResponse> responseEntity = restTemplate.postForEntity(orderBuyUserIdsUrl, request, UserResponse.class);
+        return responseEntity.getBody();
     }
 
     /**
@@ -160,14 +164,6 @@ public class CourseUserInfoComponentImpl implements CourseUserInfoComponent {
     public static class User{
         private String userName;
         private Long userId;
-    }
-
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Data
-    public static class UserResponse{
-        private List<User> data;
-        private String code;
     }
 
 

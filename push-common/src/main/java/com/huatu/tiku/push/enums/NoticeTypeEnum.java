@@ -20,8 +20,8 @@ public enum NoticeTypeEnum{
     MOCK_ONLINE("%s报名开始啦~", "", NoticeParentTypeEnum.MOCK, MockParams.ON_LINE),
     MOCK_REMIND("%马上开考！", "", NoticeParentTypeEnum.MOCK, MockParams.REMIND),
     MOCK_REPORT("%报告出炉", "", NoticeParentTypeEnum.MOCK, MockParams.REPORT),
-    ORDER_SEND("发货提醒", "", NoticeParentTypeEnum.ORDER, OrderParams.SEND),
-    ORDER_SIGN("订单已签收", "", NoticeParentTypeEnum.ORDER, OrderParams.SIGN),
+    ORDER_SEND("发货提醒", "", NoticeParentTypeEnum.ORDER, WayBillSendParams.DETAIL_TYPE),
+    ORDER_SIGN("订单已签收", "", NoticeParentTypeEnum.ORDER, WayBillSignParams.DETAIL_TYPE),
     CORRECT_FEEDBACK("您的纠错有反馈啦~", "%s，图币奖励在【我的图币】-【账户明细】查看哦~", NoticeParentTypeEnum.FEEDBACK, FeedBackCorrectParams.DETAIL_TYPE),
     SUGGEST_FEEDBACK("您的建议有反馈啦~", "您于 %s 日提交的意见反馈收到了回复：%s", NoticeParentTypeEnum.FEEDBACK, FeedBackSuggestParams.DETAIL_TYPE);
 

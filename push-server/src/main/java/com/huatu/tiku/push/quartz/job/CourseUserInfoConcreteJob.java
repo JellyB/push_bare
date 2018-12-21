@@ -3,7 +3,7 @@ package com.huatu.tiku.push.quartz.job;
 import com.alibaba.fastjson.JSONObject;
 import com.huatu.tiku.push.constant.CourseQueueEntity;
 import com.huatu.tiku.push.entity.CourseInfo;
-import com.huatu.tiku.push.service.api.CourseUserInfoComponent;
+import com.huatu.tiku.push.service.api.UserInfoComponent;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -23,7 +23,7 @@ public class CourseUserInfoConcreteJob implements BaseQuartzJob {
 
 
     @Autowired
-    private CourseUserInfoComponent courseUserInfoComponent;
+    private UserInfoComponent courseUserInfoComponent;
 
     public  static final String BIZ_DATA = "CourseInfo";
 
