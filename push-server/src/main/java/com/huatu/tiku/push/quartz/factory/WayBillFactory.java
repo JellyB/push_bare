@@ -23,8 +23,14 @@ import java.util.List;
 public class WayBillFactory extends AbstractFactory {
 
 
+    /**
+     * 发货
+     */
     private static final int SEND = 0;
 
+    /**
+     * 签收
+     */
     private static final int SIGN = 1;
 
 
@@ -52,6 +58,8 @@ public class WayBillFactory extends AbstractFactory {
                 .orderId(req.getWayBillNo())
                 .orderTime(req.getCreateTime())
                 .build();
+
+        builder.setNoticeTypeEnum(NoticeTypeEnum.ORDER_SIGN);
         return builder;
     }
 
@@ -65,6 +73,8 @@ public class WayBillFactory extends AbstractFactory {
                 .orderId(req.getWayBillNo())
                 .orderTime(req.getCreateTime())
                 .build();
+
+        builder.setNoticeTypeEnum(NoticeTypeEnum.ORDER_SEND);
         return builder;
     }
 
@@ -97,16 +107,14 @@ public class WayBillFactory extends AbstractFactory {
     public static void noticeForPush(AbstractBuilder builder, List<NoticeReq.NoticeUserRelation> noticeUserRelations,
                                             WayBillReq.Model req, List<NoticeReq> noticeReqList ){
 
-        String replyContent = Joiner.on("#").join(text);
-        long time = suggestFeedbackInfo.getCreateTime() == 0 ? System.currentTimeMillis() : suggestFeedbackInfo.getCreateTime();
-        String replyTime = NoticeTimeParseUtil.dayTimeDateFormat.format(new Date(time));
+
 
         NoticeReq noticeReq = NoticeReq.builder()
-                .title(NoticeTypeEnum.SUGGEST_FEEDBACK.getTitle())
-                .text(String.format(NoticeTypeEnum.SUGGEST_FEEDBACK.getText(), replyTime, replyContent))
+                .title(builder.getNoticeTypeEnum().getTitle())
+                .text(req.getClassName())
                 .custom(builder.getParams())
-                .type(FeedBackSuggestParams.TYPE)
-                .detailType(FeedBackSuggestParams.DETAIL_TYPE)
+                .type(builder.getNoticeTypeEnum().getType().getType())
+                .detailType(builder.getNoticeTypeEnum().getDetailType())
                 .displayType(DisplayTypeEnum.MESSAGE.getType())
                 .users(noticeUserRelations)
                 .build();

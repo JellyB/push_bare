@@ -21,5 +21,5 @@ public interface WayBillService {
      * @throws BizException
      */
     @Async
-    Object info(WayBillReq.Model req) throws BizException;
+    void info(WayBillReq.Model req) throws BizException;
 }

@@ -1,9 +1,6 @@
 package com.huatu.tiku.push.enums;
 
-import com.huatu.tiku.push.constant.CourseParams;
-import com.huatu.tiku.push.constant.FeedBackCorrectParams;
-import com.huatu.tiku.push.constant.MockParams;
-import com.huatu.tiku.push.constant.OrderParams;
+import com.huatu.tiku.push.constant.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -17,7 +14,7 @@ import lombok.Getter;
 @Getter
 public enum  NoticeParentTypeEnum {
 
-    COURSE(CourseParams.TYPE), MOCK(MockParams.TYPE), ORDER(OrderParams.TYPE), FEEDBACK(FeedBackCorrectParams.TYPE);
+    COURSE(CourseParams.TYPE), MOCK(MockParams.TYPE), ORDER(WayBillParams.TYPE), FEEDBACK(FeedBackParams.TYPE);
 
     private String type;
 }

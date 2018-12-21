@@ -63,6 +63,9 @@ public abstract class AbstractPushTemplate implements PushStrategy{
         if(noticeTypeEnum.getType().equals(NoticeParentTypeEnum.FEEDBACK)){
             return;
         }
+        if(noticeTypeEnum.getType().equals(NoticeParentTypeEnum.ORDER)){
+            return;
+        }
         try{
             String result_id = "";
             if(pushResult.getRet().equals(SUCCESS)){

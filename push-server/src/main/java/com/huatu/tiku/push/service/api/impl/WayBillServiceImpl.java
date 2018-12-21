@@ -7,8 +7,10 @@ import com.huatu.tiku.push.cast.UmengNotification;
 import com.huatu.tiku.push.cast.strategy.CustomAliasCastStrategyTemplate;
 import com.huatu.tiku.push.cast.strategy.NotificationHandler;
 import com.huatu.tiku.push.constant.AbstractBuilder;
+import com.huatu.tiku.push.constant.NoticePushErrors;
 import com.huatu.tiku.push.constant.UserResponse;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
+import com.huatu.tiku.push.manager.NoticeLandingManager;
 import com.huatu.tiku.push.quartz.factory.FeedBackCastFactory;
 import com.huatu.tiku.push.quartz.factory.WayBillFactory;
 import com.huatu.tiku.push.request.NoticeReq;
@@ -38,6 +40,9 @@ public class WayBillServiceImpl implements WayBillService {
     private CustomAliasCastStrategyTemplate customCastStrategyTemplate;
 
     @Autowired
+    private NoticeLandingManager noticeLandingManager;
+
+    @Autowired
     private NotificationHandler notificationHandler;
 
     @Autowired
@@ -51,9 +56,9 @@ public class WayBillServiceImpl implements WayBillService {
      * @throws BizException
      */
     @Override
-    public Object info(WayBillReq.Model req) throws BizException {
-        List<String> userNames = Lists.newArrayList();
+    public void info(WayBillReq.Model req) throws BizException {
         List<NoticeReq> noticeReqList = Lists.newArrayList();
+        List<String> userNames = Lists.newArrayList();
         AbstractBuilder builder = WayBillFactory.builder(req);
         userNames.add(req.getUserName());
         UserResponse userResponse = userInfoComponent.getUserIdResponse(userNames);
@@ -61,20 +66,23 @@ public class WayBillServiceImpl implements WayBillService {
         if(Long.valueOf(userResponse.getCode()) == UserInfoComponent.SUCCESS_FLAG_USER && CollectionUtils.isNotEmpty(userResponse.getData())){
             userId = userResponse.getData().get(0).getUserId();
         }
+        if(userId == 0){
+            throw new BizException(NoticePushErrors.NOTICE_USER_LIST_EMPTY);
+        }
         List<NoticeReq.NoticeUserRelation> noticeUserRelations = WayBillFactory.wayBillNoticeRelation(userId);
-        WayBillFactory.noticeForPush(builder, noticeUserRelations, correctFeedbackInfo, noticeReqList);
+        WayBillFactory.noticeForPush(builder, noticeUserRelations, req, noticeReqList);
 
         List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(noticeReqList);
         noticeLandingManager.insertBatch(noticeReqList);
         customCastStrategyTemplate.setNotificationList(list);
-        notificationHandler.setDetailType(NoticeTypeEnum.CORRECT_FEEDBACK);
+        notificationHandler.setDetailType(builder.getNoticeTypeEnum());
         notificationHandler.setBizId(0L);
         notificationHandler.setConcurrent(false);
         notificationHandler.setPushStrategy(customCastStrategyTemplate);
         /**
          * 发送
          */
-        log.info("push correct feedback:{}", JSONObject.toJSONString(noticeReqList));
+        log.info("push waybill info:{}", JSONObject.toJSONString(noticeReqList));
         notificationHandler.push();
     }
 }

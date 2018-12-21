@@ -10,9 +10,7 @@ import java.util.Map;
  * @author biguodong
  * Create time 2018-11-08 上午11:23
  **/
-public class FeedBackSuggestParams extends Params {
-
-    public static final String TYPE = "feedback";
+public class FeedBackSuggestParams extends FeedBackParams {
 
     public static final String DETAIL_TYPE = "suggest";
 

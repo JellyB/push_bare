@@ -17,9 +17,7 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-public class WayBillSignParams extends Params{
-
-    public static final String TYPE = "order";
+public class WayBillSignParams extends WayBillParams{
 
     public static final String DETAIL_TYPE = "sign";
 
@@ -42,7 +40,7 @@ public class WayBillSignParams extends Params{
          * @return
          */
         @Override
-        public Map<String, String> getParams() {
+        public Map<String, Object> getParams() {
             return params;
         }
 

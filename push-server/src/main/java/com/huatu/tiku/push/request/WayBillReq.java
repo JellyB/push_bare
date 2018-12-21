@@ -17,7 +17,7 @@ public class WayBillReq extends BaseReq{
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class Model{
+    public static class Model extends BaseModel{
 
         /**
          * 课程id

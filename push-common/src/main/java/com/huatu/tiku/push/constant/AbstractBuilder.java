@@ -1,5 +1,7 @@
 package com.huatu.tiku.push.constant;
 
+import com.huatu.tiku.push.enums.NoticeTypeEnum;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,12 +13,21 @@ import java.util.Map;
  **/
 public abstract class AbstractBuilder {
 
+    public NoticeTypeEnum noticeTypeEnum;
 
-    public Map<String, String> params = new HashMap<>();
+    public NoticeTypeEnum getNoticeTypeEnum() {
+        return noticeTypeEnum;
+    }
+
+    public void setNoticeTypeEnum(NoticeTypeEnum noticeTypeEnum) {
+        this.noticeTypeEnum = noticeTypeEnum;
+    }
+
+    public Map<String, Object> params = new HashMap<>();
 
     /**
      * get params
      * @return
      */
-    public abstract Map<String, String> getParams();
+    public abstract Map<String, Object> getParams();
 }
