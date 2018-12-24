@@ -40,7 +40,6 @@ public class NoticeQueue {
      * @param baseModel
      * @throws InterruptedException
      */
-    @Async
     public void produce(BaseModel baseModel) throws InterruptedException{
         queue.put(baseModel);
         log.debug("queue size, {}", queue.size() );
