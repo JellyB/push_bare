@@ -111,6 +111,7 @@ public abstract class AbstractPushTemplate implements PushStrategy{
                 log.error("notifications can not be empty!!");
             }
             getNotificationList().forEach(item->{
+                log.error("=8");
                 String simpleName = item.getClass().getSimpleName();
                 PushResult pushResult = httpClientStrategy.send(item);
                 dealPushResult(simpleName, noticeTypeEnum, bizId, pushResult);

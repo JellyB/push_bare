@@ -63,6 +63,7 @@ public class WayBillServiceImpl implements WayBillService {
         AbstractBuilder builder = WayBillFactory.builder(req);
         userNames.add(req.getUserName());
         UserResponse userResponse = userInfoComponent.getUserIdResponse(userNames);
+        log.error("userResponse:{}", JSONObject.toJSONString(userResponse));
         long userId = 0;
         if(Long.valueOf(userResponse.getCode()) == UserInfoComponent.SUCCESS_FLAG_USER && CollectionUtils.isNotEmpty(userResponse.getData())){
             userId = userResponse.getData().get(0).getUserId();
@@ -70,20 +71,26 @@ public class WayBillServiceImpl implements WayBillService {
         if(userId == 0){
             throw new BizException(NoticePushErrors.NOTICE_USER_LIST_EMPTY);
         }
+        log.error("user id:{}", userId);
         List<NoticeReq.NoticeUserRelation> noticeUserRelations = WayBillFactory.wayBillNoticeRelation(userId);
         WayBillFactory.noticeForPush(builder, noticeUserRelations, req, noticeReqList);
 
         List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(noticeReqList);
+        log.error("=1");
         noticeLandingManager.insertBatch(noticeReqList);
+        log.error("=2");
         customCastStrategyTemplate.setNotificationList(list);
+        log.error("=3");
         notificationHandler.setDetailType(builder.getNoticeTypeEnum());
         notificationHandler.setBizId(0L);
         notificationHandler.setConcurrent(false);
         notificationHandler.setPushStrategy(customCastStrategyTemplate);
+        log.error("=4");
         /**
          * 发送
          */
-        log.info("push waybill info:{}", JSONObject.toJSONString(noticeReqList));
+        log.error("push waybill info:{}", JSONObject.toJSONString(noticeReqList));
         notificationHandler.push();
+        log.error("=5");
     }
 }
