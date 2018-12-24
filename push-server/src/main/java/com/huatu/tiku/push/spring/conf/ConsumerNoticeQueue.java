@@ -35,6 +35,7 @@ public class ConsumerNoticeQueue{
 
         executorService.submit(new PollNotice(baseModelService));
         executorService.submit(new PollNotice(baseModelService));
+        executorService.submit(new PollNotice(baseModelService));
     }
 
     class PollNotice implements Runnable{
@@ -51,7 +52,10 @@ public class ConsumerNoticeQueue{
                 try{
                     log.info(">>>>>>>>>>>>>>>>>>> long polling.....");
                     BaseModel baseModel = NoticeQueue.instance().consume();
+                    log.error("baseModel.info>>>>>>>>>>>>>>>>>", JSONObject.toJSONString(baseModel));
+                    log.error("开始执行info方法-------------------------");
                     baseModelService.info(baseModel);
+                    log.error("执行info方法完成-------------------------");
                     log.debug("baseModel:{}", JSONObject.toJSONString(baseModel));
                     log.info("queue size:{}", NoticeQueue.instance().size());
                 }catch (InterruptedException e){
