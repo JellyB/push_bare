@@ -49,6 +49,7 @@ public class ConsumerNoticeQueue{
         public void run() {
             while (true) {
                 try{
+                    log.info(">>>>>>>>>>>>>>>>>>> long polling.....");
                     BaseModel baseModel = NoticeQueue.instance().consume();
                     baseModelService.info(baseModel);
                     log.debug("baseModel:{}", JSONObject.toJSONString(baseModel));
