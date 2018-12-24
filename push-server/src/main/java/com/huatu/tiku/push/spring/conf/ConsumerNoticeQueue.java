@@ -55,7 +55,7 @@ public class ConsumerNoticeQueue{
                     log.debug("baseModel:{}", JSONObject.toJSONString(baseModel));
                     log.info("queue size:{}", NoticeQueue.instance().size());
                 }catch (InterruptedException e){
-                    log.error("consumer notice caught an exception");
+                    log.error("consumer notice caught an exception", e);
                 }
             }
         }
