@@ -57,6 +57,7 @@ public class WayBillServiceImpl implements WayBillService {
      */
     @Override
     public void info(WayBillReq.Model req) throws BizException {
+        log.error("开始执行WayBillServiceImpl info 方法>>>>>>>>>>>>>>");
         List<NoticeReq> noticeReqList = Lists.newArrayList();
         List<String> userNames = Lists.newArrayList();
         AbstractBuilder builder = WayBillFactory.builder(req);
