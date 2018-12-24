@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 
 import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 描述：
@@ -40,6 +39,7 @@ public class NoticeQueue {
      * @param baseModel
      * @throws InterruptedException
      */
+    @Async
     public void produce(BaseModel baseModel) throws InterruptedException{
         queue.put(baseModel);
         log.debug("queue size, {}", queue.size() );
@@ -51,7 +51,7 @@ public class NoticeQueue {
      * @throws InterruptedException
      */
     public BaseModel consume() throws InterruptedException{
-        return queue.poll(100, TimeUnit.SECONDS);
+        return queue.take();
     }
 
     public int size(){

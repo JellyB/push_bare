@@ -23,13 +23,11 @@ public class BaseModelServiceImpl implements BaseModelService {
 
     @Override
     public void info(BaseModel baseModel) {
-        log.error("开始执行BaseModelServiceImpl info 方法 >>>>>>>>>>>");
         if(baseModel instanceof WayBillReq.Model){
-            log.error("是的");
             WayBillReq.Model req = (WayBillReq.Model) baseModel;
             wayBillService.info(req);
         }else{
-            log.error("不能处理的model类型:{}", JSONObject.toJSONString(baseModel));
+            log.info("un deal model info:{}", JSONObject.toJSONString(baseModel));
         }
     }
 }
