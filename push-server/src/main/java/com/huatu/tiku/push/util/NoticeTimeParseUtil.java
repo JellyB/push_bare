@@ -24,7 +24,7 @@ public class NoticeTimeParseUtil {
     public static final SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
     private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.CHINESE);
     private static final SimpleDateFormat noSecondDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINESE);
-    public static final SimpleDateFormat dayTimeDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINESE);
+    public static final SimpleDateFormat dayTimeDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINESE);
 
     private static final long HOUR_1 = 60 * 60 * 1000L;
     private static final long MINUTE_30 = 30 * 60 * 1000L;
