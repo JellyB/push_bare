@@ -167,7 +167,7 @@ public class NoticeContentUtil {
         try{
             String name = trigger.getJobKey().getName();
             String group = trigger.getJobKey().getGroup();
-            Date date = trigger.getEndTime() == null ? new Date(): trigger.getNextFireTime();
+            Date date = trigger.getPreviousFireTime();
             String content = String.format(JOB_COMPLETE, name, group, NoticeTimeParseUtil.localDateFormat.format(date));
             if(name.equals(BossJob.BossJob)){
                 return null;
