@@ -11,6 +11,7 @@ import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.request.NoticeReq;
 import com.huatu.tiku.push.util.NoticeTimeParseUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
@@ -133,14 +134,14 @@ public class FeedBackCastFactory extends AbstractFactory{
                 .displayType(DisplayTypeEnum.MESSAGE.getType())
                 .users(noticeUserRelations)
                 .build();
-        if(StringUtils.isNoneBlank(noticeReq.getText()) && (null != correctFeedbackInfo.getGold()) && (correctFeedbackInfo.getGold().intValue() > 0)){
-            noticeReq.setText(String.format(NoticeTypeEnum.CORRECT_FEEDBACK.getText(), noticeReq.getText()));
-        }else if(StringUtils.isBlank(noticeReq.getText())){
-            if((null != correctFeedbackInfo.getGold()) && correctFeedbackInfo.getGold().intValue() > 0){
+        if(CollectionUtils.isEmpty(text)){
+            if(null != correctFeedbackInfo.getGold() && correctFeedbackInfo.getGold() > 0){
                 noticeReq.setText(NOTICE_EMPTY_WITH_GOLD);
             }else{
                 noticeReq.setText(NOTICE_EMPTY_WITHOUT_GOLD);
             }
+        }else{
+            noticeReq.setText(String.format(NoticeTypeEnum.CORRECT_FEEDBACK.getText(), noticeReq.getText()));
         }
         noticeReqList.add(noticeReq);
     }

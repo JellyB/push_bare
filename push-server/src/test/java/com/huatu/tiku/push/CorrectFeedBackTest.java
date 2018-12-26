@@ -56,5 +56,51 @@ public class CorrectFeedBackTest extends PushBaseTest{
         correctFeedbackService.sendCorrectNotice(correctFeedbackInfoList);
     }
 
+    @Test
+    public void replyAndGoldEmptyTest(){
+        List<CorrectFeedbackInfo> correctFeedbackInfoList = Lists.newArrayList();
+        correctFeedbackInfoList.add(CorrectFeedbackInfo.builder()
+                .bizId(102L)
+                .userId(233982024L)
+                .dealDate(new Date())
+                .questionId(1000124L)
+                .source("")
+                .reply("")
+                .gold(0)
+                .build());
+        correctFeedbackService.sendCorrectNotice(correctFeedbackInfoList);
+    }
+
+    @Test
+    public void replyEmptyGoldNotEmptyTest(){
+        List<CorrectFeedbackInfo> correctFeedbackInfoList = Lists.newArrayList();
+        correctFeedbackInfoList.add(CorrectFeedbackInfo.builder()
+                .bizId(102L)
+                .userId(233982024L)
+                .dealDate(new Date())
+                .questionId(1000124L)
+                .source("")
+                .reply("")
+                .gold(10)
+                .build());
+        correctFeedbackService.sendCorrectNotice(correctFeedbackInfoList);
+    }
+
+
+    @Test
+    public void replyNotEmptyGoldNotEmptyTest(){
+        List<CorrectFeedbackInfo> correctFeedbackInfoList = Lists.newArrayList();
+        correctFeedbackInfoList.add(CorrectFeedbackInfo.builder()
+                .bizId(102L)
+                .userId(233982024L)
+                .dealDate(new Date())
+                .questionId(1000124L)
+                .source("2017年新疆公务员《行测》真题（网友回忆）第73题")
+                .reply("您的纠错已收到，谢谢您的反馈~")
+                .gold(10)
+                .build());
+        correctFeedbackService.sendCorrectNotice(correctFeedbackInfoList);
+    }
+
 
 }
