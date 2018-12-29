@@ -1,6 +1,7 @@
 package com.huatu.tiku.push.spring.aop;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Maps;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.annotation.SplitParam;
@@ -77,6 +78,7 @@ public class SplitParamAspect {
     @AfterThrowing(value = "pointCut()", throwing = "throwable")
     public void afterException(Throwable throwable){
         if(null != throwable && null != throwable.getCause()){
+            log.error(" run aspect caught an error:{}", JSONObject.toJSONString(throwable.getCause()));
             log.error(" run aspect caught an error:{}", throwable.getCause().getMessage());
         }
         throw new BizException(NoticePushErrors.TABLE_SPLIT_PARAMS_AOP_ERROR);

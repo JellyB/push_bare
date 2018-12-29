@@ -1,5 +1,6 @@
 package com.huatu.tiku.push.web.controller.api;
 
+import com.huatu.common.SuccessMessage;
 import com.huatu.tiku.common.bean.user.UserSession;
 import com.huatu.tiku.push.service.api.NoticeService;
 import com.huatu.tiku.springboot.users.support.Token;
@@ -37,5 +38,13 @@ public class NoticePcController {
         long userId = userSession.getId();
         return noticeService.deleteNotice(userId, noticeId);
 
+    }
+
+    @PatchMapping(value = "refresh")
+    public Object refresh(@RequestParam(value = "secret") String secret,
+                          @RequestParam(value = "type") String type,
+                          @RequestParam(value = "detailType") String detailType){
+        noticeService.refresh(secret, type, detailType);
+        return SuccessMessage.create("数据刷新中...");
     }
 }

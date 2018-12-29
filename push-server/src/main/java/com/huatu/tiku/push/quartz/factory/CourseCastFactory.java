@@ -60,6 +60,8 @@ public class CourseCastFactory extends AbstractFactory{
                 .courseId(String.valueOf(courseInfo.getClassId()))
                 .teacher(courseInfo.getTeacher())
                 .picture(courseInfo.getClassImg())
+                .startTime(String.valueOf(courseInfo.getStartTime().getTime()))
+                .classTitle(courseInfo.getClassTitle())
                 .build();
 
         return builder;

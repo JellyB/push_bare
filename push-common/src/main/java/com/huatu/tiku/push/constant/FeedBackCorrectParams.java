@@ -14,6 +14,11 @@ public class FeedBackCorrectParams extends FeedBackParams {
 
     public static final String DETAIL_TYPE = "correct";
 
+    private static final String QUESTION_ID = "questionId";
+
+    public static final String SOURCE = "source";
+
+    public static final String REPLY = "reply";
     /**
      * notice type
      *
@@ -43,17 +48,17 @@ public class FeedBackCorrectParams extends FeedBackParams {
         }
 
         public FeedBackCorrectParams.Builder questionId(long questionId){
-            this.params.put("questionId", questionId);
+            this.params.put(QUESTION_ID, questionId);
             return this;
         }
 
         public FeedBackCorrectParams.Builder source(String source){
-            this.params.put("source", source);
+            this.params.put(SOURCE, source);
             return this;
         }
 
         public FeedBackCorrectParams.Builder reply(String reply){
-            this.params.put("reply", reply);
+            this.params.put(REPLY, reply);
             return this;
         }
 

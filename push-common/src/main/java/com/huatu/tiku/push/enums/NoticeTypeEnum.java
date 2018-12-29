@@ -33,4 +33,13 @@ public enum NoticeTypeEnum{
 
     private String detailType;
 
+    public static NoticeTypeEnum create(String type, String detailType){
+        for(NoticeTypeEnum noticeTypeEnum : values()){
+            if(type.equals(noticeTypeEnum.getType().getType()) && detailType.equals(noticeTypeEnum.getDetailType())){
+                return noticeTypeEnum;
+            }
+        }
+        return null;
+    }
+
 }

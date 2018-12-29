@@ -28,6 +28,7 @@ public class FeedbackCorrectListener {
     @RabbitHandler
     public void onMessage(String message){
         CorrectFeedbackInfo correctFeedbackInfo = JSONObject.parseObject(message, CorrectFeedbackInfo.class);
+        log.error("suggest message:{}", JSONObject.toJSONString(correctFeedbackInfo));
         correctFeedbackService.sendCorrectNotice(correctFeedbackInfo);
     }
 

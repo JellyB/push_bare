@@ -42,7 +42,7 @@ public class UtilTest extends PushBaseTest{
         target = Long.valueOf(source.intValue());
         System.err.println(target);
         try{
-            Date startTime = dateFormat.parse("2018-12-18 14:56:00");
+            Date startTime = dateFormat.parse("2018-12-29 17:20:00");
             Date endTime = dateFormat.parse("2028-11-26 22:00:00");
             System.err.println("startTime:" + startTime.getTime() );
             System.err.println("endTime:" + endTime.getTime() );

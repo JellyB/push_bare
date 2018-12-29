@@ -124,7 +124,7 @@ public class NoticePandoraProxy implements NoticeService{
      * @throws BizException
      */
     @Override
-    public Object noticeList4Pc(long userId, String type, int page, int size) throws BizException {
+    public PageInfo noticeList4Pc(long userId, String type, int page, int size) throws BizException {
         return null;
     }
 
@@ -138,6 +138,20 @@ public class NoticePandoraProxy implements NoticeService{
      */
     @Override
     public Object deleteNotice(long userId, long noticeId) throws BizException {
+        return null;
+    }
+
+    /**
+     * 数据刷新接口
+     *
+     * @param secret
+     * @param type
+     * @param detailType
+     * @return
+     * @throws BizException
+     */
+    @Override
+    public Object refresh(String secret, String type, String detailType) throws BizException {
         return null;
     }
 }

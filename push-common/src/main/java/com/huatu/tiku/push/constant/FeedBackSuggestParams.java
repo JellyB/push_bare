@@ -14,6 +14,12 @@ public class FeedBackSuggestParams extends FeedBackParams {
 
     public static final String DETAIL_TYPE = "suggest";
 
+    public static final String TITLE = "title";
+
+    public static final String REPLY = "reply";
+
+    public static final String CREATE_TIME = "createTime";
+
     /**
      * notice type
      *
@@ -43,12 +49,17 @@ public class FeedBackSuggestParams extends FeedBackParams {
         }
 
         public FeedBackSuggestParams.Builder title(String title){
-            this.params.put("title", title);
+            this.params.put(TITLE, title);
             return this;
         }
 
         public FeedBackSuggestParams.Builder reply(String reply){
-            this.params.put("reply", reply);
+            this.params.put(REPLY, reply);
+            return this;
+        }
+
+        public FeedBackSuggestParams.Builder createTime(String createTime){
+            this.params.put(CREATE_TIME, createTime);
             return this;
         }
 

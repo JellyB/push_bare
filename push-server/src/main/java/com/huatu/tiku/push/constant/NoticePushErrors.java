@@ -44,6 +44,10 @@ public class NoticePushErrors {
      */
     public static final ErrorResult NOTICE_USER_RELATIONS_LIST_EMPTY = ErrorResult.create(1000004, "用户列表为空！");
 
+    /**
+     * 消息枚举类型创建失败
+     */
+    public static final ErrorResult NOTICE_TYPE_CREATE_ERROR = ErrorResult.create(1000005, "消息类型创建失败！");
 
 
     /**

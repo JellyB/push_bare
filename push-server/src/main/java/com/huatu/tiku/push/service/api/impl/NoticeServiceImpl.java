@@ -17,16 +17,23 @@ import com.huatu.tiku.push.entity.NoticeEntity;
 import com.huatu.tiku.push.entity.NoticeUserRelation;
 import com.huatu.tiku.push.enums.NoticeReadEnum;
 import com.huatu.tiku.push.enums.NoticeStatusEnum;
+import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.request.NoticeRelationReq;
 import com.huatu.tiku.push.request.NoticeReq;
 import com.huatu.tiku.push.response.NoticeResp;
 import com.huatu.tiku.push.service.api.NoticeService;
+import com.huatu.tiku.push.service.api.strategy.AbstractNoticeResp;
+import com.huatu.tiku.push.service.api.strategy.NoticeRespAppStrategy;
+import com.huatu.tiku.push.service.api.strategy.NoticeRespHandler;
+import com.huatu.tiku.push.service.api.strategy.NoticeRespPcStrategy;
 import com.huatu.tiku.push.util.NoticeTimeParseUtil;
+import com.mongodb.client.model.ValidationAction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -54,6 +61,16 @@ public class NoticeServiceImpl implements NoticeService {
     @Autowired
     private NoticeUserMapper noticeUserMapper;
 
+    @Autowired
+    private NoticeRespHandler noticeRespHandler;
+
+    @Autowired
+    @Qualifier(value = "noticeRespAppStrategy")
+    private NoticeRespAppStrategy noticeRespAppStrategy;
+
+    @Autowired
+    @Qualifier(value = "noticeRespPcStrategy")
+    private NoticeRespPcStrategy noticeRespPcStrategy;
     /**
      * 我的消息列表封装
      * @param userId
@@ -86,51 +103,10 @@ public class NoticeServiceImpl implements NoticeService {
         noticeUserRelations.forEach(noticeUserRelation -> {
             noticeIds.add(noticeUserRelation.getNoticeId());
         });
+        noticeRespHandler.setAbstractNoticeResp(noticeRespAppStrategy);
         Map<Long, NoticeEntity> maps = obtainNoticeMaps(noticeIds);
-        //List<NoticeResp> list = getNoticeResps(noticeUserRelations, maps);
-        reConstructPagInfo(pageInfo, maps);
-        return pageInfo;
+        return noticeRespHandler.build(pageInfo, maps);
     }
-
-    private void reConstructPagInfo(PageInfo pageInfo, Map<Long, NoticeEntity> maps) {
-        List<NoticeResp> list = Lists.newArrayList();
-        pageInfo.getList().forEach(relations -> {
-            NoticeUserRelation noticeUserRelation = (NoticeUserRelation) relations;
-            NoticeEntity noticeEntity = maps.get(noticeUserRelation.getNoticeId());
-
-            if(null == noticeEntity){
-                log.error("notice entity is null, noticeID:{}", noticeUserRelation.getNoticeId());
-                return;
-            }
-            BaseMsg baseMsg = BaseMsg
-                    .builder()
-                    .title(noticeEntity.getTitle())
-                    .text(noticeEntity.getText())
-                    .build();
-
-            if(StringUtils.isNoneBlank(noticeEntity.getCustom())){
-                JSONObject jsonObject = JSONObject.parseObject(noticeEntity.getCustom());
-                Map custom = jsonObject;
-                baseMsg.setCustom(custom);
-            }
-            String noticeTime = NoticeTimeParseUtil.parseTime(noticeUserRelation.getCreateTime().getTime());
-            NoticeResp noticeResp = NoticeResp
-                    .builder()
-                    .noticeId(noticeUserRelation.getId())
-                    .noticeTime(noticeTime)
-                    .display_type(1)
-                    .isRead(noticeUserRelation.getIsRead())
-                    .type(noticeEntity.getType())
-                    .detailType(noticeEntity.getDetailType())
-                    .userId(noticeUserRelation.getUserId())
-                    .payload(baseMsg)
-                    .build();
-
-            list.add(noticeResp);
-        });
-        pageInfo.setList(list);
-    }
-
 
 
     /**
@@ -339,7 +315,7 @@ public class NoticeServiceImpl implements NoticeService {
      */
     @Override
     @SplitParam
-    public Object noticeList4Pc(long userId, String type, int page, int size) throws BizException {
+    public PageInfo noticeList4Pc(long userId, String type, int page, int size) throws BizException {
         Example example = new Example(NoticeUserRelation.class);
         example.and()
                 .andEqualTo("userId", userId)
@@ -354,8 +330,8 @@ public class NoticeServiceImpl implements NoticeService {
         List<NoticeUserRelation> noticeUserRelations = pageInfo.getList();
         noticeUserRelations.forEach(noticeUserRelation -> noticeIds.add(noticeUserRelation.getNoticeId()));
         Map<Long, NoticeEntity> maps = obtainNoticeMaps(noticeIds);
-        reConstructPagInfo(pageInfo, maps);
-        return pageInfo;
+        noticeRespHandler.setAbstractNoticeResp(noticeRespPcStrategy);
+        return noticeRespHandler.build(pageInfo, maps);
     }
 
 
@@ -423,5 +399,32 @@ public class NoticeServiceImpl implements NoticeService {
                 .status(NoticeStatusEnum.DELETE_LOGIC.getValue())
                 .build();
         return noticeUserMapper.updateByExampleSelective(noticeUserRelation, example);
+    }
+
+
+    /**
+     * 数据刷新接口
+     *
+     * @param secret
+     * @param type
+     * @param detailType
+     * @return
+     * @throws BizException
+     */
+    @Override
+    public Object refresh(String secret, String type, String detailType) throws BizException {
+        NoticeTypeEnum noticeTypeEnum = NoticeTypeEnum.create(type, detailType);
+        if(null == noticeTypeEnum){
+            throw new BizException(NoticePushErrors.NOTICE_TYPE_CREATE_ERROR);
+        }
+        switch (noticeTypeEnum){
+            case COURSE_REMIND:
+            case COURSE_READY:
+                break;
+                default:
+                    break;
+        }
+
+        return null;
     }
 }

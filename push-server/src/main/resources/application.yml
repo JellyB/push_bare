@@ -53,6 +53,9 @@ spring:
       hikari:
         connection-init-sql: SET NAMES utf8mb4
 
+        maximum-pool-size:
+
+
 logging:
   config: "classpath:config/log4j2-${spring.profiles.active}.xml"
 

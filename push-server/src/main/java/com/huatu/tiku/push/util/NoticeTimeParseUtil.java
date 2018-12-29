@@ -22,7 +22,7 @@ public class NoticeTimeParseUtil {
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd HH:mm");
     public static final SimpleDateFormat wholeDateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
     public static final SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
-    private static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.CHINESE);
+    public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.CHINESE);
     private static final SimpleDateFormat noSecondDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINESE);
     public static final SimpleDateFormat dayTimeDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINESE);
 

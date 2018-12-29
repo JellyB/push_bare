@@ -49,6 +49,8 @@ public class FeedBackCastFactory extends AbstractFactory{
                 .builder(FeedBackCorrectParams.DETAIL_TYPE)
                 .questionId(correctFeedbackInfo.getQuestionId())
                 .feedBackId(correctFeedbackInfo.getBizId())
+                .source(StringUtils.trimToEmpty(correctFeedbackInfo.getSource()))
+                .reply(StringUtils.trimToEmpty(correctFeedbackInfo.getReply()))
                 .build();
 
         return builder;

@@ -1,6 +1,8 @@
 package com.huatu.tiku.push.constant;
 
 
+import com.sun.corba.se.impl.oa.poa.POAPolicyMediatorImpl_R_UDS;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +20,13 @@ public class CourseParams extends Params {
 
     public static final String READY = "ready";
 
+    private static final String PICTURE = "picture";
+
+    private static final String TEACHER = "teacher";
+
+    public static final String START_TIME = "startTime";
+
+    public static final String CLASS_TITLE = "classTitle";
     /**
      * notice type
      *
@@ -45,12 +54,20 @@ public class CourseParams extends Params {
         }
 
         public Builder picture(String picture){
-            this.params.put("picture", picture);
+            this.params.put(PICTURE, picture);
             return this;
         }
 
         public Builder teacher(String teacher){
-            this.params.put("teacher", teacher);
+            this.params.put(TEACHER, teacher);
+            return this;
+        }
+        public Builder startTime(String startTime){
+            this.params.put(START_TIME, startTime);
+            return this;
+        }
+        public Builder classTitle(String classTitle){
+            this.params.put(CLASS_TITLE, classTitle);
             return this;
         }
 
