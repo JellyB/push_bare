@@ -254,7 +254,23 @@
             <artifactId>httpclient</artifactId>
             <version>4.3.5</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/com.alibaba.csp/sentinel-core -->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-core</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba.csp/sentinel-annotation-aspectj -->
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-annotation-aspectj</artifactId>
+            <version>1.4.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba.csp</groupId>
+            <artifactId>sentinel-transport-simple-http</artifactId>
+            <version>1.4.0</version>
+        </dependency>
     </dependencies>
 
 

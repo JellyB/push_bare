@@ -1,10 +1,15 @@
 package com.huatu.tiku.push.manager;
 
+import com.alibaba.csp.sentinel.Entry;
+import com.alibaba.csp.sentinel.SphU;
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.annotation.SplitParam;
 import com.huatu.tiku.push.constant.NoticePushErrors;
+import com.huatu.tiku.push.constant.RabbitMqKey;
 import com.huatu.tiku.push.dao.NoticeEntityMapper;
 import com.huatu.tiku.push.dao.NoticeUserMapper;
 import com.huatu.tiku.push.entity.NoticeEntity;
@@ -93,8 +98,19 @@ public class NoticeLandingManager {
      * @throws BizException
      */
     public void insertNoticeRelation(NoticeUserRelation noticeUserRelation) throws BizException {
-        noticeUserRelation.setStatus(NoticeStatusEnum.NORMAL.getValue());
-        ((NoticeLandingManager)AopContext.currentProxy()).insertRelationUnderAnnotation(noticeUserRelation.getUserId(), noticeUserRelation);
+        Entry entry = null;
+        try{
+            entry = SphU.entry(RabbitMqKey.NOTICE_USER_LANDING_HIKARICP_TEST);
+            noticeUserRelation.setStatus(NoticeStatusEnum.NORMAL.getValue());
+            ((NoticeLandingManager)AopContext.currentProxy()).insertRelationUnderAnnotation(noticeUserRelation.getUserId(), noticeUserRelation);
+        }catch (BlockException e){
+            log.info("阻塞中.......不处理！");
+            log.error("SphU.entry, error", e);
+        }finally {
+            if(null != entry){
+                entry.exit();
+            }
+        }
     }
 
     /**

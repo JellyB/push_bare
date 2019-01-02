@@ -19,6 +19,8 @@ public class RabbitMqKey {
 
     public static final String NOTICE_USER_STORING = "notice_push_storing";
 
+    public static final String NOTICE_USER_LANDING_HIKARICP_TEST = "notice_push_landing_HikariCp_test";
+
     public static final String NOTICE_FEEDBACK_CORRECT = "notice_push_feedback_correct";
 
     public static final String NOTICE_FEEDBACK_SUGGEST = "notice_push_feedback_suggest";

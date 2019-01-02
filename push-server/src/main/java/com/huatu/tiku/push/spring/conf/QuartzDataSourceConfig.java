@@ -16,18 +16,7 @@ import org.springframework.context.annotation.Primary;
  **/
 
 @Configuration
-public class DataSourceConfig {
-
-    /**
-     * push server 数据源配置 master
-     * @return
-     */
-    @Bean(value = "hikariDataSource")
-    @Primary
-    @ConfigurationProperties(prefix = "spring.datasource.master")
-    public HikariDataSource hikariDataSource(){
-        return (HikariDataSource)DataSourceBuilder.create().type(HikariDataSource.class).build();
-    }
+public class QuartzDataSourceConfig {
 
     /**
      * quartz 数据源配置--select jobs
@@ -43,7 +32,7 @@ public class DataSourceConfig {
 
     @Bean(value = "quartHikariDataSource")
     public HikariDataSource quartHikariDataSource(){
-        return (HikariDataSource)DataSourceBuilder
+        HikariDataSource hikariDataSource =  (HikariDataSource)DataSourceBuilder
                 .create()
                 .driverClassName("com.mysql.jdbc.Driver")
                 .url(url)
@@ -51,5 +40,6 @@ public class DataSourceConfig {
                 .password(password)
                 .type(HikariDataSource.class).build();
 
+        return hikariDataSource;
     }
 }
