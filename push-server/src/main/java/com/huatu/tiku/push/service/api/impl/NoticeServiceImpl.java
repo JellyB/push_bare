@@ -10,9 +10,12 @@ import com.google.common.collect.Sets;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.annotation.SplitParam;
 import com.huatu.tiku.push.constant.BaseMsg;
+import com.huatu.tiku.push.constant.CourseParams;
 import com.huatu.tiku.push.constant.NoticePushErrors;
+import com.huatu.tiku.push.dao.CourseInfoMapper;
 import com.huatu.tiku.push.dao.NoticeEntityMapper;
 import com.huatu.tiku.push.dao.NoticeUserMapper;
+import com.huatu.tiku.push.entity.CourseInfo;
 import com.huatu.tiku.push.entity.NoticeEntity;
 import com.huatu.tiku.push.entity.NoticeUserRelation;
 import com.huatu.tiku.push.enums.NoticeReadEnum;
@@ -63,6 +66,9 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Autowired
     private NoticeRespHandler noticeRespHandler;
+
+    @Autowired
+    private CourseInfoMapper courseInfoMapper;
 
     @Autowired
     @Qualifier(value = "noticeRespAppStrategy")
@@ -417,9 +423,15 @@ public class NoticeServiceImpl implements NoticeService {
         if(null == noticeTypeEnum){
             throw new BizException(NoticePushErrors.NOTICE_TYPE_CREATE_ERROR);
         }
+        List<NoticeEntity> list = searchNoticeList(type, detailType);
         switch (noticeTypeEnum){
             case COURSE_REMIND:
             case COURSE_READY:
+                dealCourseInfo(list);
+                break;
+            case SUGGEST_FEEDBACK:
+            case CORRECT_FEEDBACK:
+                dealFeedbackInfo(list);
                 break;
                 default:
                     break;
@@ -427,4 +439,77 @@ public class NoticeServiceImpl implements NoticeService {
 
         return null;
     }
+
+
+    /**
+     * 根据type处理消息
+     * @param type
+     * @param detailType
+     * @return
+     */
+    private final List<NoticeEntity> searchNoticeList(String type, String detailType){
+        Example example = new Example(NoticeEntity.class);
+        example.and()
+                .andEqualTo("type", type)
+                .andEqualTo("detailType", detailType);
+
+        example.orderBy("id").asc();
+
+        List<NoticeEntity> noticeEntities = noticeEntityMapper.selectByExample(example);
+        log.info("refresh data type:{}, detailType:{}, size:{}", type, detailType, noticeEntities.size());
+        return noticeEntities;
+    }
+
+    private final void dealFeedbackInfo(List<NoticeEntity> list){
+        for(NoticeEntity noticeEntity : list){
+
+        }
+    }
+
+
+    private final void dealCourseInfo(List<NoticeEntity> list){
+        for(NoticeEntity noticeEntity : list){
+            String custom = noticeEntity.getCustom();
+            if(StringUtils.isEmpty(custom)){
+                return;
+            }
+            try{
+                JSONObject jsonObject = JSONObject.parseObject(custom);
+                Object bizId = jsonObject.get(CourseParams.BIZ_ID);
+                String classId = String.valueOf(bizId);
+                CourseInfo courseInfo = searchCourseInfo(Long.valueOf(classId));
+                if(courseInfo == null){
+                    jsonObject.put(CourseParams.CLASS_TITLE, "测试数据，没有课程标题");
+                    jsonObject.put(CourseParams.START_TIME, System.currentTimeMillis());
+                }else{
+                    jsonObject.put(CourseParams.CLASS_TITLE, courseInfo.getClassTitle());
+                    jsonObject.put(CourseParams.START_TIME, courseInfo.getStartTime());
+                }
+                custom = jsonObject.toJSONString();
+                updateNoticeEntity(noticeEntity.getId(), custom);
+            }catch (Exception e){
+                log.error("parseObject error", e);
+            }
+        }
+    }
+
+    private CourseInfo searchCourseInfo(long class_id){
+        Example example = new Example(CourseInfo.class);
+        example.and()
+                .andEqualTo("classId", class_id);
+        List<CourseInfo> courseInfos = courseInfoMapper.selectByExample(example);
+        if(courseInfos.size() == 0){
+            return null;
+        }else{
+            return courseInfos.get(0);
+        }
+    }
+
+    private void updateNoticeEntity(long id, String custom){
+        NoticeEntity noticeEntity = new NoticeEntity();
+        noticeEntity.setId(id);
+        noticeEntity.setCustom(custom);
+        noticeEntityMapper.updateByPrimaryKeySelective(noticeEntity);
+    }
+
 }

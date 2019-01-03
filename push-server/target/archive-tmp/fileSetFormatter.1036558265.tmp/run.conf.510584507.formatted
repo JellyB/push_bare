@@ -1,4 +1,0 @@
-export ENV=dev
-export APP_NAME=push-server
-export MODE=service
-export JAVA_OPTS="-server -Xmx512m -Xms512m -Xss256k -Denv=dev"

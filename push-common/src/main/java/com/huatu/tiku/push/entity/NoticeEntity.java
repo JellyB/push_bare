@@ -2,6 +2,7 @@ package com.huatu.tiku.push.entity;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.GeneratedValue;
@@ -20,6 +21,7 @@ import java.sql.Timestamp;
 @Data
 @ToString
 @Table(name = "t_notice_entity")
+@NoArgsConstructor
 public class NoticeEntity {
 
     @Id

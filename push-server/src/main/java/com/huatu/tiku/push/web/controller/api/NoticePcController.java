@@ -40,7 +40,7 @@ public class NoticePcController {
 
     }
 
-    @PatchMapping(value = "refresh")
+    @GetMapping(value = "refresh")
     public Object refresh(@RequestParam(value = "secret") String secret,
                           @RequestParam(value = "type") String type,
                           @RequestParam(value = "detailType") String detailType){
