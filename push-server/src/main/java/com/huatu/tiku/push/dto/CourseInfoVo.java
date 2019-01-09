@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class CourseInfoVo {
 
+
     /**
      * 直播id
      */
