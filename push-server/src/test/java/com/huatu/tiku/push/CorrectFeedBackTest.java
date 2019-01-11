@@ -2,6 +2,7 @@ package com.huatu.tiku.push;
 
 import com.google.common.collect.Lists;
 import com.huatu.tiku.push.constant.CorrectFeedbackInfo;
+import com.huatu.tiku.push.enums.CorrectDealEnum;
 import com.huatu.tiku.push.service.api.CorrectFeedbackService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,24 +34,30 @@ public class CorrectFeedBackTest extends PushBaseTest{
                 .dealDate(new Date())
                 .questionId(1000124L)
                 .userId(233982024L)
-                .source(wholeDateFormat.format(new Date()) + "送金币1 ")
+                .source("2017年新疆公务员《行测》真题（网友回忆）第73题")
                 .gold(10)
-                .reply("纠错送金币测试！").build());
+                .reply("纠错送金币测试！")
+                .status(CorrectDealEnum.IGNORE)
+                .build());
 
         correctFeedbackInfoList.add(CorrectFeedbackInfo.builder()
                 .bizId(101L)
                 .dealDate(new Date())
                 .questionId(1000124L)
                 .userId(233982179L)
-                .source(wholeDateFormat.format(new Date()) + "送金币2 ")
-                .reply("纠错送金币测试！").build());
+                .source("2017年新疆公务员《行测》真题（网友回忆）第73题")
+                .reply("纠错送金币测试！")
+                .status(CorrectDealEnum.IGNORE)
+                .build());
 
         correctFeedbackInfoList.add(CorrectFeedbackInfo.builder()
                 .bizId(102L)
                 .dealDate(new Date())
                 .questionId(1000124L)
-                .source(wholeDateFormat.format(new Date()) + "送金币3 ")
-                .reply("纠错送金币测试！").build());
+                .source("")
+                .reply("纠错送金币测试！")
+                .status(CorrectDealEnum.IGNORE)
+                .build());
 
 
         correctFeedbackService.sendCorrectNotice(correctFeedbackInfoList);

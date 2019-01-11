@@ -6,6 +6,7 @@ import com.huatu.tiku.push.constant.CorrectFeedbackInfo;
 import com.huatu.tiku.push.constant.FeedBackCorrectParams;
 import com.huatu.tiku.push.constant.FeedBackSuggestParams;
 import com.huatu.tiku.push.constant.SuggestFeedbackInfo;
+import com.huatu.tiku.push.enums.CorrectDealEnum;
 import com.huatu.tiku.push.enums.DisplayTypeEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.request.NoticeReq;
@@ -33,6 +34,11 @@ public class FeedBackCastFactory extends AbstractFactory{
      * 回复内容为空并且有图币
      */
     private static final String NOTICE_EMPTY_WITH_GOLD = "你的题目纠错反馈已收到，我们会尽快修改的。图币奖励在【我的图币】-【账户明细】查看哦~";
+
+    /**
+     * 纠错忽略
+     */
+    private static final String NOTICE_IGNORE = "您于%s提交的试题纠错已被查收，感谢您的反馈，经过题库组小伙伴认真核实后，认为该题没有错误，请您仔细审题，当心题目中的陷阱哦~";
 
     /**
      * 回复内容为空并且没有图币
@@ -114,7 +120,49 @@ public class FeedBackCastFactory extends AbstractFactory{
      */
     public static void correctNoticeForPush(FeedBackCorrectParams.Builder builder, List<NoticeReq.NoticeUserRelation> noticeUserRelations,
                                             CorrectFeedbackInfo correctFeedbackInfo, List<NoticeReq> noticeReqList ){
+        CorrectDealEnum status = correctFeedbackInfo.getStatus();
         List<String> text = Lists.newArrayList();
+        switch (status){
+            case IGNORE:
+                dealIgnoreResponseText(correctFeedbackInfo, text);
+                break;
+            case NORMAL:
+                dealNormalResponseText(correctFeedbackInfo, text);
+                break;
+                default:
+                    break;
+        }
+
+        NoticeReq noticeReq = NoticeReq.builder()
+                .title(NoticeTypeEnum.CORRECT_FEEDBACK.getTitle())
+                .text(Joiner.on("#").join(text))
+                .custom(builder.getParams())
+                .type(FeedBackCorrectParams.TYPE)
+                .detailType(FeedBackCorrectParams.DETAIL_TYPE)
+                .displayType(DisplayTypeEnum.MESSAGE.getType())
+                .users(noticeUserRelations)
+                .build();
+
+        if(status == CorrectDealEnum.NORMAL){
+            if(CollectionUtils.isEmpty(text)){
+                if(null != correctFeedbackInfo.getGold() && correctFeedbackInfo.getGold() > 0){
+                    noticeReq.setText(NOTICE_EMPTY_WITH_GOLD);
+                }else{
+                    noticeReq.setText(NOTICE_EMPTY_WITHOUT_GOLD);
+                }
+            }else{
+                noticeReq.setText(String.format(NoticeTypeEnum.CORRECT_FEEDBACK.getText(), noticeReq.getText()));
+            }
+        }
+        noticeReqList.add(noticeReq);
+    }
+
+    /**
+     * 处理正常回复
+     * @param correctFeedbackInfo
+     * @param text
+     */
+    private static void dealNormalResponseText(CorrectFeedbackInfo correctFeedbackInfo, List<String> text) {
         if(StringUtils.isEmpty(correctFeedbackInfo.getSource()) || EMPTY_STRING.equals(correctFeedbackInfo.getSource())){
             correctFeedbackInfo.setSource("");
         }else{
@@ -127,25 +175,23 @@ public class FeedBackCastFactory extends AbstractFactory{
             text.add(correctFeedbackInfo.getReply());
         }
 
-        NoticeReq noticeReq = NoticeReq.builder()
-                .title(NoticeTypeEnum.CORRECT_FEEDBACK.getTitle())
-                .text(Joiner.on("#").join(text))
-                .custom(builder.getParams())
-                .type(FeedBackCorrectParams.TYPE)
-                .detailType(FeedBackCorrectParams.DETAIL_TYPE)
-                .displayType(DisplayTypeEnum.MESSAGE.getType())
-                .users(noticeUserRelations)
-                .build();
-        if(CollectionUtils.isEmpty(text)){
-            if(null != correctFeedbackInfo.getGold() && correctFeedbackInfo.getGold() > 0){
-                noticeReq.setText(NOTICE_EMPTY_WITH_GOLD);
-            }else{
-                noticeReq.setText(NOTICE_EMPTY_WITHOUT_GOLD);
-            }
+
+    }
+
+    /**
+     * 处理忽略文案
+     * @param correctFeedbackInfo
+     * @param text
+     */
+    private static void dealIgnoreResponseText(CorrectFeedbackInfo correctFeedbackInfo, List<String> text) {
+        Date dealDate = correctFeedbackInfo.getDealDate() == null ? new Date() : correctFeedbackInfo.getDealDate();
+        String replyTime = NoticeTimeParseUtil.localDateFormat.format(dealDate);
+        if(StringUtils.isEmpty(correctFeedbackInfo.getSource()) || EMPTY_STRING.equals(correctFeedbackInfo.getSource())){
+            correctFeedbackInfo.setSource("");
         }else{
-            noticeReq.setText(String.format(NoticeTypeEnum.CORRECT_FEEDBACK.getText(), noticeReq.getText()));
+            text.add(correctFeedbackInfo.getSource());
         }
-        noticeReqList.add(noticeReq);
+        text.add(String.format(String.format(NOTICE_IGNORE, replyTime)));
     }
 
     /**

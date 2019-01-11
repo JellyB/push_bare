@@ -1,5 +1,6 @@
 package com.huatu.tiku.push.constant;
 
+import com.huatu.tiku.push.enums.CorrectDealEnum;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,8 +35,13 @@ public class CorrectFeedbackInfo implements Serializable {
 
     private Integer gold;
 
+    /**
+     * 0 正常处理 1 忽略
+     */
+    private CorrectDealEnum status;
+
     @Builder
-    public CorrectFeedbackInfo(long bizId, long questionId, long userId, String source, String reply, Date dealDate, Integer gold) {
+    public CorrectFeedbackInfo(long bizId, long questionId, long userId, String source, String reply, Date dealDate, Integer gold, CorrectDealEnum status) {
         this.bizId = bizId;
         this.questionId = questionId;
         this.userId = userId;
@@ -43,5 +49,6 @@ public class CorrectFeedbackInfo implements Serializable {
         this.reply = reply;
         this.dealDate = dealDate;
         this.gold = gold;
+        this.status = status;
     }
 }
