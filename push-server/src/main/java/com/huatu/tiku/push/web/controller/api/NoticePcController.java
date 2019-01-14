@@ -40,6 +40,17 @@ public class NoticePcController {
 
     }
 
+    /**
+     * 获取我的消息未读数
+     * @param userSession
+     * @return
+     */
+    @GetMapping(value = "unReadCount")
+    public Object list(@Token UserSession userSession){
+        long userId = userSession.getId();
+        return noticeService.unReadNum(userId);
+    }
+
     @GetMapping(value = "refresh")
     public Object refresh(@RequestParam(value = "secret") String secret,
                           @RequestParam(value = "type") String type,
