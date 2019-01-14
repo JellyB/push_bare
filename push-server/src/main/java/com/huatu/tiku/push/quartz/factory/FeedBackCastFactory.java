@@ -120,7 +120,7 @@ public class FeedBackCastFactory extends AbstractFactory{
      */
     public static void correctNoticeForPush(FeedBackCorrectParams.Builder builder, List<NoticeReq.NoticeUserRelation> noticeUserRelations,
                                             CorrectFeedbackInfo correctFeedbackInfo, List<NoticeReq> noticeReqList ){
-        CorrectDealEnum status = correctFeedbackInfo.getStatus();
+        CorrectDealEnum status = correctFeedbackInfo.getStatus() == null ? CorrectDealEnum.NORMAL : correctFeedbackInfo.getStatus();
         List<String> text = Lists.newArrayList();
         switch (status){
             case IGNORE:
