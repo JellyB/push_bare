@@ -4,7 +4,6 @@ package com.huatu.tiku.push.service.api;
 import com.huatu.tiku.push.constant.CourseQueueEntity;
 import com.huatu.tiku.push.constant.SimpleUserWithBizId;
 import com.huatu.tiku.push.constant.UserResponse;
-import com.huatu.tiku.push.service.api.impl.UserInfoComponentImpl;
 
 import java.util.List;
 

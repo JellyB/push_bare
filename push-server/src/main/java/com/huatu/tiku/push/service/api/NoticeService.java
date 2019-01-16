@@ -96,4 +96,13 @@ public interface NoticeService {
      * @throws BizException
      */
     Object refresh(String secret, String type, String detailType) throws BizException;
+
+
+    /**
+     * 根据uName获取未读消息数
+     * @param nName 用户昵称
+     * @return
+     * @throws BizException
+     */
+    Object unreadCountForPhp(String nName)throws BizException;
 }

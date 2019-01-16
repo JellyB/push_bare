@@ -154,4 +154,16 @@ public class NoticePandoraProxy implements NoticeService{
     public Object refresh(String secret, String type, String detailType) throws BizException {
         return null;
     }
+
+    /**
+     * 根据uName获取未读消息数
+     *
+     * @param nName 用户昵称
+     * @return
+     * @throws BizException
+     */
+    @Override
+    public Object unreadCountForPhp(String nName) throws BizException {
+        return 0;
+    }
 }

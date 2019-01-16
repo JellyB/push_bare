@@ -47,8 +47,7 @@ public class NoticePcController {
      */
     @GetMapping(value = "unReadCount")
     public Object list(@RequestHeader(value = "uName")String userName){
-        return 10;
-        //return noticeService.unReadNum(userId);
+        return noticeService.unreadCountForPhp(userName);
     }
 
     @GetMapping(value = "refresh")

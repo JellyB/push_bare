@@ -12,6 +12,7 @@ import com.huatu.tiku.push.annotation.SplitParam;
 import com.huatu.tiku.push.constant.BaseMsg;
 import com.huatu.tiku.push.constant.CourseParams;
 import com.huatu.tiku.push.constant.NoticePushErrors;
+import com.huatu.tiku.push.constant.UserResponse;
 import com.huatu.tiku.push.dao.CourseInfoMapper;
 import com.huatu.tiku.push.dao.NoticeEntityMapper;
 import com.huatu.tiku.push.dao.NoticeUserMapper;
@@ -25,12 +26,11 @@ import com.huatu.tiku.push.request.NoticeRelationReq;
 import com.huatu.tiku.push.request.NoticeReq;
 import com.huatu.tiku.push.response.NoticeResp;
 import com.huatu.tiku.push.service.api.NoticeService;
-import com.huatu.tiku.push.service.api.strategy.AbstractNoticeResp;
+import com.huatu.tiku.push.service.api.UserInfoComponent;
 import com.huatu.tiku.push.service.api.strategy.NoticeRespAppStrategy;
 import com.huatu.tiku.push.service.api.strategy.NoticeRespHandler;
 import com.huatu.tiku.push.service.api.strategy.NoticeRespPcStrategy;
 import com.huatu.tiku.push.util.NoticeTimeParseUtil;
-import com.mongodb.client.model.ValidationAction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -69,6 +69,9 @@ public class NoticeServiceImpl implements NoticeService {
 
     @Autowired
     private CourseInfoMapper courseInfoMapper;
+
+    @Autowired
+    private UserInfoComponent userInfoComponent;
 
     @Autowired
     @Qualifier(value = "noticeRespAppStrategy")
@@ -512,4 +515,30 @@ public class NoticeServiceImpl implements NoticeService {
         noticeEntityMapper.updateByPrimaryKeySelective(noticeEntity);
     }
 
+    /**
+     * 根据uName获取未读消息数
+     *
+     * @param nName 用户昵称
+     * @return
+     * @throws BizException
+     */
+    @Override
+    public Object unreadCountForPhp(String nName) throws BizException {
+        if(StringUtils.isEmpty(nName)){
+            return 0;
+        }else{
+            try{
+                List<String> list = Lists.newArrayList();
+                list.add(nName);
+                UserResponse userResponse = userInfoComponent.getUserIdResponse(list);
+                if(null == userResponse || CollectionUtils.isEmpty(userResponse.getData())){
+                    return 0;
+                }
+                long userId = userResponse.getData().get(0).getUserId();
+                return ((NoticeServiceImpl)AopContext.currentProxy()).unReadNum(userId);
+            }catch (Exception e){
+                return 0;
+            }
+        }
+    }
 }
