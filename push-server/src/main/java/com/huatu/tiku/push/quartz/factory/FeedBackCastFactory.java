@@ -11,8 +11,9 @@ import com.huatu.tiku.push.enums.DisplayTypeEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.request.NoticeReq;
 import com.huatu.tiku.push.util.NoticeTimeParseUtil;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
@@ -29,20 +30,24 @@ public class FeedBackCastFactory extends AbstractFactory{
 
 
     private static final String EMPTY_STRING = "null";
+    private static final String CORRECT_SOURCE = "#%s#";
 
     /**
      * 回复内容为空并且有图币
      */
+    @Deprecated
     private static final String NOTICE_EMPTY_WITH_GOLD = "你的题目纠错反馈已收到，我们会尽快修改的。图币奖励在【我的图币】-【账户明细】查看哦~";
 
     /**
      * 纠错忽略
      */
+    @Deprecated
     private static final String NOTICE_IGNORE = "您于%s提交的试题纠错已被查收，感谢您的反馈，经过题库组小伙伴认真核实后，认为该题没有错误，请您仔细审题，当心题目中的陷阱哦~";
 
     /**
      * 回复内容为空并且没有图币
      */
+    @Deprecated
     private static final String NOTICE_EMPTY_WITHOUT_GOLD = "您的题目纠错反馈已收到，我们会尽快处理的哦~";
 
     /**
@@ -121,13 +126,18 @@ public class FeedBackCastFactory extends AbstractFactory{
     public static void correctNoticeForPush(FeedBackCorrectParams.Builder builder, List<NoticeReq.NoticeUserRelation> noticeUserRelations,
                                             CorrectFeedbackInfo correctFeedbackInfo, List<NoticeReq> noticeReqList ){
         CorrectDealEnum status = correctFeedbackInfo.getStatus() == null ? CorrectDealEnum.NORMAL : correctFeedbackInfo.getStatus();
-        List<String> text = Lists.newArrayList();
+        Date dealDate = correctFeedbackInfo.getDealDate() == null ? new Date() : correctFeedbackInfo.getDealDate();
+        String replyTime = NoticeTimeParseUtil.localDateFormat.format(dealDate);
+        StringBuffer noticeText = new StringBuffer();
+        if(StringUtils.isNotEmpty(correctFeedbackInfo.getSource()) && !EMPTY_STRING.equals(correctFeedbackInfo.getSource())){
+            noticeText.append(String.format(CORRECT_SOURCE, correctFeedbackInfo.getSource()));
+        }
         switch (status){
             case IGNORE:
-                dealIgnoreResponseText(correctFeedbackInfo, text);
+                dealIgnoreResponseText(noticeText, replyTime);
                 break;
             case NORMAL:
-                dealNormalResponseText(correctFeedbackInfo, text);
+                dealNormalResponseText(correctFeedbackInfo, noticeText, replyTime);
                 break;
                 default:
                     break;
@@ -135,25 +145,13 @@ public class FeedBackCastFactory extends AbstractFactory{
 
         NoticeReq noticeReq = NoticeReq.builder()
                 .title(NoticeTypeEnum.CORRECT_FEEDBACK.getTitle())
-                .text(Joiner.on("#").join(text))
+                .text(noticeText.toString())
                 .custom(builder.getParams())
                 .type(FeedBackCorrectParams.TYPE)
                 .detailType(FeedBackCorrectParams.DETAIL_TYPE)
                 .displayType(DisplayTypeEnum.MESSAGE.getType())
                 .users(noticeUserRelations)
                 .build();
-
-        if(status == CorrectDealEnum.NORMAL){
-            if(CollectionUtils.isEmpty(text)){
-                if(null != correctFeedbackInfo.getGold() && correctFeedbackInfo.getGold() > 0){
-                    noticeReq.setText(NOTICE_EMPTY_WITH_GOLD);
-                }else{
-                    noticeReq.setText(NOTICE_EMPTY_WITHOUT_GOLD);
-                }
-            }else{
-                noticeReq.setText(String.format(NoticeTypeEnum.CORRECT_FEEDBACK.getText(), noticeReq.getText()));
-            }
-        }
         noticeReqList.add(noticeReq);
     }
 
@@ -162,36 +160,46 @@ public class FeedBackCastFactory extends AbstractFactory{
      * @param correctFeedbackInfo
      * @param text
      */
-    private static void dealNormalResponseText(CorrectFeedbackInfo correctFeedbackInfo, List<String> text) {
-        if(StringUtils.isEmpty(correctFeedbackInfo.getSource()) || EMPTY_STRING.equals(correctFeedbackInfo.getSource())){
-            correctFeedbackInfo.setSource("");
+    private static void dealNormalResponseText(CorrectFeedbackInfo correctFeedbackInfo, StringBuffer text, String replyTime) {
+        /**
+         * 有金币
+         */
+        if(null != correctFeedbackInfo.getGold() && correctFeedbackInfo.getGold() > 0){
+            /**
+             * 回复内容不为空
+             */
+            if(StringUtils.isNotEmpty(correctFeedbackInfo.getReply()) && !EMPTY_STRING.equals(correctFeedbackInfo.getReply())){
+                String reply = correctFeedbackInfo.getReply();
+                text.append(String.format(CorrectText.WITH_REPLY_WITH_GOLD.getText(), replyTime, reply));
+            }else{
+                text.append(String.format(CorrectText.WITHOUT_REPLY_WITH_GOLD.getText(), replyTime));
+            }
+            /**
+             * 无金币
+             */
         }else{
-            text.add(correctFeedbackInfo.getSource());
+            /**
+             * 回复内容不为空
+             */
+            if(StringUtils.isNotEmpty(correctFeedbackInfo.getReply()) && !EMPTY_STRING.equals(correctFeedbackInfo.getReply())){
+                String reply = correctFeedbackInfo.getReply();
+                text.append(String.format(CorrectText.WITH_REPLY_WITHOUT_GOLD.getText(), replyTime, reply));
+                /**
+                 * 没有回复内容
+                 */
+            }else{
+                text.append(String.format(CorrectText.WITHOUT_REPLY_WITHOUT_GOLD.getText(), replyTime));
+            }
         }
-
-        if(StringUtils.isEmpty(correctFeedbackInfo.getReply()) || EMPTY_STRING.equals(correctFeedbackInfo.getReply())){
-            correctFeedbackInfo.setReply("");
-        }else{
-            text.add(correctFeedbackInfo.getReply());
-        }
-
-
     }
 
     /**
      * 处理忽略文案
-     * @param correctFeedbackInfo
      * @param text
+     * @param replyTime
      */
-    private static void dealIgnoreResponseText(CorrectFeedbackInfo correctFeedbackInfo, List<String> text) {
-        Date dealDate = correctFeedbackInfo.getDealDate() == null ? new Date() : correctFeedbackInfo.getDealDate();
-        String replyTime = NoticeTimeParseUtil.localDateFormat.format(dealDate);
-        if(StringUtils.isEmpty(correctFeedbackInfo.getSource()) || EMPTY_STRING.equals(correctFeedbackInfo.getSource())){
-            correctFeedbackInfo.setSource("");
-        }else{
-            text.add(correctFeedbackInfo.getSource());
-        }
-        text.add(String.format(String.format(NOTICE_IGNORE, replyTime)));
+    private static void dealIgnoreResponseText(StringBuffer text, String replyTime) {
+        text.append(String.format(CorrectText.IGNORE.getText(), replyTime));
     }
 
     /**
@@ -227,4 +235,15 @@ public class FeedBackCastFactory extends AbstractFactory{
     }
 
 
+
+    @Getter
+    @AllArgsConstructor
+    public enum CorrectText{
+        IGNORE("您于%s提交的试题纠错已被查收，感谢您的反馈，经过题库组小伙伴认真核实后，认为该道题没有错误，请您仔细审题，当心题目中的陷阱哦~"),
+        WITHOUT_REPLY_WITHOUT_GOLD("您于%s提交的试题纠错已被查收，感谢您的反馈，经过题库组小伙伴认真核实后，认为该道题没有错误，请您仔细审题，当心题目中的陷阱哦~"),
+        WITH_REPLY_WITH_GOLD("您于%s提交的试题纠错已被查收，感谢您的反馈，以下为老师回复：%s。图币奖励在【我的图币】-【账户明细】查看哦~"),
+        WITHOUT_REPLY_WITH_GOLD("您于%s提交的试题纠错已被查收，感谢您的反馈，我们会尽快修改的。图币奖励在【我的图币】-【账户明细】查看哦~"),
+        WITH_REPLY_WITHOUT_GOLD("您于%s提交的试题纠错已被查收，感谢您的反馈，以下为老师回复：%s");
+        private String text;
+    }
 }
