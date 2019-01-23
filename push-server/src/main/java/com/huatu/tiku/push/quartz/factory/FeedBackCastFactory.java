@@ -18,6 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 描述：建议反馈& 纠错反馈工厂
@@ -212,11 +213,14 @@ public class FeedBackCastFactory extends AbstractFactory{
     public static void suggestNoticeForPush(FeedBackSuggestParams.Builder builder, List<NoticeReq.NoticeUserRelation> noticeUserRelations,
                                             SuggestFeedbackInfo suggestFeedbackInfo, List<NoticeReq> noticeReqList ){
         List<String> text = Lists.newArrayList();
-        if(StringUtils.isNotBlank(suggestFeedbackInfo.getReplyTitle())){
-            text.add(suggestFeedbackInfo.getReplyTitle());
+        Optional<String> titleOptional = replaceHtml(suggestFeedbackInfo.getReplyTitle());
+        Optional<String> contentOptional = replaceHtml(suggestFeedbackInfo.getReplyContent());
+        if(titleOptional.isPresent()){
+            text.add(titleOptional.get());
         }
-        if(StringUtils.isNotBlank(suggestFeedbackInfo.getReplyContent())){
-            text.add(suggestFeedbackInfo.getReplyContent());
+
+        if(contentOptional.isPresent()){
+            text.add(contentOptional.get());
         }
         String replyContent = Joiner.on("#").join(text);
         long time = suggestFeedbackInfo.getCreateTime() == 0 ? System.currentTimeMillis() : suggestFeedbackInfo.getCreateTime();
@@ -232,6 +236,20 @@ public class FeedBackCastFactory extends AbstractFactory{
                 .users(noticeUserRelations)
                 .build();
         noticeReqList.add(noticeReq);
+    }
+
+    private static Optional<String> replaceHtml(String content){
+
+        content = content.replaceAll("<p>", "")
+                .replaceAll("</p>","")
+                .replaceAll("<br>", "")
+                .replaceAll("</br>", "");
+        if(StringUtils.isBlank(content)){
+            return Optional.ofNullable(null);
+        }
+        else{
+            return Optional.ofNullable(content);
+        }
     }
 
 

@@ -33,10 +33,12 @@ public class SuggestFeedbackTest extends PushBaseTest{
         suggestFeedbackInfo.setCreateTime(System.currentTimeMillis());
         //suggestFeedbackInfo.setSuggestTitle("有个问题");
         suggestFeedbackInfo.setSuggestContent("题目不能正常加载！");
-        suggestFeedbackInfo.setReplyTitle("你好已修正！");
-        suggestFeedbackInfo.setReplyContent("感谢您的建议！！");
-        //suggestFeedbackService.sendSuggestNotice(suggestFeedbackInfo);
-        String message = JSONObject.toJSONString(suggestFeedbackInfo);
-        rabbitTemplate.convertAndSend(RabbitMqKey.NOTICE_FEEDBACK_SUGGEST, message);
+        suggestFeedbackInfo.setReplyTitle("<p></p><br></br>");
+        //suggestFeedbackInfo.setReplyContent("<p>大书法家拉设计费水电费静安寺分12342134</p><p>上地附近撒了附近12342134</p><p>上地附近撒了点附近s大神来了否点击爱上了水电费静安寺</p><p><br></p><p>水电费静安寺房间水电费拉升213412341234奥数</p>");
+        suggestFeedbackInfo.setReplyContent("<p></p><p></p><p></p><p><br></p><p></p>");
+        suggestFeedbackService.sendSuggestNotice(suggestFeedbackInfo);
+        //String message = JSONObject.toJSONString(suggestFeedbackInfo);
+        //rabbitTemplate.convertAndSend(RabbitMqKey.NOTICE_FEEDBACK_SUGGEST, message);
+
     }
 }
