@@ -330,6 +330,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .andEqualTo("userId", userId)
                 .andEqualTo("type", type)
                 .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
+        example.orderBy("createTime").desc();
 
         PageInfo pageInfo = PageHelper.startPage(page, size).doSelectPageInfo(() -> noticeUserMapper.selectByExample(example));
         if(CollectionUtils.isEmpty(pageInfo.getList())){
