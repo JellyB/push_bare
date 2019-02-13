@@ -96,4 +96,32 @@ public class NoticeController {
     public Object addUsers(@RequestBody NoticeRelationReq noticeRelationReq) throws BizException{
         return noticeService.addUsers(noticeRelationReq);
     }
+
+    /**
+     * 左滑逻辑删除消息
+     * @param noticeId
+     * @return
+     * @throws BizException
+     */
+    @DeleteMapping("{noticeId}")
+    public Object deleteByLogic(@Token UserSession userSession,
+                                @PathVariable(value = "noticeId") long noticeId) throws BizException{
+
+        long userId = userSession.getId();
+        return noticeService.deleteByLogic(userId, noticeId);
+    }
+
+
+    /**
+     * 消息全部已读
+     * @param userSession
+     * @return
+     * @throws BizException
+     */
+    @PutMapping("readAll")
+    public Object readAll(@Token UserSession userSession) throws BizException{
+
+        long userId = userSession.getId();
+        return noticeService.readAll(userId);
+    }
 }

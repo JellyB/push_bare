@@ -105,4 +105,22 @@ public interface NoticeService {
      * @throws BizException
      */
     Object unreadCountForPhp(String nName)throws BizException;
+
+    /**
+     * 左滑消息逻辑删除操作
+     * @param userId
+     * @param noticeId
+     * @return
+     * @throws BizException
+     */
+    Object deleteByLogic(long userId, long noticeId) throws BizException;
+
+
+    /**
+     * 全部已读
+     * @param userId
+     * @return
+     * @throws BizException
+     */
+    Object readAll(long userId) throws BizException;
 }

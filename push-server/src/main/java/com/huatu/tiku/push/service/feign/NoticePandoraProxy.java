@@ -166,4 +166,30 @@ public class NoticePandoraProxy implements NoticeService{
     public Object unreadCountForPhp(String nName) throws BizException {
         return 0;
     }
+
+
+    /**
+     * 左滑消息逻辑删除操作
+     *
+     * @param userId
+     * @param noticeId
+     * @return
+     * @throws BizException
+     */
+    @Override
+    public Object deleteByLogic(long userId, long noticeId) throws BizException {
+        return null;
+    }
+
+    /**
+     * 全部已读
+     *
+     * @param userId
+     * @return
+     * @throws BizException
+     */
+    @Override
+    public Object readAll(long userId) throws BizException {
+        return null;
+    }
 }

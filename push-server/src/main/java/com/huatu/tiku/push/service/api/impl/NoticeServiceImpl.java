@@ -541,4 +541,49 @@ public class NoticeServiceImpl implements NoticeService {
             }
         }
     }
+
+    /**
+     * 左滑消息逻辑删除操作
+     *
+     * @param noticeId
+     * @return
+     * @throws BizException
+     */
+    @Override
+    @SplitParam
+    public Object deleteByLogic(long userId, long noticeId) throws BizException {
+        NoticeUserRelation noticeUserRelation = NoticeUserRelation
+                .builder()
+                .id(noticeId)
+                .updateTime(new Timestamp(System.currentTimeMillis()))
+                .status(NoticeStatusEnum.DELETE_LOGIC.getValue())
+                .build();
+
+        return noticeUserMapper.updateByPrimaryKeySelective(noticeUserRelation);
+    }
+
+    /**
+     * 全部已读
+     *
+     * @param userId
+     * @return
+     * @throws BizException
+     */
+    @Override
+    @SplitParam
+    public Object readAll(long userId) throws BizException {
+        Example example = new Example(NoticeUserRelation.class);
+        example.and()
+                .andEqualTo("userId", userId)
+                .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue())
+                .andEqualTo("isRead", NoticeReadEnum.UN_READ.getValue());
+
+        NoticeUserRelation noticeUserRelation = NoticeUserRelation
+                .builder()
+                .isRead(NoticeReadEnum.READ.getValue())
+                .updateTime(new Timestamp(System.currentTimeMillis()))
+                .build();
+
+        return noticeUserMapper.updateByExampleSelective(noticeUserRelation, example);
+    }
 }
