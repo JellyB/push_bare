@@ -97,7 +97,12 @@ public class NoticeLandingManager {
      * @param noticeUserRelation
      * @throws BizException
      */
+
     public void insertNoticeRelation(NoticeUserRelation noticeUserRelation) throws BizException {
+        noticeUserRelation.setStatus(NoticeStatusEnum.NORMAL.getValue());
+        ((NoticeLandingManager)AopContext.currentProxy()).insertRelationUnderAnnotation(noticeUserRelation.getUserId(), noticeUserRelation);
+    }
+    /*public void insertNoticeRelation(NoticeUserRelation noticeUserRelation) throws BizException {
         Entry entry = null;
         try{
             entry = SphU.entry(RabbitMqKey.NOTICE_USER_LANDING_HIKARICP_TEST);
@@ -111,7 +116,7 @@ public class NoticeLandingManager {
                 entry.exit();
             }
         }
-    }
+    }*/
 
     /**
      * 保存消息体和消息关系
