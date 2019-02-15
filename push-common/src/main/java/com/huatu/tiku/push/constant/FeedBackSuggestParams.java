@@ -18,8 +18,6 @@ public class FeedBackSuggestParams extends FeedBackParams {
 
     public static final String REPLY = "reply";
 
-    public static final String CREATE_TIME = "createTime";
-
     /**
      * notice type
      *

@@ -28,7 +28,8 @@ public class UtilTest extends PushBaseTest{
 
     }
 
-    public static void  dateTest() {
+    @Test
+    public void  dateTest() {
         long time = 1573832381326l;
         long time2 = 1542622800000l;
         System.err.println(simpledateFormat.format(new Date(time)));
@@ -42,7 +43,7 @@ public class UtilTest extends PushBaseTest{
         target = Long.valueOf(source.intValue());
         System.err.println(target);
         try{
-            Date startTime = dateFormat.parse("2018-12-29 17:20:00");
+            Date startTime = dateFormat.parse("2019-02-18 17:20:00");
             Date endTime = dateFormat.parse("2028-11-26 22:00:00");
             System.err.println("startTime:" + startTime.getTime() );
             System.err.println("endTime:" + endTime.getTime() );
@@ -53,14 +54,14 @@ public class UtilTest extends PushBaseTest{
     }
 
     public static void main(String[] args) {
-        dateTest();
+        //dateTest();
     }
 
 
     @Test
     public void timesTriggered(){
         try{
-            Date startTime = dateFormat.parse("2018-11-22 18:25:00");
+            Date startTime = dateFormat.parse("2019-02-18 18:25:00");
             long times = (System.currentTimeMillis() - startTime.getTime())/300000;
             log.info("times triggered!{}", times);
         }catch (Exception e){

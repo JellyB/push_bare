@@ -8,7 +8,7 @@ package com.huatu.tiku.push.constant;
  **/
 public abstract class Params {
 
-
+    public static final String CREATE_TIME = "createTime";
     /**
      * BIZ ID
      */

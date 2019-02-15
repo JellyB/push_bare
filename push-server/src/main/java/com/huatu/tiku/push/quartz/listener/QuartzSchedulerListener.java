@@ -20,6 +20,9 @@ public class QuartzSchedulerListener implements SchedulerListener {
 
     @Autowired
     private DingTalkNotice dingTalkNotice;
+
+    @Autowired
+    private NoticeContentUtil noticeContentUtil;
     /**
      * <p>
      * Called by the <code>{@link Scheduler}</code> when a <code>{@link JobDetail}</code>
@@ -30,7 +33,7 @@ public class QuartzSchedulerListener implements SchedulerListener {
      */
     @Override
     public void jobScheduled(Trigger trigger) {
-        TextMsg textMsg = NoticeContentUtil.jobScheduled(trigger);
+        TextMsg textMsg = noticeContentUtil.jobScheduled(trigger);
         dingTalkNotice.notice(textMsg);
     }
 
@@ -45,7 +48,7 @@ public class QuartzSchedulerListener implements SchedulerListener {
      */
     @Override
     public void jobUnscheduled(TriggerKey triggerKey) {
-        TextMsg textMsg = NoticeContentUtil.jobUnscheduled(triggerKey);
+        TextMsg textMsg = noticeContentUtil.jobUnscheduled(triggerKey);
         dingTalkNotice.notice(textMsg);
     }
 
@@ -59,7 +62,7 @@ public class QuartzSchedulerListener implements SchedulerListener {
      */
     @Override
     public void triggerFinalized(Trigger trigger) {
-        TextMsg textMsg = NoticeContentUtil.triggerFinalized(trigger);
+        TextMsg textMsg = noticeContentUtil.triggerFinalized(trigger);
         dingTalkNotice.notice(textMsg);
     }
 

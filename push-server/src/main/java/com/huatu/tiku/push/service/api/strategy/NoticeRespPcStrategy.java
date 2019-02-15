@@ -1,9 +1,6 @@
 package com.huatu.tiku.push.service.api.strategy;
 
-import com.huatu.tiku.push.constant.BaseMsg;
-import com.huatu.tiku.push.constant.CourseParams;
-import com.huatu.tiku.push.constant.FeedBackCorrectParams;
-import com.huatu.tiku.push.constant.FeedBackSuggestParams;
+import com.huatu.tiku.push.constant.*;
 import com.huatu.tiku.push.entity.NoticeEntity;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.service.api.factory.BaseMsgFactory;
@@ -27,6 +24,7 @@ import java.util.Map;
 public class NoticeRespPcStrategy extends AbstractNoticeResp {
 
     private static final String DEFAULT_COURSE_TIME = "00:00";
+    private static final String DEFAULT_REPLY_CONTENT = "您的反馈已收到，感谢您的反馈。";
     /**
      * 组装 pageInfo
      *
@@ -105,7 +103,7 @@ public class NoticeRespPcStrategy extends AbstractNoticeResp {
 
     private static String dealSuggestCreateTime(BaseMsg baseMsg){
         Map<String, Object> map = baseMsg.getCustom();
-        Object createTime = map.get(FeedBackSuggestParams.CREATE_TIME);
+        Object createTime = map.get(Params.CREATE_TIME);
         return StringUtils.trimToEmpty(String.valueOf(createTime == null? "" : createTime));
     }
 
@@ -118,7 +116,7 @@ public class NoticeRespPcStrategy extends AbstractNoticeResp {
     private static String dealSuggestReply(BaseMsg baseMsg){
         Map<String, Object> map = baseMsg.getCustom();
         Object reply = map.get(FeedBackSuggestParams.REPLY);
-        return StringUtils.trimToEmpty(String.valueOf(reply == null? "" : reply));
+        return StringUtils.trimToEmpty(String.valueOf(reply == null? DEFAULT_REPLY_CONTENT : reply));
     }
 
 

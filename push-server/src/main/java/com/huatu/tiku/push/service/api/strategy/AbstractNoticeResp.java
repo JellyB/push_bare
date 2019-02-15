@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.huatu.tiku.push.constant.BaseMsg;
+import com.huatu.tiku.push.constant.Params;
 import com.huatu.tiku.push.entity.NoticeEntity;
 import com.huatu.tiku.push.entity.NoticeUserRelation;
 import com.huatu.tiku.push.response.NoticeResp;
@@ -53,6 +54,9 @@ public abstract class AbstractNoticeResp {
             BaseMsg baseMsg = BaseMsg.builder().build();
             if(StringUtils.isNoneBlank(noticeEntity.getCustom())){
                 JSONObject jsonObject = JSONObject.parseObject(noticeEntity.getCustom());
+                if(null == jsonObject.get(Params.CREATE_TIME)){
+                    jsonObject.put(Params.CREATE_TIME, noticeEntity.getCreateTime());
+                }
                 Map custom = jsonObject;
                 baseMsg.setCustom(custom);
             }

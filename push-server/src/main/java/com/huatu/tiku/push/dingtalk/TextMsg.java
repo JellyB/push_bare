@@ -39,4 +39,15 @@ public class TextMsg extends Msg{
         }
         this.at.put("isAtAll", atAll);
     }
+
+    public void setAt(String mobiles) {
+        if(StringUtils.isNotEmpty(mobiles)){
+            String [] mobiles_ = mobiles.split(",");
+            JSONArray jsonArray = new JSONArray();
+            for (String s : mobiles_) {
+                jsonArray.add(s);
+            }
+            at.put("atMobiles", jsonArray);
+        }
+    }
 }

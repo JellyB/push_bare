@@ -35,6 +35,9 @@ public class QuartzTriggerListener implements TriggerListener {
     @Autowired
     private DingTalkNotice dingTalkNotice;
 
+    @Autowired
+    private NoticeContentUtil noticeContentUtil;
+
     /**
      * <p>
      * Get the name of the <code>TriggerListener</code>.
@@ -52,7 +55,7 @@ public class QuartzTriggerListener implements TriggerListener {
      */
     @Override
     public void triggerFired(Trigger trigger, JobExecutionContext context) {
-        TextMsg textMsg = NoticeContentUtil.triggerFired(trigger);
+        TextMsg textMsg = noticeContentUtil.triggerFired(trigger);
         if(null != textMsg){
             dingTalkNotice.notice(textMsg);
         }
@@ -113,7 +116,7 @@ public class QuartzTriggerListener implements TriggerListener {
                 }
 
             }else{
-                TextMsg textMsg = NoticeContentUtil.triggerComplete(trigger);
+                TextMsg textMsg = noticeContentUtil.triggerComplete(trigger);
                 if(null != textMsg){
                     dingTalkNotice.notice(textMsg);
                 }

@@ -6,8 +6,11 @@ import com.huatu.tiku.push.dingtalk.TextMsg;
 import com.huatu.tiku.push.entity.CourseInfo;
 import com.huatu.tiku.push.quartz.job.BossJob;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
@@ -19,8 +22,12 @@ import java.util.Date;
  **/
 
 @Slf4j
+@Component
 public class NoticeContentUtil {
 
+
+    @Value("${notice.push.listener.mobiles}")
+    private String mobiles;
 
     private static final String NEW_JOB = new StringBuilder("新的任务:")
             .append("\n")
@@ -80,13 +87,16 @@ public class NoticeContentUtil {
      * @param trigger
      * @return
      */
-    public static TextMsg jobScheduled(Trigger trigger){
+    public TextMsg jobScheduled(Trigger trigger){
         try{
             String name = trigger.getJobKey().getName();
             String group = trigger.getJobKey().getGroup();
             Date nextFireTime = trigger.getNextFireTime();
             String content = String.format(NEW_JOB, name, group, NoticeTimeParseUtil.localDateFormat.format(nextFireTime));
-            TextMsg textMsg = TextMsg.builder().content(content).atAll(false).mobiles("15727393776").build();
+            TextMsg textMsg = TextMsg.builder().content(content).atAll(false).build();
+            if(StringUtils.isNotEmpty(mobiles)){
+                textMsg.setAt(mobiles);
+            }
             return textMsg;
         }catch(Exception e){
             log.error("parse msg jobScheduled error, trigger msg:{}", JSONObject.toJSONString(trigger));
@@ -99,12 +109,15 @@ public class NoticeContentUtil {
      * @param triggerKey
      * @return
      */
-    public static TextMsg jobUnscheduled(TriggerKey triggerKey){
+    public TextMsg jobUnscheduled(TriggerKey triggerKey){
         try{
             String name = triggerKey.getName();
             String group = triggerKey.getGroup();
             String content = String.format(JOB_CANCEL, name, group);
-            TextMsg textMsg = TextMsg.builder().content(content).atAll(false).mobiles("15727393776").build();
+            TextMsg textMsg = TextMsg.builder().content(content).atAll(false).build();
+            if(StringUtils.isNotEmpty(mobiles)){
+                textMsg.setAt(mobiles);
+            }
             return textMsg;
         }catch (Exception e){
             log.error("parse msg jobUnscheduled error, TriggerKey msg:{}", JSONObject.toJSONString(triggerKey));
@@ -117,13 +130,16 @@ public class NoticeContentUtil {
      * @param trigger
      * @return
      */
-    public static TextMsg triggerFinalized(Trigger trigger){
+    public TextMsg triggerFinalized(Trigger trigger){
         try{
             String name = trigger.getJobKey().getName();
             String group = trigger.getJobKey().getGroup();
             Date endTime = trigger.getPreviousFireTime();
             String content = String.format(JOB_FINISH, name, group, NoticeTimeParseUtil.localDateFormat.format(endTime));
-            TextMsg textMsg = TextMsg.builder().content(content).atAll(false).mobiles("15727393776").build();
+            TextMsg textMsg = TextMsg.builder().content(content).atAll(false).build();
+            if(StringUtils.isNotEmpty(mobiles)){
+                textMsg.setAt(mobiles);
+            }
             return textMsg;
         }catch (Exception e){
             log.error("parse triggerFinalized msg error, trigger msg:{},error:{}", JSONObject.toJSONString(trigger), e);
@@ -136,7 +152,7 @@ public class NoticeContentUtil {
      * @param trigger
      * @return
      */
-    public static TextMsg triggerFired(Trigger trigger){
+    public TextMsg triggerFired(Trigger trigger){
         try{
             String name = trigger.getJobKey().getName();
             String group = trigger.getJobKey().getGroup();
@@ -150,7 +166,10 @@ public class NoticeContentUtil {
             if(name.equals(BossJob.BossJob)){
                 return null;
             }
-            TextMsg textMsg = TextMsg.builder().content(content).mobiles("15727393776").atAll(false).build();
+            TextMsg textMsg = TextMsg.builder().content(content).atAll(false).build();
+            if(StringUtils.isNotEmpty(mobiles)){
+                textMsg.setAt(mobiles);
+            }
             return textMsg;
         }catch (Exception e){
             log.error("construct text msg error", e);
@@ -163,7 +182,7 @@ public class NoticeContentUtil {
      * @param trigger
      * @return
      */
-    public static TextMsg triggerComplete(Trigger trigger){
+    public TextMsg triggerComplete(Trigger trigger){
         try{
             String name = trigger.getJobKey().getName();
             String group = trigger.getJobKey().getGroup();
@@ -172,7 +191,10 @@ public class NoticeContentUtil {
             if(name.equals(BossJob.BossJob)){
                 return null;
             }
-            TextMsg textMsg = TextMsg.builder().content(content).mobiles("15727393776").atAll(false).build();
+            TextMsg textMsg = TextMsg.builder().content(content).atAll(false).build();
+            if(StringUtils.isNotEmpty(mobiles)){
+                textMsg.setAt(mobiles);
+            }
             return textMsg;
         }catch (Exception e){
             log.error("parse triggerComplete msg error, trigger msg:{}", JSONObject.toJSONString(trigger));
@@ -210,9 +232,12 @@ public class NoticeContentUtil {
      * @param className
      * @return
      */
-    public static TextMsg exceptionMst(String methodName, String className){
+    public TextMsg exceptionMst(String methodName, String className){
         String content = String.format(CREATE_ERROR, methodName, className);
-        TextMsg textMsg = TextMsg.builder().mobiles("15727393776").content(content).atAll(false).build();
+        TextMsg textMsg = TextMsg.builder().content(content).atAll(false).build();
+        if(StringUtils.isNotEmpty(mobiles)){
+            textMsg.setAt(mobiles);
+        }
         return textMsg;
     }
 
