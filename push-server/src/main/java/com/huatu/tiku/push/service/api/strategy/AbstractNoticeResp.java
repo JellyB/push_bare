@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.huatu.tiku.push.constant.BaseMsg;
+import com.huatu.tiku.push.constant.CourseParams;
 import com.huatu.tiku.push.constant.Params;
 import com.huatu.tiku.push.entity.NoticeEntity;
 import com.huatu.tiku.push.entity.NoticeUserRelation;
@@ -24,7 +25,7 @@ import java.util.Map;
 @Slf4j
 public abstract class AbstractNoticeResp {
 
-
+    private static final String DEFAULT_CLASS_TILE = "课程直播课";
     /**
      * 组装pageinfo
      * @param noticeEntity
@@ -56,6 +57,9 @@ public abstract class AbstractNoticeResp {
                 JSONObject jsonObject = JSONObject.parseObject(noticeEntity.getCustom());
                 if(null == jsonObject.get(Params.CREATE_TIME)){
                     jsonObject.put(Params.CREATE_TIME, noticeEntity.getCreateTime());
+                }
+                if(null == jsonObject.get(CourseParams.CLASS_TITLE)){
+                    jsonObject.put(CourseParams.CLASS_TITLE, DEFAULT_CLASS_TILE);
                 }
                 Map custom = jsonObject;
                 baseMsg.setCustom(custom);
