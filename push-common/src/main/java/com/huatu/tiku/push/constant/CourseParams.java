@@ -22,7 +22,7 @@ public class CourseParams extends Params {
 
     private static final String PICTURE = "picture";
 
-    private static final String TEACHER = "teacher";
+    public static final String TEACHER = "teacher";
 
     public static final String START_TIME = "startTime";
 

@@ -192,4 +192,15 @@ public class NoticePandoraProxy implements NoticeService{
     public Object readAll(long userId) throws BizException {
         return null;
     }
+
+    /**
+     * 完善课程字段信息
+     *
+     * @return
+     * @throws BizException
+     */
+    @Override
+    public Object completeCourseInfo() throws BizException {
+        return null;
+    }
 }
