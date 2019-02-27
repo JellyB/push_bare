@@ -6,6 +6,6 @@ package com.huatu.tiku.push.constant;
  * @author biguodong
  * Create time 2019-02-27 上午10:34
  **/
-public abstract class SmallMock extends Params{
+public abstract class SmallMockParams extends Params{
     public static final String TYPE = "smallMock";
 }
