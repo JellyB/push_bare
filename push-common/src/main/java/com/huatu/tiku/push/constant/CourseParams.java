@@ -1,7 +1,6 @@
 package com.huatu.tiku.push.constant;
 
 
-import com.sun.corba.se.impl.oa.poa.POAPolicyMediatorImpl_R_UDS;
 
 import java.util.HashMap;
 import java.util.Map;
