@@ -4,7 +4,9 @@ import com.huatu.tiku.push.enums.JobScannedEnum;
 import com.huatu.tiku.push.enums.NoticeParentTypeEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import lombok.extern.slf4j.Slf4j;
+import org.bouncycastle.util.Times;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,6 +27,7 @@ public class NoticeTimeParseUtil {
     public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.CHINESE);
     private static final SimpleDateFormat noSecondDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINESE);
     public static final SimpleDateFormat dayTimeDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINESE);
+    private static final SimpleDateFormat minuteSecond = new SimpleDateFormat("mm:ss", Locale.CHINESE);
 
     private static final long HOUR_1 = 60 * 60 * 1000L;
     private static final long MINUTE_30 = 30 * 60 * 1000L;
@@ -173,6 +176,9 @@ public class NoticeTimeParseUtil {
         }
     }
 
+    public static String noticeViewTime(Timestamp timestamp){
+        return minuteSecond.format(timestamp);
+    }
     /**
      * 根据时间返回模考消息类型
      * @param currentTime

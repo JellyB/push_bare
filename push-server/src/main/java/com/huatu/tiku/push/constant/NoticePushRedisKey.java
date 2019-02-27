@@ -28,6 +28,8 @@ public class NoticePushRedisKey {
 
     private static final String DATA_MIGRATE_NOTICE_CREATE_TIME = "notice.push.migrate.notice.create_time";
 
+    private static final String NOTICE_ENTITY_KEY = "notice_entity_$%s";
+
 
     /**
      * 获取购买课程的用户redis key
@@ -90,5 +92,14 @@ public class NoticePushRedisKey {
      */
     public static String getDataMigrateNoticeCreateTime(){
         return DATA_MIGRATE_NOTICE_CREATE_TIME;
+    }
+
+    /**
+     * notice Id 缓存
+     * @param noticeId
+     * @return
+     */
+    public static String getNoticeEntityKey(long noticeId){
+        return String.format(NOTICE_ENTITY_KEY, noticeId);
     }
 }

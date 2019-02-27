@@ -122,6 +122,9 @@ public class NoticePushErrors {
      */
     public static final ErrorResult MIGRATE_PAGE_INFO_EMPTY = ErrorResult.create(10000004, "必须设置数据转移分页数据！！");
 
-
+    /**
+     * 保存或更新视图列表失败
+     */
+    public static final ErrorResult SAVE_OR_UPDATE_VIEW_ERROR = ErrorResult.create(10000005, "保存或更新视图列表失败！！");
 
 }

@@ -14,7 +14,16 @@ import lombok.Getter;
 @Getter
 public enum  NoticeParentTypeEnum {
 
-    COURSE(CourseParams.TYPE), MOCK(MockParams.TYPE), ORDER(WayBillParams.TYPE), FEEDBACK(FeedBackParams.TYPE);
+    COURSE(CourseParams.TYPE, NoticeViewEnum.COURSE),
+    MOCK(MockParams.TYPE, NoticeViewEnum.PLAT_FORM),
+    ORDER(WayBillParams.TYPE, NoticeViewEnum.LOGISTICS),
+    FEEDBACK(FeedBackParams.TYPE, NoticeViewEnum.FEED_BACK),
+    COURSE_WORK(CourseWorkParams.TYPE, NoticeViewEnum.COURSE),
+    COURSE_TEST(CourseTestParams.TYPE, NoticeViewEnum.COURSE),
+    SMALL_MOCK(SmallMockParams.TYPE, NoticeViewEnum.PLAT_FORM);
 
     private String type;
+
+    private NoticeViewEnum parent;
+
 }

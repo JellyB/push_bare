@@ -34,6 +34,8 @@ public class MigrateManager {
     @Autowired
     private RedisTemplate redisTemplate;
 
+    @Autowired
+    private NoticeViewManager noticeViewManager;
 
     /**
      * 关系表插入逻辑
@@ -52,6 +54,7 @@ public class MigrateManager {
             if(checkExist){
                 return;
             }else{
+                noticeViewManager.saveOrUpdate(noticeUserRelation.getUserId(), noticeUserRelation.getNoticeId());
                 ((MigrateManager)AopContext.currentProxy()).insert(noticeUserRelation.getUserId(), noticeUserRelation);
             }
         }catch (Exception e){
@@ -63,7 +66,7 @@ public class MigrateManager {
     public int insert(long userId, NoticeUserRelation noticeUserRelation){
         try{
             log.info("user.id.value:{}", userId);
-            return noticeUserMapper.insert(noticeUserRelation);
+            return noticeUserMapper.insertSelective(noticeUserRelation);
         }catch (Exception e){
             log.error("*******************************");
             log.error(">>>>> 消费队列插入mysql 异常！<<<<");

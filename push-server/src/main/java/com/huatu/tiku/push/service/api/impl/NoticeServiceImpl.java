@@ -5,14 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.annotation.SplitParam;
-import com.huatu.tiku.push.constant.BaseMsg;
-import com.huatu.tiku.push.constant.CourseParams;
-import com.huatu.tiku.push.constant.NoticePushErrors;
-import com.huatu.tiku.push.constant.UserResponse;
+import com.huatu.tiku.push.constant.*;
 import com.huatu.tiku.push.dao.CourseInfoMapper;
 import com.huatu.tiku.push.dao.NoticeEntityMapper;
 import com.huatu.tiku.push.dao.NoticeUserMapper;
@@ -22,6 +18,8 @@ import com.huatu.tiku.push.entity.NoticeUserRelation;
 import com.huatu.tiku.push.enums.NoticeReadEnum;
 import com.huatu.tiku.push.enums.NoticeStatusEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
+import com.huatu.tiku.push.manager.NoticeEntityManager;
+import com.huatu.tiku.push.manager.NoticeViewManager;
 import com.huatu.tiku.push.request.NoticeRelationReq;
 import com.huatu.tiku.push.request.NoticeReq;
 import com.huatu.tiku.push.response.NoticeResp;
@@ -37,6 +35,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -45,6 +45,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -80,6 +81,15 @@ public class NoticeServiceImpl implements NoticeService {
     @Autowired
     @Qualifier(value = "noticeRespPcStrategy")
     private NoticeRespPcStrategy noticeRespPcStrategy;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Autowired
+    private NoticeViewManager noticeViewManager;
+
+    @Autowired
+    private NoticeEntityManager noticeEntityManager;
     /**
      * 我的消息列表封装
      * @param userId
@@ -113,7 +123,7 @@ public class NoticeServiceImpl implements NoticeService {
             noticeIds.add(noticeUserRelation.getNoticeId());
         });
         noticeRespHandler.setAbstractNoticeResp(noticeRespAppStrategy);
-        Map<Long, NoticeEntity> maps = obtainNoticeMaps(noticeIds);
+        Map<Long, NoticeEntity> maps = noticeEntityManager.obtainNoticeMaps(noticeIds);
         return noticeRespHandler.build(pageInfo, maps);
     }
 
@@ -144,6 +154,12 @@ public class NoticeServiceImpl implements NoticeService {
                 .build();
 
         noticeEntityMapper.insertSelective(noticeEntity);
+        long noticeId = noticeEntity.getId();
+
+        String key = NoticePushRedisKey.getNoticeEntityKey(noticeId);
+        ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+        valueOperations.set(key, JSONObject.toJSONString(noticeEntity), 1 , TimeUnit.DAYS);
+
         //final Set<Long> userIds = obtainUsersByNotice(noticeEntity.getId());
         for(NoticeReq.NoticeUserRelation user : req.getUsers()){
             NoticeUserRelation noticeUserRelation = NoticeUserRelation.
@@ -157,6 +173,7 @@ public class NoticeServiceImpl implements NoticeService {
                     .isRead(NoticeReadEnum.UN_READ.getValue())
                     .build();
             log.debug("noticeUserRelation:{}", JSONObject.toJSONString(noticeUserRelation));
+            noticeViewManager.saveOrUpdate(noticeUserRelation.getUserId(), noticeUserRelation.getNoticeId());
             ((NoticeServiceImpl) AopContext.currentProxy()).insertNoticeRelation(user.getUserId(), noticeUserRelation);
         }
         return noticeEntity.getId();
@@ -199,6 +216,7 @@ public class NoticeServiceImpl implements NoticeService {
                         .isRead(NoticeReadEnum.UN_READ.getValue())
                         .build();
                 count.incrementAndGet();
+                noticeViewManager.saveOrUpdate(noticeUserRelation.getUserId(), noticeUserRelation.getNoticeId());
                 noticeUserMapper.insertSelective(noticeUserRelation);
             });
         }
@@ -236,25 +254,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .collect(Collectors.toSet());
     }
 
-    /**
-     * 根据多个notice id 查询 notice 表信息 返回map
-     * @param noticeIds
-     * @return
-     */
-    private Map<Long, NoticeEntity> obtainNoticeMaps(Set<Long> noticeIds){
-        if(CollectionUtils.isEmpty(noticeIds)){
-            throw new BizException(NoticePushErrors.NOTICE_USER_RELATIONS_LIST_EMPTY);
-        }
-        Example example = new Example(NoticeEntity.class);
-        example.and()
-                .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue())
-                .andIn("id", noticeIds);
-        List<NoticeEntity> list = noticeEntityMapper.selectByExample(example);
-        if(CollectionUtils.isEmpty(list)){
-            return Maps.newHashMap();
-        }
-        return list.stream().collect(Collectors.toMap(i-> i.getId(), i -> i));
-    }
+
     /**
      * 消息已读
      *
@@ -339,7 +339,7 @@ public class NoticeServiceImpl implements NoticeService {
         Set<Long> noticeIds = Sets.newHashSet();
         List<NoticeUserRelation> noticeUserRelations = pageInfo.getList();
         noticeUserRelations.forEach(noticeUserRelation -> noticeIds.add(noticeUserRelation.getNoticeId()));
-        Map<Long, NoticeEntity> maps = obtainNoticeMaps(noticeIds);
+        Map<Long, NoticeEntity> maps = noticeEntityManager.obtainNoticeMaps(noticeIds);
         noticeRespHandler.setAbstractNoticeResp(noticeRespPcStrategy);
         return noticeRespHandler.build(pageInfo, maps);
     }
