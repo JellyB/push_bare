@@ -50,7 +50,7 @@ public class NoticeViewManager {
      * @return
      * @throws BizException
      */
-    @Async
+    @Async(value = "threadPoolTaskExecutor")
     public void saveOrUpdate(long userId, long noticeId)throws BizException{
         NoticeEntity noticeEntity;
         try{
