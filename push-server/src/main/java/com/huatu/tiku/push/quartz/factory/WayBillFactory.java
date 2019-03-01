@@ -1,15 +1,11 @@
 package com.huatu.tiku.push.quartz.factory;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.huatu.tiku.push.constant.*;
 import com.huatu.tiku.push.enums.DisplayTypeEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.request.NoticeReq;
 import com.huatu.tiku.push.request.WayBillReq;
-import com.huatu.tiku.push.util.NoticeTimeParseUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.cms.PasswordRecipientId;
 
 import java.util.Date;
 import java.util.List;
