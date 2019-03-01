@@ -63,7 +63,8 @@ public class NoticeControllerV3 {
      * @param type
      * @return
      */
-    @DeleteMapping(value = "/view/{type}")
+    @Deprecated
+    //@DeleteMapping(value = "/view/{type}")
     public Object hideView(@Token UserSession userSession,
                            @RequestHeader(value = "terminal") int terminal,
                            @RequestHeader(value = "cv") String cv,

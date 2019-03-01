@@ -35,6 +35,7 @@ public interface NoticeServiceV3 {
      * @return
      * @throws BizException
      */
+    @Deprecated
     Object hideView(long userId, String view) throws BizException;
 
     /**
