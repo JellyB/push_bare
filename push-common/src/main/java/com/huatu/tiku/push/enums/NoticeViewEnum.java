@@ -16,32 +16,37 @@ public enum  NoticeViewEnum {
     /**
      * 课程通知
      */
-    COURSE("课程通知", NoticeViewConstant.COURSE, new NoticeParentTypeEnum[]{
+    COURSE("课程通知", NoticeViewConstant.COURSE, false, new NoticeParentTypeEnum[]{
             NoticeParentTypeEnum.COURSE
     }),
     /**
      * 平台通知
      */
-    PLAT_FORM("平台通知", NoticeViewConstant.PLAT_FORM, new NoticeParentTypeEnum[]{
+    PLAT_FORM("平台通知", NoticeViewConstant.PLAT_FORM, false, new NoticeParentTypeEnum[]{
             NoticeParentTypeEnum.MOCK
     }),
     /**
      * 物流通知
      */
-    LOGISTICS("物流通知", NoticeViewConstant.LOGISTICS, new NoticeParentTypeEnum[]{
+    LOGISTICS("物流通知", NoticeViewConstant.LOGISTICS, true, new NoticeParentTypeEnum[]{
             NoticeParentTypeEnum.ORDER,
     }),
 
     /**
      * 反馈通知
      */
-    FEED_BACK("反馈通知", NoticeViewConstant.FEED_BACK, new NoticeParentTypeEnum[]{
+    FEED_BACK("反馈通知", NoticeViewConstant.FEED_BACK, true, new NoticeParentTypeEnum[]{
             NoticeParentTypeEnum.FEEDBACK
     });
 
     private String name;
 
     private String view;
+
+    /**
+     * 此类型的数据用户点击后直接清空未读数
+     */
+    private boolean readAll;
 
     private NoticeParentTypeEnum[] child;
 

@@ -26,4 +26,13 @@ public enum  NoticeParentTypeEnum {
 
     private NoticeViewEnum parent;
 
+    public static NoticeParentTypeEnum create(String type){
+        for(NoticeParentTypeEnum noticeParentTypeEnum : values()){
+            if(type.equals(noticeParentTypeEnum.getType())){
+                return noticeParentTypeEnum;
+            }
+        }
+        return null;
+    }
+
 }
