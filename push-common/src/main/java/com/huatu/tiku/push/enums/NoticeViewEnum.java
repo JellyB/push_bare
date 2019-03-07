@@ -4,6 +4,9 @@ import com.huatu.tiku.push.constant.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 描述：
  *
@@ -16,28 +19,20 @@ public enum  NoticeViewEnum {
     /**
      * 课程通知
      */
-    COURSE("课程通知", NoticeViewConstant.COURSE, false, new NoticeParentTypeEnum[]{
-            NoticeParentTypeEnum.COURSE
-    }),
+    COURSE("课程通知", NoticeViewConstant.COURSE, false),
     /**
      * 平台通知
      */
-    PLAT_FORM("平台通知", NoticeViewConstant.PLAT_FORM, false, new NoticeParentTypeEnum[]{
-            NoticeParentTypeEnum.MOCK
-    }),
+    PLAT_FORM("平台通知", NoticeViewConstant.PLAT_FORM, false),
     /**
      * 物流通知
      */
-    LOGISTICS("物流通知", NoticeViewConstant.LOGISTICS, true, new NoticeParentTypeEnum[]{
-            NoticeParentTypeEnum.ORDER,
-    }),
+    LOGISTICS("物流通知", NoticeViewConstant.LOGISTICS, true),
 
     /**
      * 反馈通知
      */
-    FEED_BACK("反馈通知", NoticeViewConstant.FEED_BACK, true, new NoticeParentTypeEnum[]{
-            NoticeParentTypeEnum.FEEDBACK
-    });
+    FEED_BACK("反馈通知", NoticeViewConstant.FEED_BACK, true);
 
     private String name;
 
@@ -48,8 +43,6 @@ public enum  NoticeViewEnum {
      */
     private boolean readAll;
 
-    private NoticeParentTypeEnum[] child;
-
     public static NoticeViewEnum create(String view){
         for(NoticeViewEnum noticeViewEnum : values()){
             if(noticeViewEnum.getView().equals(view)){
@@ -57,5 +50,19 @@ public enum  NoticeViewEnum {
             }
         }
         return null;
+    }
+
+    /**
+     * 根据view 类型获取 parent 孩子列表
+     * @return
+     */
+    public List<NoticeParentTypeEnum> child(){
+        List<NoticeParentTypeEnum> list = new ArrayList<>();
+        for(NoticeParentTypeEnum noticeParentTypeEnum : NoticeParentTypeEnum.values()){
+            if(noticeParentTypeEnum.getParent() == this){
+                list.add(noticeParentTypeEnum);
+            }
+        }
+        return list;
     }
 }

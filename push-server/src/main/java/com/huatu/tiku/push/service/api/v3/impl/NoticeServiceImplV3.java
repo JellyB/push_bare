@@ -20,6 +20,7 @@ import com.huatu.tiku.push.service.api.v3.NoticeServiceV3;
 import com.huatu.tiku.push.util.NoticeTimeParseUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -128,12 +129,34 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
         return noticeViewManager.updateByExampleSelective(noticeView, example);
     }
 
-    @SplitParam
+
+    /**
+     * 我的 view 消息列表
+     * @param userId
+     * @param view
+     * @param page
+     * @param size
+     * @return
+     * @throws BizException
+     */
     @Override
     public PageInfo typeViewList(long userId, String view, int page, int size) throws BizException {
         NoticeViewEnum noticeViewEnum = NoticeViewEnum.create(view);
-        NoticeParentTypeEnum[] parentTypeEnums = noticeViewEnum.getChild();
-        List<String> types = Arrays.stream(parentTypeEnums).map(NoticeParentTypeEnum::getType).collect(Collectors.toList());
+        List<String> types = noticeViewEnum.child().stream().map(NoticeParentTypeEnum::getType).collect(Collectors.toList());
+        PageInfo pageInfo = ((NoticeServiceImplV3)AopContext.currentProxy()).obtainViewPageInfo(userId, types, page, size);
+        Set<Long> noticeIds = Sets.newHashSet();
+        List<NoticeUserRelation> noticeUserRelations = pageInfo.getList();
+        noticeUserRelations.forEach(noticeUserRelation -> {
+            noticeIds.add(noticeUserRelation.getNoticeId());
+        });
+        noticeRespHandler.setAbstractNoticeResp(noticeRespAppStrategy);
+        Map<Long, NoticeEntity> maps = noticeEntityManager.obtainNoticeMaps(noticeIds);
+        return noticeRespHandler.build(pageInfo, maps);
+    }
+
+
+    @SplitParam
+    public PageInfo obtainViewPageInfo(long userId, List<String> types, int page, int size){
         Example example = new Example(NoticeUserRelation.class);
         example.and()
                 .andEqualTo("userId", userId)
@@ -145,20 +168,11 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
         PageInfo pageInfo = PageHelper
                 .startPage(page, size)
                 .doSelectPageInfo(()->noticeUserMapper.selectByExample(example));
-
-        if(CollectionUtils.isEmpty(pageInfo.getList())){
             return pageInfo;
-        }
-
-        Set<Long> noticeIds = Sets.newHashSet();
-        List<NoticeUserRelation> noticeUserRelations = pageInfo.getList();
-        noticeUserRelations.forEach(noticeUserRelation -> {
-            noticeIds.add(noticeUserRelation.getNoticeId());
-        });
-        noticeRespHandler.setAbstractNoticeResp(noticeRespAppStrategy);
-        Map<Long, NoticeEntity> maps = noticeEntityManager.obtainNoticeMaps(noticeIds);
-        return noticeRespHandler.build(pageInfo, maps);
     }
+
+
+
 
     /**
      * 条件删除 noticeId

@@ -22,7 +22,6 @@ import org.springframework.stereotype.Component;
 import tk.mybatis.mapper.entity.Example;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -58,7 +57,7 @@ public class NoticeViewManager {
      * @return
      * @throws BizException
      */
-    //@Async(value = "threadPoolTaskExecutor")
+    @Async(value = "threadPoolTaskExecutor")
     public void saveOrUpdate(long userId, long noticeId)throws BizException{
         NoticeEntity noticeEntity;
         try{
@@ -71,9 +70,7 @@ public class NoticeViewManager {
                 noticeEntity = noticeEntityMapper.selectByPrimaryKey(noticeId);
             }
             NoticeTypeEnum noticeTypeEnum = NoticeTypeEnum.create(noticeEntity.getType(), noticeEntity.getDetailType());
-            //NoticeViewEnum noticeViewEnum = noticeTypeEnum.getType().getParent();
-            NoticeParentTypeEnum noticeParentTypeEnum = noticeTypeEnum.getType();
-            NoticeViewEnum noticeViewEnum = noticeParentTypeEnum.getParent();
+            NoticeViewEnum noticeViewEnum = noticeTypeEnum.getType().getParent();
             Optional<NoticeView> optionalNoticeView = obtainNoticeView(userId, noticeViewEnum.getView());
             if(optionalNoticeView.isPresent()){
                 updateView(optionalNoticeView.get(), noticeId);
@@ -95,15 +92,15 @@ public class NoticeViewManager {
     @SplitParam
     public void needReadAll(long userId, NoticeViewEnum noticeViewEnum){
         if(noticeViewEnum.isReadAll()){
-           List<String> types = Arrays.stream(noticeViewEnum.getChild()).map(NoticeParentTypeEnum::getType).collect(Collectors.toList());
-           Example example = new Example(NoticeUserRelation.class);
-           example.and().andIn("type", types).andEqualTo("userId", userId);
+        List<String> types = noticeViewEnum.child().stream().map(NoticeParentTypeEnum::getType).collect(Collectors.toList());
+        Example example = new Example(NoticeUserRelation.class);
+        example.and().andIn("type", types).andEqualTo("userId", userId);
 
-           NoticeUserRelation noticeUserRelation = new NoticeUserRelation();
-           noticeUserRelation.setIsRead(NoticeReadEnum.READ.getValue());
-           noticeUserRelation.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        NoticeUserRelation noticeUserRelation = new NoticeUserRelation();
+        noticeUserRelation.setIsRead(NoticeReadEnum.READ.getValue());
+        noticeUserRelation.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 
-           noticeUserMapper.updateByExampleSelective(noticeUserRelation, example);
+        noticeUserMapper.updateByExampleSelective(noticeUserRelation, example);
            updateViewCount(userId, noticeViewEnum.getView());
         }
         return;
