@@ -5,6 +5,7 @@ import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.cast.*;
+import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.request.NoticeReq;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -29,7 +30,9 @@ public abstract class AbstractFactory {
     public static final IosCustomCast iosCustomCast = new IosCustomCast();
     public static final IosCustomCast iosCustomFileCast = new IosCustomCast();
 
-
+    private static final String TYPE = "type";
+    private static final String VIEW = "view";
+    private static final String IOS_NOTICE_CENTER = "ht://noticeCenter";
 
     /**
      * custom 消息封装
@@ -87,7 +90,7 @@ public abstract class AbstractFactory {
         list.forEach(item -> {
             try{
                 List<Long> alias = item.getUsers().stream().map(NoticeReq.NoticeUserRelation::getUserId).collect(Collectors.toList());
-                String custom = parseTargetForIos(item.getType(), item.getDetailType());
+                String target = parseTargetForIos(item.getType(), item.getDetailType());
                 iosCustomCast.setAlias(Joiner.on(",").join(alias), UmengNotification.ALIAS_TYPE);
                 iosCustomCast.setBadge( 1);
                 iosCustomCast.setSound( "default");
@@ -96,7 +99,8 @@ public abstract class AbstractFactory {
                     iosCustomCast.setAlertSubtitle(item.getSubTitle());
                 }
                 iosCustomCast.setAlertBody(item.getText());
-                iosCustomCast.setCustomizedField("type", custom);
+                iosCustomCast.setCustomizedField(TYPE, IOS_NOTICE_CENTER);
+                iosCustomCast.setCustomizedField(VIEW, target);
                 notifications.add(iosCustomCast);
             }catch (Exception e){
                 log.error("ios custom push error", e);
@@ -160,7 +164,7 @@ public abstract class AbstractFactory {
      */
     private static void iosCustomFileCast(NoticeReq noticeReq, String fileId, List<UmengNotification> notifications)throws BizException{
         try{
-            String custom = parseTargetForIos(noticeReq.getType(), noticeReq.getDetailType());
+            String target = parseTargetForIos(noticeReq.getType(), noticeReq.getDetailType());
             iosCustomFileCast.setFileId(fileId, UmengNotification.ALIAS_TYPE);
             iosCustomFileCast.setBadge( 1);
             iosCustomFileCast.setSound( "default");
@@ -169,7 +173,8 @@ public abstract class AbstractFactory {
                 iosCustomFileCast.setAlertSubtitle(noticeReq.getSubTitle());
             }
             iosCustomFileCast.setAlertBody(noticeReq.getText());
-            iosCustomFileCast.setCustomizedField("type", custom);
+            iosCustomFileCast.setCustomizedField(TYPE, IOS_NOTICE_CENTER);
+            iosCustomFileCast.setCustomizedField(VIEW, target);
             notifications.add(iosCustomFileCast);
         }catch (Exception e){
             log.error("ios custom push error", e);
@@ -187,21 +192,9 @@ public abstract class AbstractFactory {
      */
     public static JSONObject parseTargetForAndroid(String type, String detailType){
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("type", 12);
+        jsonObject.put(TYPE, 12);
+        jsonObject.put(VIEW, parseView(type, detailType));
         return jsonObject;
-        /*switch (type){
-            case CourseParams.TYPE:
-                jsonObject.put("type", 12);
-                return jsonObject;
-            case FeedBackParams.TYPE:
-                jsonObject.put("type", 12);
-                return jsonObject;
-            case MockParams.TYPE:
-                jsonObject.put("type", 12);
-                return jsonObject;
-            default:
-                return jsonObject;
-        }*/
     }
 
 
@@ -211,18 +204,18 @@ public abstract class AbstractFactory {
      * @return
      */
     public static String parseTargetForIos(String type, String detailType){
-        return "ht://noticeCenter";
-        /*switch (type){
-            case CourseParams.TYPE:
-                return "ht://course";
-            case FeedBackParams.TYPE:
-                return "ht://feedback";
-            case MockParams.TYPE:
-                return "ht://mock";
-            default:
-                return "";
+        return parseView(type, detailType);
+    }
 
-        }*/
+    private static String parseView(String type, String detailType){
+        try{
+            NoticeTypeEnum noticeTypeEnum = NoticeTypeEnum.create(type, detailType);
+            String view = noticeTypeEnum.getType().getParent().getView();
+            return view;
+        }catch (Exception e){
+            log.error("parse view error! type:{}, detailType:{}", type, detailType);
+        }
+        return StringUtils.EMPTY;
     }
 
 }

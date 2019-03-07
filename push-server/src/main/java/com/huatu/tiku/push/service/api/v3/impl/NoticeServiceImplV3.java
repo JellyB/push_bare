@@ -75,7 +75,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
                 .isRead(NoticeReadEnum.READ.getValue())
                 .updateTime(new Timestamp(System.currentTimeMillis()))
                 .build();
-        noticeViewManager.updateViewCount(userId);
+        noticeViewManager.updateViewCount(userId, StringUtils.EMPTY);
         return noticeUserMapper.updateByExampleSelective(noticeUserRelation, example);
     }
 
@@ -180,4 +180,16 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
         return noticeUserMapper.updateByPrimaryKeySelective(noticeUserRelation);
     }
 
+    /**
+     * 点击当前 view 是否需要清空未读消息 count
+     *
+     * @param userId
+     * @param view
+     * @throws BizException
+     */
+    @Override
+    public void needReadAll(long userId, String view) throws BizException {
+        NoticeViewEnum noticeViewEnum = NoticeViewEnum.create(view);
+        noticeViewManager.needReadAll(userId, noticeViewEnum);
+    }
 }

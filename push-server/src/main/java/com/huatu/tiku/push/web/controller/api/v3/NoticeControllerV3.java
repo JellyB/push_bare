@@ -90,6 +90,7 @@ public class NoticeControllerV3 {
                            @RequestParam(value = "size", defaultValue = "20") int size){
         long userId = userSession.getId();
         PageInfo pageInfo = noticeService.typeViewList(userId, view, page, size);
+        noticeService.needReadAll(userId, view);
         return PageUtil.parsePageInfo(pageInfo);
     }
 

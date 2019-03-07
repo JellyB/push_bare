@@ -58,6 +58,15 @@ public interface NoticeServiceV3 {
      */
     Object deleteNoticeById(long userId, long noticeId)throws BizException;
 
+
+    /**
+     * 点击当前 view 是否需要清空未读消息 count
+     * @param userId
+     * @param view
+     * @throws BizException
+     */
+    void needReadAll(long userId, String view) throws BizException;
+
 }
 
 

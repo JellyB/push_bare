@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -53,8 +52,8 @@ public class WayBillSignParams extends WayBillParams{
             return this;
         }
 
-        public WayBillSignParams.Builder orderId(String orderId){
-            this.params.put("orderId", orderId);
+        public WayBillSignParams.Builder orderId(String order){
+            this.params.put("order", order);
             return this;
         }
 
