@@ -58,7 +58,7 @@ public class NoticeViewManager {
      * @throws BizException
      */
     @Async(value = "threadPoolTaskExecutor")
-    public void saveOrUpdate(long userId, long noticeId)throws BizException{
+    public synchronized void saveOrUpdate(long userId, long noticeId)throws BizException{
         NoticeEntity noticeEntity;
         try{
             String key = NoticePushRedisKey.getNoticeEntityKey(noticeId);

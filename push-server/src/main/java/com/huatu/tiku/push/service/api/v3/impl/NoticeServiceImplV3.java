@@ -96,7 +96,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
             if(null == noticeEntity){
                 content.append(StringUtils.EMPTY);
             }else{
-                content.append(noticeEntity.getText());
+                content.append(noticeEntity.getTitle());
             }
             NoticeViewVo noticeViewVo = NoticeViewVo
                     .builder()
