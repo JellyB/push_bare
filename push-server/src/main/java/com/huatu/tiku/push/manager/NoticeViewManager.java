@@ -24,6 +24,7 @@ import tk.mybatis.mapper.entity.Example;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -73,9 +74,9 @@ public class NoticeViewManager {
             NoticeViewEnum noticeViewEnum = noticeTypeEnum.getType().getParent();
             Optional<NoticeView> optionalNoticeView = obtainNoticeView(userId, noticeViewEnum.getView());
             if(optionalNoticeView.isPresent()){
-                updateView(optionalNoticeView.get(), noticeId);
+                updateViewLastNoticeAndCount(optionalNoticeView.get(), noticeId);
             }else{
-                saveView(userId, noticeViewEnum.getView(), noticeId);
+                insertNewView(userId, noticeViewEnum.getView(), noticeId);
             }
         }catch (Exception e){
             log.error("save or update notice view error!:{}", e);
@@ -83,6 +84,33 @@ public class NoticeViewManager {
         }
 
     }
+
+    /**
+     * 用户点击单条消息已读之后更新view数量
+     * @param userId
+     * @param noticeRelationId
+     * @throws BizException
+     */
+    @Async
+    public synchronized void resetViewUnReadCount(long userId, long noticeRelationId) throws BizException{
+        NoticeUserRelation noticeUserRelation = (NoticeUserRelation)noticeUserMapper.selectByPrimaryKey(noticeRelationId);
+        if(null == noticeUserRelation){
+            return;
+        }
+        NoticeTypeEnum noticeTypeEnum = NoticeTypeEnum.create(noticeUserRelation.getType(), noticeUserRelation.getDetailType());
+        NoticeViewEnum noticeViewEnum = noticeTypeEnum.getType().getParent();
+        Optional<NoticeView> optionalNoticeView = obtainNoticeView(userId, noticeViewEnum.getView());
+        if(optionalNoticeView.isPresent()){
+            NoticeView noticeView = optionalNoticeView.get();
+            int count = noticeView.getCount() - 1 > 0 ?  noticeView.getCount() - 1 : 0;
+            NoticeView update = new NoticeView();
+            update.setId(noticeView.getId());
+            update.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+            update.setCount(count);
+            noticeUserMapper.updateByPrimaryKeySelective(update);
+        }
+    }
+
 
     /**
      * 用户点击对应的消息，未读数直接清空
@@ -101,7 +129,7 @@ public class NoticeViewManager {
         noticeUserRelation.setUpdateTime(new Timestamp(System.currentTimeMillis()));
 
         noticeUserMapper.updateByExampleSelective(noticeUserRelation, example);
-           updateViewCount(userId, noticeViewEnum.getView());
+        restViewCount2Zero(userId, noticeViewEnum.getView());
         }
         return;
     }
@@ -128,7 +156,7 @@ public class NoticeViewManager {
      * @param view
      * @return
      */
-    private int saveView(long userId, String view, long noticeId){
+    private int insertNewView(long userId, String view, long noticeId){
         NoticeView noticeView = new NoticeView();
         noticeView.setUserId(userId);
         noticeView.setNoticeId(noticeId);
@@ -141,27 +169,27 @@ public class NoticeViewManager {
     }
 
     /**
-     * 更新我的视图消息
+     * 更新我的视图消息，更新最新的消息id展示在view表中
      * @param noticeView
      * @return
      */
-    private int updateView(NoticeView noticeView, long noticeId){
+    private int updateViewLastNoticeAndCount(NoticeView noticeView, long noticeId){
         NoticeView noticeView_ = new NoticeView();
         noticeView_.setNoticeId(noticeId);
         noticeView_.setId(noticeView.getId());
         noticeView_.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         noticeView_.setStatus(NoticeStatusEnum.NORMAL.getValue());
-            noticeView_.setCount(noticeView.getCount() + 1);
+        noticeView_.setCount(noticeView.getCount() + 1);
         return noticeViewMapper.updateByPrimaryKeySelective(noticeView_);
     }
 
     /**
-     * 清空用户view表未读数量
+     * 更新用户viewcount
      * @param userId
      * @param view 单个view
      * @return
      */
-    public void updateViewCount(long userId, String view){
+    public void restViewCount2Zero(long userId, String view){
         NoticeView noticeView = new NoticeView();
         noticeView.setUserId(userId);
         noticeView.setCount(0);
@@ -175,6 +203,7 @@ public class NoticeViewManager {
         }
         noticeViewMapper.updateByExampleSelective(noticeView, example);
     }
+
 
     /**
      * 查询用户的 view 列表

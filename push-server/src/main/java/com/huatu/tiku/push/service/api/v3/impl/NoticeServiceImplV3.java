@@ -76,7 +76,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
                 .isRead(NoticeReadEnum.READ.getValue())
                 .updateTime(new Timestamp(System.currentTimeMillis()))
                 .build();
-        noticeViewManager.updateViewCount(userId, StringUtils.EMPTY);
+        noticeViewManager.restViewCount2Zero(userId, StringUtils.EMPTY);
         return noticeUserMapper.updateByExampleSelective(noticeUserRelation, example);
     }
 

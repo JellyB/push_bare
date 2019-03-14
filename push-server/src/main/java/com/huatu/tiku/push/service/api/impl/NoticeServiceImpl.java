@@ -309,6 +309,8 @@ public class NoticeServiceImpl implements NoticeService {
                 .isRead(NoticeReadEnum.READ.getValue())
                 .updateTime(new Timestamp(System.currentTimeMillis()))
                 .build();
+
+        noticeViewManager.resetViewUnReadCount(userId, noticeId);
         return noticeUserMapper.updateByExampleSelective(noticeUserRelation, example);
     }
 
