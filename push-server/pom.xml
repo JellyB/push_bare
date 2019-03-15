@@ -178,6 +178,12 @@
             <groupId>com.huatu.springboot</groupId>
             <artifactId>spring-boot-starter-druid</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.huatu.springboot</groupId>
+            <artifactId>spring-boot-starter-degrade</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>tk.mybatis</groupId>
             <artifactId>mapper-spring-boot-starter</artifactId>

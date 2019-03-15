@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.huatu.common.exception.BizException;
+import com.huatu.springboot.degrade.core.Degrade;
 import com.huatu.tiku.push.annotation.SplitParam;
 import com.huatu.tiku.push.constant.*;
 import com.huatu.tiku.push.dao.CourseInfoMapper;
@@ -277,6 +278,7 @@ public class NoticeServiceImpl implements NoticeService {
      */
     @Override
     @SplitParam
+    @Degrade(key="unReadCountV2", name="我的未读消息数")
     public int unReadNum(long userId) throws BizException {
         Example example = new Example(NoticeUserRelation.class);
         example.and()
@@ -285,6 +287,16 @@ public class NoticeServiceImpl implements NoticeService {
                 .andEqualTo("isRead", NoticeReadEnum.UN_READ.getValue());
 
         return noticeUserMapper.selectCountByExample(example);
+    }
+
+    /**
+     * 我的未读消息降级处理 -- 针对学习界面降级
+     * @param userId
+     * @return
+     * @throws BizException
+     */
+    public int unReadNumDegrade(long userId)throws BizException{
+        return 0;
     }
 
     /**
