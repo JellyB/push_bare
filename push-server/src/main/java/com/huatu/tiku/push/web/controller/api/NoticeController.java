@@ -55,8 +55,9 @@ public class NoticeController {
      */
     @GetMapping(value = "unReadCount")
     public Object list(@Token UserSession userSession){
-        long userId = userSession.getId();
-        return noticeService.unReadNum(userId);
+        /*long userId = userSession.getId();
+        return noticeService.unReadNum(userId);*/
+        return 0;
     }
 
 
