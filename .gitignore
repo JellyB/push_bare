@@ -1,25 +1,45 @@
-/target/
-!.mvn/wrapper/maven-wrapper.jar
+# common ignore
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar
+*.tar.gz
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
+# plugin ignore
+rebel.xml
+
+# maven ignore
+target/
+
+# myeclipse ignore
+.mymetadata
+
+# eclipse ignore
+.settings/
+.tomcatplugin
 .project
-.settings
-.springBeans
-.sts4-cache
+.classpath
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
+# idea ignore
+.idea/
 *.ipr
+*.iml
+*.iws
 
-### NetBeans ###
-/nbproject/private/
-/build/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
+# temp ignore
+classes/
+logs/
+work/
+*.doc
+*.log
+*.cache
+*.diff
+*.patch
+*.tmp
+*.bak
+
+# system ignore
+.DS_Store
+Thumbs.db
