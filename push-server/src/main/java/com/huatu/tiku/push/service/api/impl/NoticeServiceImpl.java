@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.huatu.common.exception.BizException;
+import com.huatu.springboot.degrade.core.Degrade;
 import com.huatu.tiku.push.annotation.SplitParam;
 import com.huatu.tiku.push.constant.BaseMsg;
 import com.huatu.tiku.push.constant.CourseParams;
@@ -30,7 +31,6 @@ import com.huatu.tiku.push.service.api.strategy.NoticeRespAppStrategy;
 import com.huatu.tiku.push.service.api.strategy.NoticeRespHandler;
 import com.huatu.tiku.push.service.api.strategy.NoticeRespPcStrategy;
 import com.huatu.tiku.push.util.NoticeTimeParseUtil;
-import com.mongodb.client.model.ValidationAction;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -274,6 +274,7 @@ public class NoticeServiceImpl implements NoticeService {
      */
     @Override
     @SplitParam
+    @Degrade(key = "unReadNumV2", name = "我的消息未读数")
     public int unReadNum(long userId) throws BizException {
         Example example = new Example(NoticeUserRelation.class);
         example.and()
@@ -282,6 +283,16 @@ public class NoticeServiceImpl implements NoticeService {
                 .andEqualTo("isRead", NoticeReadEnum.UN_READ.getValue());
 
         return noticeUserMapper.selectCountByExample(example);
+    }
+
+    /**
+     * 我的消息未读数降级接口
+     * @param userId
+     * @return
+     * @throws BizException
+     */
+    public int unReadNumDegrade(long userId)throws BizException{
+        return 0;
     }
 
     /**
