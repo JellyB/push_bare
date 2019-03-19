@@ -91,7 +91,6 @@ public class NoticeViewManager {
      * @param noticeRelationId
      * @throws BizException
      */
-    @Async
     public synchronized void resetViewUnReadCount(long userId, long noticeRelationId) throws BizException{
         NoticeUserRelation noticeUserRelation = (NoticeUserRelation)noticeUserMapper.selectByPrimaryKey(noticeRelationId);
         if(null == noticeUserRelation){
@@ -107,7 +106,7 @@ public class NoticeViewManager {
             update.setId(noticeView.getId());
             update.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             update.setCount(count);
-            noticeUserMapper.updateByPrimaryKeySelective(update);
+            noticeViewMapper.updateByPrimaryKeySelective(update);
         }
     }
 
