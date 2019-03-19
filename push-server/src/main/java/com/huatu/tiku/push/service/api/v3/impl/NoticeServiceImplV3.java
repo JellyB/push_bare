@@ -144,6 +144,9 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
         NoticeViewEnum noticeViewEnum = NoticeViewEnum.create(view);
         List<String> types = noticeViewEnum.child().stream().map(NoticeParentTypeEnum::getType).collect(Collectors.toList());
         PageInfo pageInfo = ((NoticeServiceImplV3)AopContext.currentProxy()).obtainViewPageInfo(userId, types, page, size);
+        if(CollectionUtils.isEmpty(pageInfo.getList())){
+            return pageInfo;
+        }
         Set<Long> noticeIds = Sets.newHashSet();
         List<NoticeUserRelation> noticeUserRelations = pageInfo.getList();
         noticeUserRelations.forEach(noticeUserRelation -> {
