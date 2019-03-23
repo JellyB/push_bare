@@ -43,4 +43,8 @@ public enum NoticeTypeEnum{
         }
         return null;
     }
+
+    public NoticeViewEnum getViewEnum(){
+        return this.getType().getParent();
+    }
 }

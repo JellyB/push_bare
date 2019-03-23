@@ -3,6 +3,7 @@ package com.huatu.tiku.push.service.api.v3.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.annotation.SplitParam;
@@ -27,18 +28,20 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import java.sql.Timestamp;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * 描述：
  *
  * @author biguodong
- * Create time 2019-02-26 下午6:48
+ *         Create time 2019-02-26 下午6:48
  **/
 
 @Service
-public class NoticeServiceImplV3 implements NoticeServiceV3{
+public class NoticeServiceImplV3 implements NoticeServiceV3 {
 
     @Autowired
     private NoticeUserMapper noticeUserMapper;
@@ -58,6 +61,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
 
     /**
      * 全部已读
+     *
      * @param userId
      * @return
      * @throws BizException
@@ -83,8 +87,16 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
     @Override
     public Object viewList(long userId) throws BizException {
         List<NoticeView> list = noticeViewManager.noticeViewList(userId);
-        if(CollectionUtils.isEmpty(list)){
-            return Lists.newArrayList();
+        int typeNum = NoticeViewEnum.values().length;   //view数据的条数（有种类来决定）
+        /**
+         * 无初始化view数据，或者view数据不全的补足用户view记录
+         */
+        if (CollectionUtils.isEmpty(list) || list.size() != typeNum) {
+            list = initViewData(userId);        //重新生成view数据
+        }
+        //筛选有数据的noticeView
+        if (CollectionUtils.isNotEmpty(list)) {
+            list = list.stream().filter(item -> item.getCount() > 0).collect(Collectors.toList());
         }
         Set<Long> noticeIds = list.stream().map(item -> item.getNoticeId()).collect(Collectors.toSet());
         Map<Long, NoticeEntity> noticeEntityMap = noticeEntityManager.obtainNoticeMaps(noticeIds);
@@ -93,9 +105,9 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
             NoticeViewEnum noticeViewEnum = NoticeViewEnum.create(item.getView());
             NoticeEntity noticeEntity = noticeEntityMap.get(item.getNoticeId());
             StringBuilder content = new StringBuilder();
-            if(null == noticeEntity){
+            if (null == noticeEntity) {
                 content.append(StringUtils.EMPTY);
-            }else{
+            } else {
                 content.append(noticeEntity.getTitle());
             }
             NoticeViewVo noticeViewVo = NoticeViewVo
@@ -112,7 +124,62 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
     }
 
     /**
+     * 初始化用户notice表数据
+     *
+     * @param userId
+     * @return
+     */
+    private List<NoticeView> initViewData(long userId) {
+        List<NoticeUserRelation> relations = findRelationByUserId(userId);
+        Map<NoticeViewEnum, List<NoticeUserRelation>> viewMap = Maps.newHashMap();
+        if (CollectionUtils.isNotEmpty(relations)) {
+            viewMap = relations.stream()
+                    .filter(i -> null != NoticeTypeEnum.create(i.getType(), i.getDetailType()))
+                    .collect(Collectors.groupingBy(i -> NoticeTypeEnum.create(i.getType(), i.getDetailType()).getViewEnum()));
+        }
+        List<NoticeView> resultList = Lists.newArrayList();
+        for (NoticeViewEnum noticeViewEnum : NoticeViewEnum.values()) {
+            List<NoticeUserRelation> tempList = viewMap.getOrDefault(noticeViewEnum, Lists.newArrayList()); //单个view下的所有notice
+            NoticeView view = new NoticeView();
+            view.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+            view.setStatus(NoticeStatusEnum.NORMAL.getValue());
+            view.setUserId(userId);
+            view.setCount(tempList.size());
+            view.setView(noticeViewEnum.getView());
+            if (CollectionUtils.isEmpty(tempList)) {
+                //初始化数据
+                view.setCreateTime(new Timestamp(System.currentTimeMillis()));
+                view.setNoticeId(-1L);
+            } else {
+                view.setNoticeId(tempList.get(0).getNoticeId());
+            }
+            NoticeView save = noticeViewManager.save(view);
+            if (null != save) {
+                resultList.add(save);
+            }
+        }
+        return resultList;
+    }
+
+    /**
+     * 查询用户的所有消息
+     *
+     * @param userId
+     * @return
+     */
+    public List<NoticeUserRelation> findRelationByUserId(long userId) {
+        Example example = new Example(NoticeUserRelation.class);
+        example.and()
+                .andEqualTo("userId", userId)
+                .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
+
+        example.orderBy("createTime").desc();
+        return noticeUserMapper.selectByExample(example);
+    }
+
+    /**
      * 临时影藏当前view
+     *
      * @param userId
      * @param view
      * @return
@@ -132,6 +199,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
 
     /**
      * 我的 view 消息列表
+     *
      * @param userId
      * @param view
      * @param page
@@ -143,8 +211,8 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
     public PageInfo typeViewList(long userId, String view, int page, int size) throws BizException {
         NoticeViewEnum noticeViewEnum = NoticeViewEnum.create(view);
         List<String> types = noticeViewEnum.child().stream().map(NoticeParentTypeEnum::getType).collect(Collectors.toList());
-        PageInfo pageInfo = ((NoticeServiceImplV3)AopContext.currentProxy()).obtainViewPageInfo(userId, types, page, size);
-        if(CollectionUtils.isEmpty(pageInfo.getList())){
+        PageInfo pageInfo = ((NoticeServiceImplV3) AopContext.currentProxy()).obtainViewPageInfo(userId, types, page, size);
+        if (CollectionUtils.isEmpty(pageInfo.getList())) {
             return pageInfo;
         }
         Set<Long> noticeIds = Sets.newHashSet();
@@ -159,7 +227,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
 
 
     @SplitParam
-    public PageInfo obtainViewPageInfo(long userId, List<String> types, int page, int size){
+    public PageInfo obtainViewPageInfo(long userId, List<String> types, int page, int size) {
         Example example = new Example(NoticeUserRelation.class);
         example.and()
                 .andEqualTo("userId", userId)
@@ -170,15 +238,14 @@ public class NoticeServiceImplV3 implements NoticeServiceV3{
 
         PageInfo pageInfo = PageHelper
                 .startPage(page, size)
-                .doSelectPageInfo(()->noticeUserMapper.selectByExample(example));
-            return pageInfo;
+                .doSelectPageInfo(() -> noticeUserMapper.selectByExample(example));
+        return pageInfo;
     }
-
-
 
 
     /**
      * 条件删除 noticeId
+     *
      * @param userId
      * @param noticeId
      * @return

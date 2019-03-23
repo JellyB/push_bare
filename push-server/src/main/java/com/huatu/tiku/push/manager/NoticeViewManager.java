@@ -13,6 +13,7 @@ import com.huatu.tiku.push.entity.NoticeUserRelation;
 import com.huatu.tiku.push.entity.NoticeView;
 import com.huatu.tiku.push.enums.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,7 +25,6 @@ import tk.mybatis.mapper.entity.Example;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 /**
@@ -228,5 +228,25 @@ public class NoticeViewManager {
     public int updateByExampleSelective(NoticeView noticeView, Example example){
         noticeView.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         return noticeViewMapper.updateByExampleSelective(noticeView, example);
+    }
+
+    public NoticeView save(NoticeView noticeView){
+        Long userId = noticeView.getUserId();
+        String view = noticeView.getView();
+        Example example = new Example(NoticeView.class);
+        example.and().andEqualTo("userId",userId)
+                .andEqualTo("view",view)
+                .andEqualTo("status",NoticeStatusEnum.NORMAL.getValue());
+        List<NoticeEntity> noticeEntities = noticeEntityMapper.selectByExample(example);
+        if(CollectionUtils.isEmpty(noticeEntities)){
+            noticeView.setCreateTime(new Timestamp(System.currentTimeMillis()));
+            noticeViewMapper.insert(noticeView);
+            log.info("insert noticeView info={}",noticeView);
+            return noticeView;
+        }else{
+            updateByExampleSelective(noticeView,example);
+            log.info("update noticeView info={}",noticeView);
+            return noticeView;
+        }
     }
 }
