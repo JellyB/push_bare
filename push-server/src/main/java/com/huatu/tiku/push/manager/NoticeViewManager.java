@@ -237,10 +237,10 @@ public class NoticeViewManager {
         example.and().andEqualTo("userId",userId)
                 .andEqualTo("view",view)
                 .andEqualTo("status",NoticeStatusEnum.NORMAL.getValue());
-        List<NoticeEntity> noticeEntities = noticeEntityMapper.selectByExample(example);
+        List<NoticeView> noticeEntities = noticeViewMapper.selectByExample(example);
         if(CollectionUtils.isEmpty(noticeEntities)){
             noticeView.setCreateTime(new Timestamp(System.currentTimeMillis()));
-            noticeViewMapper.insert(noticeView);
+            noticeViewMapper.insertSelective(noticeView);
             log.info("insert noticeView info={}",noticeView);
             return noticeView;
         }else{

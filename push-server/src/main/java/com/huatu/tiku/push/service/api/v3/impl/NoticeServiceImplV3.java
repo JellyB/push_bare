@@ -15,6 +15,7 @@ import com.huatu.tiku.push.entity.NoticeView;
 import com.huatu.tiku.push.enums.*;
 import com.huatu.tiku.push.manager.NoticeEntityManager;
 import com.huatu.tiku.push.manager.NoticeViewManager;
+import com.huatu.tiku.push.service.api.NoticeService;
 import com.huatu.tiku.push.service.api.strategy.NoticeRespAppStrategy;
 import com.huatu.tiku.push.service.api.strategy.NoticeRespHandler;
 import com.huatu.tiku.push.service.api.v3.NoticeServiceV3;
@@ -59,6 +60,8 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
     @Qualifier(value = "noticeRespAppStrategy")
     private NoticeRespAppStrategy noticeRespAppStrategy;
 
+    @Autowired
+    private NoticeService noticeService;
     /**
      * 全部已读
      *
@@ -130,7 +133,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
      * @return
      */
     private List<NoticeView> initViewData(long userId) {
-        List<NoticeUserRelation> relations = findRelationByUserId(userId);
+        List<NoticeUserRelation> relations = ((NoticeServiceImplV3)AopContext.currentProxy()).findRelationByUserId(userId);
         Map<NoticeViewEnum, List<NoticeUserRelation>> viewMap = Maps.newHashMap();
         if (CollectionUtils.isNotEmpty(relations)) {
             viewMap = relations.stream()
@@ -146,11 +149,14 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
             view.setUserId(userId);
             view.setCount(tempList.size());
             view.setView(noticeViewEnum.getView());
+            view.setCreator(userId);
+            view.setBizStatus(NoticeStatusEnum.NORMAL.getValue());
+            view.setCreateTime(new Timestamp(System.currentTimeMillis()));
             if (CollectionUtils.isEmpty(tempList)) {
                 //初始化数据
-                view.setCreateTime(new Timestamp(System.currentTimeMillis()));
                 view.setNoticeId(-1L);
             } else {
+                view.setModifier(userId);
                 view.setNoticeId(tempList.get(0).getNoticeId());
             }
             NoticeView save = noticeViewManager.save(view);
@@ -167,6 +173,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
      * @param userId
      * @return
      */
+    @SplitParam
     public List<NoticeUserRelation> findRelationByUserId(long userId) {
         Example example = new Example(NoticeUserRelation.class);
         example.and()
@@ -176,7 +183,6 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
         example.orderBy("createTime").desc();
         return noticeUserMapper.selectByExample(example);
     }
-
     /**
      * 临时影藏当前view
      *
