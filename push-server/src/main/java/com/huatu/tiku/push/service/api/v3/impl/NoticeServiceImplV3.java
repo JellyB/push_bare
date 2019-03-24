@@ -94,13 +94,13 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
         /**
          * 无初始化view数据，或者view数据不全的补足用户view记录
          */
-        if (CollectionUtils.isEmpty(list) || list.size() != typeNum) {
+        if (list.size() < typeNum) {
             list = initViewData(userId);        //重新生成view数据
         }
         //筛选有数据的noticeView
-        if (CollectionUtils.isNotEmpty(list)) {
+        /*if (CollectionUtils.isNotEmpty(list)) {
             list = list.stream().filter(item -> item.getCount() > 0).collect(Collectors.toList());
-        }
+        }*/
         Set<Long> noticeIds = list.stream().map(item -> item.getNoticeId()).collect(Collectors.toSet());
         Map<Long, NoticeEntity> noticeEntityMap = noticeEntityManager.obtainNoticeMaps(noticeIds);
         List<NoticeViewVo> noticeViewVos = Lists.newArrayList();
@@ -150,13 +150,13 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
             view.setCount(tempList.size());
             view.setView(noticeViewEnum.getView());
             view.setCreator(userId);
+            view.setModifier(userId);
             view.setBizStatus(NoticeStatusEnum.NORMAL.getValue());
             view.setCreateTime(new Timestamp(System.currentTimeMillis()));
             if (CollectionUtils.isEmpty(tempList)) {
                 //初始化数据
                 view.setNoticeId(-1L);
             } else {
-                view.setModifier(userId);
                 view.setNoticeId(tempList.get(0).getNoticeId());
             }
             NoticeView save = noticeViewManager.save(view);
@@ -168,7 +168,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
     }
 
     /**
-     * 查询用户的所有消息
+     * 查询用户的所有未读消息
      *
      * @param userId
      * @return
@@ -178,6 +178,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
         Example example = new Example(NoticeUserRelation.class);
         example.and()
                 .andEqualTo("userId", userId)
+                .andEqualTo("isRead", NoticeReadEnum.UN_READ.getValue())
                 .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
 
         example.orderBy("createTime").desc();

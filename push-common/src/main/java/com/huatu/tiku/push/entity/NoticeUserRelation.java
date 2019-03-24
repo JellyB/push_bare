@@ -49,6 +49,7 @@ public class NoticeUserRelation {
 
     /**
      * 是否已读：0未读；1已读
+     * {@link com.huatu.tiku.push.enums.NoticeReadEnum}
      */
     private Integer isRead;
 
