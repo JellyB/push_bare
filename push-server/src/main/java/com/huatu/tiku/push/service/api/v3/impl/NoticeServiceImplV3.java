@@ -60,8 +60,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
     @Qualifier(value = "noticeRespAppStrategy")
     private NoticeRespAppStrategy noticeRespAppStrategy;
 
-    @Autowired
-    private NoticeService noticeService;
+    private static final String DEFAULT_VIEW_MSG = "暂无最新未读消息";
     /**
      * 全部已读
      *
@@ -97,10 +96,6 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
         if (list.size() < typeNum) {
             list = initViewData(userId);        //重新生成view数据
         }
-        //筛选有数据的noticeView
-        /*if (CollectionUtils.isNotEmpty(list)) {
-            list = list.stream().filter(item -> item.getCount() > 0).collect(Collectors.toList());
-        }*/
         Set<Long> noticeIds = list.stream().map(item -> item.getNoticeId()).collect(Collectors.toSet());
         Map<Long, NoticeEntity> noticeEntityMap = noticeEntityManager.obtainNoticeMaps(noticeIds);
         List<NoticeViewVo> noticeViewVos = Lists.newArrayList();
@@ -109,7 +104,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
             NoticeEntity noticeEntity = noticeEntityMap.get(item.getNoticeId());
             StringBuilder content = new StringBuilder();
             if (null == noticeEntity) {
-                content.append(StringUtils.EMPTY);
+                content.append(DEFAULT_VIEW_MSG);
             } else {
                 content.append(noticeEntity.getTitle());
             }
@@ -142,6 +137,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
         }
         List<NoticeView> resultList = Lists.newArrayList();
         for (NoticeViewEnum noticeViewEnum : NoticeViewEnum.values()) {
+
             List<NoticeUserRelation> tempList = viewMap.getOrDefault(noticeViewEnum, Lists.newArrayList()); //单个view下的所有notice
             NoticeView view = new NoticeView();
             view.setUpdateTime(new Timestamp(System.currentTimeMillis()));
@@ -184,6 +180,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
         example.orderBy("createTime").desc();
         return noticeUserMapper.selectByExample(example);
     }
+
     /**
      * 临时影藏当前view
      *
