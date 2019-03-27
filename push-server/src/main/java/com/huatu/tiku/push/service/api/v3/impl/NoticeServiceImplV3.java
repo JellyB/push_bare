@@ -114,7 +114,8 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
                     .name(noticeViewEnum.getName())
                     .count(item.getCount())
                     .content(content.toString())
-                    .timeInfo(NoticeTimeParseUtil.noticeViewTime(item.getUpdateTime()))
+                    .timeInfo(NoticeTimeParseUtil.parseTime(item.getUpdateTime().getTime()))
+                    //.timeInfo(NoticeTimeParseUtil.noticeViewTime(item.getUpdateTime()))
                     .build();
             noticeViewVos.add(noticeViewVo);
         });
