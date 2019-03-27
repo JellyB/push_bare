@@ -115,7 +115,6 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
                     .count(item.getCount())
                     .content(content.toString())
                     .timeInfo(NoticeTimeParseUtil.parseTime(item.getUpdateTime().getTime()))
-                    //.timeInfo(NoticeTimeParseUtil.noticeViewTime(item.getUpdateTime()))
                     .build();
             noticeViewVos.add(noticeViewVo);
         });
@@ -141,7 +140,6 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
 
             List<NoticeUserRelation> tempList = viewMap.getOrDefault(noticeViewEnum, Lists.newArrayList()); //单个view下的所有notice
             NoticeView view = new NoticeView();
-            view.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             view.setStatus(NoticeStatusEnum.NORMAL.getValue());
             view.setUserId(userId);
             view.setCount(tempList.size());
@@ -153,8 +151,11 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
             if (CollectionUtils.isEmpty(tempList)) {
                 //初始化数据
                 view.setNoticeId(-1L);
+                view.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             } else {
-                view.setNoticeId(tempList.get(0).getNoticeId());
+                NoticeUserRelation noticeUserRelation = tempList.get(0);
+                view.setUpdateTime(noticeUserRelation.getCreateTime());
+                view.setNoticeId(noticeUserRelation.getNoticeId());
             }
             NoticeView save = noticeViewManager.save(view);
             if (null != save) {

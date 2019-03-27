@@ -74,7 +74,7 @@ public class NoticeViewManager {
             NoticeViewEnum noticeViewEnum = noticeTypeEnum.getType().getParent();
             Optional<NoticeView> optionalNoticeView = obtainNoticeView(userId, noticeViewEnum.getView());
             if(optionalNoticeView.isPresent()){
-                updateViewLastNoticeAndCount(optionalNoticeView.get(), noticeId);
+                updateViewLastNoticeAndCount(optionalNoticeView.get(), noticeId, noticeEntity.getCreateTime().getTime());
             }else{
                 insertNewView(userId, noticeViewEnum.getView(), noticeId);
             }
@@ -172,13 +172,14 @@ public class NoticeViewManager {
      * @param noticeView
      * @return
      */
-    private int updateViewLastNoticeAndCount(NoticeView noticeView, long noticeId){
+    private int updateViewLastNoticeAndCount(NoticeView noticeView, long noticeId, long noticeUpdateTime){
         NoticeView noticeView_ = new NoticeView();
         noticeView_.setNoticeId(noticeId);
         noticeView_.setId(noticeView.getId());
         noticeView_.setUpdateTime(new Timestamp(System.currentTimeMillis()));
         noticeView_.setStatus(NoticeStatusEnum.NORMAL.getValue());
         noticeView_.setCount(noticeView.getCount() + 1);
+        noticeView_.setUpdateTime(new Timestamp(noticeUpdateTime));
         return noticeViewMapper.updateByPrimaryKeySelective(noticeView_);
     }
 
