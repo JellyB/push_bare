@@ -15,7 +15,6 @@ import com.huatu.tiku.push.entity.NoticeView;
 import com.huatu.tiku.push.enums.*;
 import com.huatu.tiku.push.manager.NoticeEntityManager;
 import com.huatu.tiku.push.manager.NoticeViewManager;
-import com.huatu.tiku.push.service.api.NoticeService;
 import com.huatu.tiku.push.service.api.strategy.NoticeRespAppStrategy;
 import com.huatu.tiku.push.service.api.strategy.NoticeRespHandler;
 import com.huatu.tiku.push.service.api.v3.NoticeServiceV3;
@@ -26,6 +25,7 @@ import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.util.NumberUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.sql.Timestamp;
@@ -142,7 +142,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
             NoticeView view = new NoticeView();
             view.setStatus(NoticeStatusEnum.NORMAL.getValue());
             view.setUserId(userId);
-            view.setCount(tempList.size());
+
             view.setView(noticeViewEnum.getView());
             view.setCreator(userId);
             view.setModifier(userId);
@@ -151,8 +151,11 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
             if (CollectionUtils.isEmpty(tempList)) {
                 //初始化数据
                 view.setNoticeId(-1L);
+                view.setCount(0);
                 view.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             } else {
+                Integer count = NumberUtils.parseNumber(String.valueOf(tempList.stream().filter(i -> i.getIsRead() == NoticeReadEnum.UN_READ.getValue()).count()), Integer.class);
+                view.setCount(count);
                 NoticeUserRelation noticeUserRelation = tempList.get(0);
                 view.setUpdateTime(noticeUserRelation.getCreateTime());
                 view.setNoticeId(noticeUserRelation.getNoticeId());
@@ -176,7 +179,6 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
         Example example = new Example(NoticeUserRelation.class);
         example.and()
                 .andEqualTo("userId", userId)
-                .andEqualTo("isRead", NoticeReadEnum.UN_READ.getValue())
                 .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
 
         example.orderBy("createTime").desc();
