@@ -308,7 +308,6 @@ public class NoticeServiceImpl implements NoticeService {
      * @throws BizException
      */
     @Override
-    @SplitParam
     public Object hasRead(long userId, long noticeId) throws BizException {
         Example example = new Example(NoticeUserRelation.class);
         example.and()
@@ -323,6 +322,18 @@ public class NoticeServiceImpl implements NoticeService {
                 .build();
 
         noticeViewManager.resetViewUnReadCount(userId, noticeId);
+        return ((NoticeServiceImpl)AopContext.currentProxy()).updateByExampleSelective(userId, noticeUserRelation, example);
+    }
+
+    /**
+     * 更新消息已读
+     * @param userId
+     * @param noticeUserRelation
+     * @param example
+     * @return
+     */
+    @SplitParam
+    public int updateByExampleSelective(long userId, NoticeUserRelation noticeUserRelation, Example example){
         return noticeUserMapper.updateByExampleSelective(noticeUserRelation, example);
     }
 
