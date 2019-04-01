@@ -15,6 +15,7 @@ import com.huatu.tiku.push.enums.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
@@ -92,7 +93,7 @@ public class NoticeViewManager {
      * @throws BizException
      */
     public synchronized void resetViewUnReadCount(long userId, long noticeRelationId) throws BizException{
-        NoticeUserRelation noticeUserRelation = (NoticeUserRelation)noticeUserMapper.selectByPrimaryKey(noticeRelationId);
+        NoticeUserRelation noticeUserRelation = ((NoticeViewManager)AopContext.currentProxy()).noticeUserRelation(userId, noticeRelationId);
         if(null == noticeUserRelation){
             return;
         }
@@ -108,6 +109,18 @@ public class NoticeViewManager {
             update.setCount(count);
             noticeViewMapper.updateByPrimaryKeySelective(update);
         }
+    }
+
+    /**
+     * 查询 noticeUserRelation
+     * @param userId
+     * @param noticeRelationId
+     * @return
+     */
+    @SplitParam
+    public NoticeUserRelation noticeUserRelation(long userId, long noticeRelationId){
+        NoticeUserRelation noticeUserRelation = (NoticeUserRelation)noticeUserMapper.selectByPrimaryKey(noticeRelationId);
+        return noticeUserRelation;
     }
 
 
@@ -144,7 +157,9 @@ public class NoticeViewManager {
         Example example = new Example(NoticeView.class);
         example.and()
                 .andEqualTo("userId", userId)
-                .andEqualTo("view", view);
+                .andEqualTo("view", view)
+                .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
+
         NoticeView noticeView = noticeViewMapper.selectOneByExample(example);
         return Optional.ofNullable(noticeView);
     }
