@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
 import com.huatu.common.ErrorResult;
+import com.huatu.common.SuccessMessage;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.constant.NoticePushErrors;
 import com.huatu.tiku.push.dao.CourseInfoMapper;
@@ -26,6 +27,7 @@ import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.entity.Example;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -166,7 +168,9 @@ public class CourseServiceImpl implements CourseService {
             CourseInfo courseInfo = new CourseInfo();
             courseInfo.setStatus(NoticeStatusEnum.DELETE_LOGIC.getValue());
             quartzJobInfoService.deleteJobByBizData(String.valueOf(liveId));
-            return courseInfoMapper.updateByExampleSelective(courseInfo, example);
+            int execute = courseInfoMapper.updateByExampleSelective(courseInfo, example);
+            log.info("删除直播课程推送信息:直播id:{}", liveId);
+            return execute;
 
         }
     }
@@ -261,5 +265,27 @@ public class CourseServiceImpl implements CourseService {
         if(startTime - currentTime < difference){
             throw new BizException(NoticePushErrors.COURSE_START_TIME_ILLEGAL);
         }
+    }
+
+    /**
+     * 批量删除直播课信息
+     *
+     * @param liveIds
+     * @return
+     * @throws BizException
+     */
+    @Override
+    public Object removeCourseInfoBatch(String liveIds) throws BizException {
+
+       List<String> list = Arrays.asList(liveIds.split(","));
+       if(CollectionUtils.isEmpty(list)){
+          return SuccessMessage.create("数据为空！");
+       }else{
+           list.forEach(item -> {
+               Long liveId = Long.valueOf(item);
+               removeCourseInfo(liveId);
+           });
+       }
+       return SuccessMessage.create("操作成功");
     }
 }

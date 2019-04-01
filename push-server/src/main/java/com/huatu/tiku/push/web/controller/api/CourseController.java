@@ -60,5 +60,14 @@ public class CourseController {
         return courseService.list(page, size, startTime);
     }
 
-
+    /**
+     * 批量删除直播课程信息
+     * @param liveIds
+     * @return
+     * @throws BizException
+     */
+    @DeleteMapping(value = "batch")
+    public Object removeCourseInfoBatch(@RequestParam("liveIds") String liveIds) throws BizException{
+        return courseService.removeCourseInfoBatch(liveIds);
+    }
 }

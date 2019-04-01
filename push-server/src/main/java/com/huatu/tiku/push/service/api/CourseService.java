@@ -48,4 +48,13 @@ public interface CourseService {
      * @throws BizException
      */
     Object list(int page, int size, String startTime) throws BizException;
+
+
+    /**
+     * 批量删除直播课信息
+     * @param liveIds
+     * @return
+     * @throws BizException
+     */
+    Object removeCourseInfoBatch(String liveIds) throws BizException;
 }
