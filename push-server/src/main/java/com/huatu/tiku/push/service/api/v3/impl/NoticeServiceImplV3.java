@@ -104,11 +104,11 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
             if(o1.getNoticeId() <= 0 && o2.getNoticeId() <= 0){
                 return 0;
             }else if(o1.getNoticeId() <= 0 && o2.getNoticeId() > 0){
-                return -1;
+                return 99;
             }else if(o1.getNoticeId() > 0 && o2.getNoticeId() <=0){
-                return 1;
+                return 2;
             }else{
-                return o1.getUpdateTime().getTime() >= o2.getUpdateTime().getTime() ? 1 : -1;
+                return o1.getUpdateTime().getTime() >= o2.getUpdateTime().getTime() ? -99 : 1;
             }
         });
         list.forEach(item -> {
