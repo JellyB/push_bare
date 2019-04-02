@@ -59,7 +59,6 @@ public class NoticeViewManager {
      * @return
      * @throws BizException
      */
-    @Async(value = "threadPoolTaskExecutor")
     public synchronized void saveOrUpdate(long userId, long noticeId)throws BizException{
         NoticeEntity noticeEntity;
         try{
@@ -80,7 +79,7 @@ public class NoticeViewManager {
                 insertNewView(userId, noticeViewEnum.getView(), noticeId);
             }
         }catch (Exception e){
-            log.error("save or update notice view error!:{}", e);
+            e.printStackTrace();
             throw new BizException(NoticePushErrors.SAVE_OR_UPDATE_VIEW_ERROR);
         }
 
