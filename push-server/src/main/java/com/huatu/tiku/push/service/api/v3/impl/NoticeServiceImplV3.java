@@ -102,7 +102,7 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
         List<NoticeViewVo> noticeViewVos = Lists.newArrayList();
         list.forEach(item -> {
             NoticeViewEnum noticeViewEnum = NoticeViewEnum.create(item.getView());
-            NoticeEntity noticeEntity = noticeEntityMap.get(item.getNoticeId());
+            NoticeEntity noticeEntity = noticeEntityMap.getOrDefault(item.getNoticeId(), null);
             StringBuilder content = new StringBuilder();
             if (null == noticeEntity) {
                 content.append(DEFAULT_VIEW_MSG);
@@ -118,13 +118,13 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
                     .timeInfo(NoticeTimeParseUtil.parseTime(item.getUpdateTime().getTime()))
                     .build();
             if(item.getNoticeId() < 0){
-                noticeViewVo.setSort(9999999);
+                noticeViewVo.setSortIndex(-1);
             }else{
-                noticeViewVo.setSort((System.currentTimeMillis() - item.getUpdateTime().getTime()) / 1000);
+                noticeViewVo.setSortIndex(noticeEntity.getCreateTime().getTime());
             }
             noticeViewVos.add(noticeViewVo);
         });
-        Collections.sort(noticeViewVos, (o1, o2) -> o1.getSort() < o2.getSort() ? -1 : 1);
+        Collections.sort(noticeViewVos, (o1, o2) -> o1.getSortIndex() >= o2.getSortIndex() ? -1 : 1);
         return noticeViewVos;
     }
 

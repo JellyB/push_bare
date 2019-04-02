@@ -21,16 +21,16 @@ public class NoticeViewVo {
     private String content;
     private String timeInfo;
     private String name;
-    private long sort;
+    private long sortIndex;
 
 
     @Builder
-    public NoticeViewVo(String view, int count, String content, String timeInfo, String name, long sort) {
+    public NoticeViewVo(String view, int count, String content, String timeInfo, String name, long sortIndex) {
         this.view = view;
         this.count = count;
         this.content = content;
         this.timeInfo = timeInfo;
         this.name = name;
-        this.sort = sort;
+        this.sortIndex = sortIndex;
     }
 }
