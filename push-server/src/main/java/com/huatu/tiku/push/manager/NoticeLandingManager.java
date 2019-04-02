@@ -84,6 +84,7 @@ public class NoticeLandingManager {
                     .text(noticeReq.getText())
                     .custom(JSONObject.toJSON(noticeReq.getCustom()).toString())
                     .updateTime(new Timestamp(System.currentTimeMillis()))
+                    .createTime(new Timestamp(System.currentTimeMillis()))
                     .displayType(noticeReq.getDisplayType())
                     .status(NoticeStatusEnum.NORMAL.getValue())
                     .build();
@@ -132,6 +133,7 @@ public class NoticeLandingManager {
                     .custom(JSONObject.toJSON(noticeReq.getCustom()).toString())
                     .displayType(noticeReq.getDisplayType())
                     .updateTime(new Timestamp(System.currentTimeMillis()))
+                    .createTime(new Timestamp(System.currentTimeMillis()))
                     .status(NoticeStatusEnum.NORMAL.getValue())
                     .build();
             noticeEntityMapper.insertSelective(noticeEntity);

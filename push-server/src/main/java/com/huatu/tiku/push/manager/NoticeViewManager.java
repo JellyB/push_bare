@@ -67,6 +67,10 @@ public class NoticeViewManager {
             if(redisTemplate.hasKey(key)){
                 String str = String.valueOf(valueOperations.get(key));
                 noticeEntity = JSONObject.parseObject(str, NoticeEntity.class);
+                if(null == noticeEntity.getCreateTime()){
+                    redisTemplate.delete(key);
+                    noticeEntity = noticeEntityMapper.selectByPrimaryKey(noticeId);
+                }
             }else{
                 noticeEntity = noticeEntityMapper.selectByPrimaryKey(noticeId);
             }
