@@ -115,12 +115,13 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
                     .name(noticeViewEnum.getName())
                     .count(item.getCount())
                     .content(content.toString())
-                    .timeInfo(NoticeTimeParseUtil.parseTime(item.getUpdateTime().getTime()))
                     .build();
             if(item.getNoticeId() < 0){
                 noticeViewVo.setSortIndex(-1);
+                noticeViewVo.setTimeInfo(NoticeTimeParseUtil.parseTime(item.getCreateTime().getTime()));
             }else{
                 noticeViewVo.setSortIndex(noticeEntity.getCreateTime().getTime());
+                noticeViewVo.setTimeInfo(NoticeTimeParseUtil.parseTime(noticeEntity.getCreateTime().getTime()));
             }
             noticeViewVos.add(noticeViewVo);
         });
