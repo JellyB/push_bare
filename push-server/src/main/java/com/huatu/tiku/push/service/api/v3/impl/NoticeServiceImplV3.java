@@ -100,17 +100,6 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
         Set<Long> noticeIds = list.stream().map(item -> item.getNoticeId()).collect(Collectors.toSet());
         Map<Long, NoticeEntity> noticeEntityMap = noticeEntityManager.obtainNoticeMaps(noticeIds);
         List<NoticeViewVo> noticeViewVos = Lists.newArrayList();
-        Collections.sort(list, (o1, o2) -> {
-            if(o1.getNoticeId() <= 0 && o2.getNoticeId() <= 0){
-                return 0;
-            }else if(o1.getNoticeId() <= 0 && o2.getNoticeId() > 0){
-                return 99;
-            }else if(o1.getNoticeId() > 0 && o2.getNoticeId() <=0){
-                return 2;
-            }else{
-                return o1.getUpdateTime().getTime() >= o2.getUpdateTime().getTime() ? -99 : 1;
-            }
-        });
         list.forEach(item -> {
             NoticeViewEnum noticeViewEnum = NoticeViewEnum.create(item.getView());
             NoticeEntity noticeEntity = noticeEntityMap.get(item.getNoticeId());
@@ -128,8 +117,14 @@ public class NoticeServiceImplV3 implements NoticeServiceV3 {
                     .content(content.toString())
                     .timeInfo(NoticeTimeParseUtil.parseTime(item.getUpdateTime().getTime()))
                     .build();
+            if(item.getNoticeId() < 0){
+                noticeViewVo.setSort(9999999);
+            }else{
+                noticeViewVo.setSort((System.currentTimeMillis() - item.getUpdateTime().getTime()) / 1000);
+            }
             noticeViewVos.add(noticeViewVo);
         });
+        Collections.sort(noticeViewVos, (o1, o2) -> o1.getSort() < o2.getSort() ? -1 : 1);
         return noticeViewVos;
     }
 
