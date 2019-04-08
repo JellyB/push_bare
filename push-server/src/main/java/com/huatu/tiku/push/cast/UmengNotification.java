@@ -14,7 +14,7 @@ import com.alibaba.fastjson.JSONObject;
  */
 public abstract class UmengNotification implements Serializable{
 
-	@Value("${notice.push.env:product}")
+	@Value("${notice.push.env}")
 	private String noticePushEnv;
 	/**
 	 * This JSONObject is used for constructing the whole request string.
@@ -22,7 +22,8 @@ public abstract class UmengNotification implements Serializable{
 	protected final JSONObject rootJson = new JSONObject();
 
 	public boolean isProduct(){
-		return noticePushEnv.equals(PRODUCT_MODE);
+		//return noticePushEnv.equals(PRODUCT_MODE);
+		return true;
 	}
 	/**
 	 * 生产模式
