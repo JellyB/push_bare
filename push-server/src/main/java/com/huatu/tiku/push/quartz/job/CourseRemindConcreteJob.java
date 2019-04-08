@@ -28,6 +28,7 @@ public class CourseRemindConcreteJob implements BaseQuartzJob{
     public void execute(JobExecutionContext executionContext) throws JobExecutionException {
         try{
             String bizData = String.valueOf(executionContext.getJobDetail().getJobDataMap().get(CourseBizData));
+            log.info("课程提醒推送课程内容:{}", bizData);
             courseRemindConcreteTemplate.dealDetailJob(NoticeTypeEnum.COURSE_REMIND, bizData);
         }catch (Exception e){
             log.error(e.getMessage(), e);

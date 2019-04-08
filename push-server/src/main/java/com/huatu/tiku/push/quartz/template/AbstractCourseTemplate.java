@@ -22,6 +22,7 @@ import com.huatu.tiku.push.service.api.SimpleUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
@@ -56,6 +57,9 @@ public abstract class AbstractCourseTemplate {
 
     @Autowired
     private NoticeStoreService noticeStoreService;
+
+    @Value("${notice.push.white.list}")
+    private Integer whiteUserId;
 
     private int userCountInRedis;
 
@@ -145,6 +149,9 @@ public abstract class AbstractCourseTemplate {
         if(CollectionUtils.isEmpty(users)){
             users.addAll(simpleUserManager.selectByBizId(CourseParams.TYPE, courseInfo.getClassId()));
         }
+        if(!users.contains(whiteUserId)){
+            users.add(whiteUserId);
+        }
         if(CollectionUtils.isEmpty(users)){
             log.error("course.class.id:{}.user.list.empty", courseInfo.getClassId());
             return;
@@ -156,6 +163,7 @@ public abstract class AbstractCourseTemplate {
             List<NoticeReq> noticeInsertList = noticeInsert(courseInfo, courseParams, noticeRelations);
             if(getUserCountInRedis() < RabbitMqKey.PUSH_STRATEGY_THRESHOLD){
                 List<UmengNotification> notificationList = customCastNotification(noticePushList);
+                log.info("课程推送 custom 数据条数:{}", noticeInsertList.size());
                 customCastStrategyTemplate.setNotificationList(notificationList);
                 notificationHandler.setPushStrategy(customCastStrategyTemplate);
                 notificationHandler.setConcurrent(true);

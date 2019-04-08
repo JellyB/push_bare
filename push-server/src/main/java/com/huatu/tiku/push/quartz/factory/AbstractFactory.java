@@ -57,7 +57,7 @@ public abstract class AbstractFactory {
      * @param list
      * @param notifications
      */
-    private static void androidCustomCast(List<NoticeReq> list, List<UmengNotification> notifications){
+    private static synchronized void androidCustomCast(List<NoticeReq> list, List<UmengNotification> notifications){
         list.forEach(item -> {
             try{
                 List<Long> alias = item.getUsers().stream().map(NoticeReq.NoticeUserRelation::getUserId).collect(Collectors.toList());
@@ -72,7 +72,11 @@ public abstract class AbstractFactory {
                 custom.put("title", item.getTitle());
                 custom.put("content", item.getText());
                 androidCustomCast.setCustomField(custom);
-                notifications.add(androidCustomCast);
+                if(!notifications.contains(androidCustomCast)){
+                    notifications.add(androidCustomCast);
+                }else {
+                    log.error("尝试添加一条已经存在的推送数据:{}", JSONObject.toJSONString(androidCustomCast));
+                }
             }catch (Exception e){
                 log.error("push msg error", e);
             }
@@ -86,7 +90,7 @@ public abstract class AbstractFactory {
      * @param notifications
      * @throws BizException
      */
-    private static void iosCustomCast(List<NoticeReq> list, List<UmengNotification> notifications)throws BizException{
+    private static synchronized void iosCustomCast(List<NoticeReq> list, List<UmengNotification> notifications)throws BizException{
         list.forEach(item -> {
             try{
                 List<Long> alias = item.getUsers().stream().map(NoticeReq.NoticeUserRelation::getUserId).collect(Collectors.toList());
@@ -101,7 +105,11 @@ public abstract class AbstractFactory {
                 iosCustomCast.setAlertBody(item.getText());
                 iosCustomCast.setCustomizedField(TYPE, IOS_NOTICE_CENTER);
                 iosCustomCast.setCustomizedField(VIEW, target);
-                notifications.add(iosCustomCast);
+                if(!notifications.contains(iosCustomCast)){
+                    notifications.add(iosCustomCast);
+                }else{
+                    log.error("尝试添加一条已经存在的推送数据:{}", JSONObject.toJSONString(iosCustomCast));
+                }
             }catch (Exception e){
                 log.error("ios custom push error", e);
             }

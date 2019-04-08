@@ -1,5 +1,6 @@
 package com.huatu.tiku.push.cast.strategy;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Joiner;
 import com.huatu.tiku.push.cast.HttpClientStrategy;
 import com.huatu.tiku.push.cast.PushResult;
@@ -106,14 +107,25 @@ public abstract class AbstractPushTemplate implements PushStrategy{
     @Override
     public final void push(NoticeTypeEnum noticeTypeEnum, long bizId) {
         try{
-            log.info("current Thread name:{}", Thread.currentThread().getName());
+            log.info("推送任务当前线程名:{}", Thread.currentThread().getName());
             if(CollectionUtils.isEmpty(getNotificationList())){
                 log.error("notifications can not be empty!!");
             }
+            SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+            String key = NoticePushRedisKey.getCourseLiveId(bizId);
+            redisTemplate.expire(key, 1, TimeUnit.HOURS);
             getNotificationList().forEach(item->{
-                String simpleName = item.getClass().getSimpleName();
-                PushResult pushResult = httpClientStrategy.send(item);
-                dealPushResult(simpleName, noticeTypeEnum, bizId, pushResult);
+                String itemStr = JSONObject.toJSONString(item);
+                if(setOperations.isMember(key, itemStr)){
+                    log.error("推送重复数据:{}", itemStr);
+                    return;
+                }else{
+                    String simpleName = item.getClass().getSimpleName();
+                    PushResult pushResult = httpClientStrategy.send(item);
+                    dealPushResult(simpleName, noticeTypeEnum, bizId, pushResult);
+                    setOperations.add(key, itemStr);
+                }
+
             });
         }catch (Exception e){
             log.error("push main function error!", e);

@@ -18,6 +18,8 @@ public class NoticePushRedisKey {
 
     private static final String COURSE_CLASS_ID = "notice.push.class";
 
+    private static final String COURSE_LIVE_ID = "notice.push.live.id";
+
     private static final String COURSE_FILE_ID = "notice.push.file.upload";
 
     private static final String NOTICE_PUSH_RESULT = "notice.push.result";
@@ -48,6 +50,15 @@ public class NoticePushRedisKey {
      */
     public static String getCourseClassId(long bizId){
         return Joiner.on(".").join(COURSE_CLASS_ID, bizId);
+    }
+
+    /**
+     * 直播课 id 推送判重处理
+     * @param liveId
+     * @return
+     */
+    public static String getCourseLiveId(long liveId){
+        return Joiner.on(".").join(COURSE_LIVE_ID, liveId);
     }
 
     /**
