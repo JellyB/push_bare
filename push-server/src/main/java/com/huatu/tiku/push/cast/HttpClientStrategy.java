@@ -79,7 +79,7 @@ public class HttpClientStrategy implements RestPushStrategy {
 			}
 			log.info(result.toString());
 			if (status == 200) {
-				log.info("Notification sent successfully.");
+				log.warn("消息内容调度成功，消息内容{}", postBody);
 				pushResult = JSONObject.parseObject(result.toString(), PushResult.class);
 				return pushResult;
 			} else {
