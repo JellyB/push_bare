@@ -167,6 +167,7 @@ public class CourseServiceImpl implements CourseService {
                     .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
             CourseInfo courseInfo = new CourseInfo();
             courseInfo.setStatus(NoticeStatusEnum.DELETE_LOGIC.getValue());
+            courseInfo.setUpdateTime(new Timestamp(System.currentTimeMillis()));
             quartzJobInfoService.deleteJobByBizData(String.valueOf(liveId));
             int execute = courseInfoMapper.updateByExampleSelective(courseInfo, example);
             log.info("删除直播课程推送信息:直播id:{}", liveId);
