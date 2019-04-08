@@ -3,6 +3,7 @@ package com.huatu.tiku.push.cast;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -11,7 +12,7 @@ import java.util.HashSet;
 /**
  * @author biguodong
  */
-
+@Component
 public abstract class UmengNotification implements Serializable{
 
 	@Value("${notice.push.env}")
