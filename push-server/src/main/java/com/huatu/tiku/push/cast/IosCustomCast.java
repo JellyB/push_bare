@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.concurrent.ThreadPoolExecutor;
 
 /**
  * 描述：IOS 自定义推送
@@ -37,10 +38,12 @@ public class IosCustomCast extends AbstractIOSNotification{
         AbstractFactory.iosCustomCast.setAppMasterSecret(iosMasterSecret);
         AbstractFactory.iosCustomCast.setPredefinedKeyValue("appkey", iosAppKey);
         AbstractFactory.iosCustomCast.setPredefinedKeyValue("type", CUSTOM_CAST);
+        AbstractFactory.iosCustomCast.setNoticePushEnv(getNoticePushEnv());
 
         AbstractFactory.iosCustomFileCast.setAppMasterSecret(iosMasterSecret);
         AbstractFactory.iosCustomFileCast.setPredefinedKeyValue("appkey", iosAppKey);
         AbstractFactory.iosCustomFileCast.setPredefinedKeyValue("type", CUSTOM_CAST);
+        AbstractFactory.iosCustomFileCast.setNoticePushEnv(getNoticePushEnv());
         if(isProduct()){
             AbstractFactory.iosCustomCast.setProductionMode();
             AbstractFactory.iosCustomFileCast.setProductionMode();

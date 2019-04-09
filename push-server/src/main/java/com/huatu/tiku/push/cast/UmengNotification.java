@@ -22,8 +22,8 @@ public abstract class UmengNotification implements Serializable{
 	protected final JSONObject rootJson = new JSONObject();
 
 	public boolean isProduct(){
-		//return noticePushEnv.equals(PRODUCT_MODE);
-		return true;
+		return noticePushEnv.equals(PRODUCT_MODE);
+		//return true;
 	}
 	/**
 	 * 生产模式
@@ -152,4 +152,11 @@ public abstract class UmengNotification implements Serializable{
     	setPredefinedKeyValue("max_send_num", num);
     }
 
+	public void setNoticePushEnv(String noticePushEnv) {
+		this.noticePushEnv = noticePushEnv;
+	}
+
+	public String getNoticePushEnv() {
+		return noticePushEnv;
+	}
 }

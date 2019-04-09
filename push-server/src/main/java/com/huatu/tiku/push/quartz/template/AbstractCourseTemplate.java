@@ -27,6 +27,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 描述：
@@ -59,7 +61,7 @@ public abstract class AbstractCourseTemplate {
     private NoticeStoreService noticeStoreService;
 
     @Value("${notice.push.white.list}")
-    private Integer whiteUserId;
+    private String whiteUserId;
 
     private int userCountInRedis;
 
@@ -149,8 +151,11 @@ public abstract class AbstractCourseTemplate {
         if(CollectionUtils.isEmpty(users)){
             users.addAll(simpleUserManager.selectByBizId(CourseParams.TYPE, courseInfo.getClassId()));
         }
-        if(!users.contains(whiteUserId)){
-            users.add(whiteUserId);
+        try{
+            Set<Integer> whiteList = Stream.of(whiteUserId.split(",")).map(i -> Integer.valueOf(i)).collect(Collectors.toSet());
+            users.addAll(whiteList);
+        }catch (Exception e){
+            log.error("添加白名单用户异常:{}", whiteUserId);
         }
         if(CollectionUtils.isEmpty(users)){
             log.error("course.class.id:{}.user.list.empty", courseInfo.getClassId());
