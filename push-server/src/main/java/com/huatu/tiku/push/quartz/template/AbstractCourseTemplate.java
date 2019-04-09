@@ -168,7 +168,7 @@ public abstract class AbstractCourseTemplate {
             List<NoticeReq> noticeInsertList = noticeInsert(courseInfo, courseParams, noticeRelations);
             if(getUserCountInRedis() < RabbitMqKey.PUSH_STRATEGY_THRESHOLD){
                 List<UmengNotification> notificationList = customCastNotification(noticePushList);
-                log.info("课程推送 custom 数据条数:{}", noticeInsertList.size());
+                log.info("课程推送 custom 数据:{}", JSONObject.toJSONString(notificationList));
                 customCastStrategyTemplate.setNotificationList(notificationList);
                 notificationHandler.setPushStrategy(customCastStrategyTemplate);
                 notificationHandler.setConcurrent(true);

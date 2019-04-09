@@ -16,7 +16,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 
 import java.util.List;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -34,9 +33,6 @@ public abstract class AbstractPushTemplate implements PushStrategy{
 
     @Autowired
     private HttpClientStrategy httpClientStrategy;
-
-    @Autowired
-    private RestTemplateStrategy restTemplateStrategy;
 
     private List<UmengNotification> notificationList;
 
@@ -111,19 +107,18 @@ public abstract class AbstractPushTemplate implements PushStrategy{
             if(CollectionUtils.isEmpty(getNotificationList())){
                 log.error("notifications can not be empty!!");
             }
-            SetOperations<String, String> setOperations = redisTemplate.opsForSet();
+            SetOperations<String, UmengNotification> setOperations = redisTemplate.opsForSet();
             String key = NoticePushRedisKey.getCourseLiveId(bizId);
             redisTemplate.expire(key, 1, TimeUnit.HOURS);
             getNotificationList().forEach(item->{
-                String itemStr = JSONObject.toJSONString(item);
-                if(setOperations.isMember(key, itemStr)){
-                    log.error("推送重复数据:{}", itemStr);
+                if(setOperations.isMember(key, item)){
+                    log.error("推送重复数据:{}", JSONObject.toJSONString(item));
                     return;
                 }else{
                     String simpleName = item.getClass().getSimpleName();
                     PushResult pushResult = httpClientStrategy.send(item);
                     dealPushResult(simpleName, noticeTypeEnum, bizId, pushResult);
-                    setOperations.add(key, itemStr);
+                    setOperations.add(key, item);
                 }
 
             });

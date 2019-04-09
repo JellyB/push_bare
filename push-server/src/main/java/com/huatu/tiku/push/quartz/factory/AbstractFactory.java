@@ -75,8 +75,9 @@ public abstract class AbstractFactory {
                 if(!notifications.contains(androidCustomCast)){
                     notifications.add(androidCustomCast);
                 }else {
-                    log.error("尝试添加一条已经存在的推送数据:{}", JSONObject.toJSONString(androidCustomCast));
+                    log.error("尝试添加一条已经存在的推送 androidCustomCast 数据:{}", JSONObject.toJSONString(androidCustomCast));
                 }
+                log.info("notifications contains current object:{}", notifications.contains(androidCustomCast));
             }catch (Exception e){
                 log.error("push msg error", e);
             }
@@ -108,8 +109,9 @@ public abstract class AbstractFactory {
                 if(!notifications.contains(iosCustomCast)){
                     notifications.add(iosCustomCast);
                 }else{
-                    log.error("尝试添加一条已经存在的推送数据:{}", JSONObject.toJSONString(iosCustomCast));
+                    log.error("尝试添加一条已经存在的推送 iosCustomCast 数据:{}", JSONObject.toJSONString(iosCustomCast));
                 }
+                log.info("notifications contains current object:{}", notifications.contains(iosCustomCast));
             }catch (Exception e){
                 log.error("ios custom push error", e);
             }
