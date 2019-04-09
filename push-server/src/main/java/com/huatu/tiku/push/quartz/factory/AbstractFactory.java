@@ -47,7 +47,9 @@ public abstract class AbstractFactory {
         }
 
         androidCustomCast(list, notifications);
+        log.info("组装推送数据 安卓:{}", JSONObject.toJSONString(notifications));
         iosCustomCast(list, notifications);
+        log.info("组装推送数据 ios:{}", JSONObject.toJSONString(notifications));
         return notifications;
     }
 
@@ -73,6 +75,7 @@ public abstract class AbstractFactory {
                 custom.put("content", item.getText());
                 androidCustomCast.setCustomField(custom);
                 if(!notifications.contains(androidCustomCast)){
+                    log.info("notifications 成功添加一条推送数据:{}", androidCustomCast.getClass().getSimpleName());
                     notifications.add(androidCustomCast);
                 }else {
                     log.error("尝试添加一条已经存在的推送 androidCustomCast 数据:{}", JSONObject.toJSONString(androidCustomCast));
@@ -107,6 +110,7 @@ public abstract class AbstractFactory {
                 iosCustomCast.setCustomizedField(TYPE, IOS_NOTICE_CENTER);
                 iosCustomCast.setCustomizedField(VIEW, target);
                 if(!notifications.contains(iosCustomCast)){
+                    log.info("notifications 成功添加一条推送数据:{}", iosCustomCast.getClass().getSimpleName());
                     notifications.add(iosCustomCast);
                 }else{
                     log.error("尝试添加一条已经存在的推送 iosCustomCast 数据:{}", JSONObject.toJSONString(iosCustomCast));

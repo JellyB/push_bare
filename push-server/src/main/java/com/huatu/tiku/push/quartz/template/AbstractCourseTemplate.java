@@ -168,19 +168,21 @@ public abstract class AbstractCourseTemplate {
             List<NoticeReq> noticeInsertList = noticeInsert(courseInfo, courseParams, noticeRelations);
             if(getUserCountInRedis() < RabbitMqKey.PUSH_STRATEGY_THRESHOLD){
                 List<UmengNotification> notificationList = customCastNotification(noticePushList);
-                log.info("课程推送 custom 数据:{}", JSONObject.toJSONString(notificationList));
                 customCastStrategyTemplate.setNotificationList(notificationList);
                 notificationHandler.setPushStrategy(customCastStrategyTemplate);
-                notificationHandler.setConcurrent(true);
+                notificationHandler.setConcurrent(false);
+                log.info("课程推送 custom ,直播id:{}, 数据 size:{}, 待准备推送数据:{}", courseInfo.getLiveId(), noticeInsertList.size(), JSONObject.toJSONString(notificationList));
             }else{
                 NoticeReq noticeReq = noticePush(courseInfo, courseParams);
                 List<UmengNotification> notificationList = fileCastNotification(courseInfo.getClassId(), courseInfo.getLiveId(), noticeReq);
                 fileCastStrategyTemplate.setNotificationList(notificationList);
                 notificationHandler.setPushStrategy(fileCastStrategyTemplate);
                 notificationHandler.setConcurrent(false);
+                log.info("课程推送 file ,直播id:{}, 数据 size:{}, 待准备推送数据:{}", courseInfo.getLiveId(), noticeInsertList.size(), JSONObject.toJSONString(notificationList));
             }
             notificationHandler.setDetailType(noticeTypeEnum);
             notificationHandler.setBizId(courseInfo.getLiveId());
+            log.warn("当前任务被执行了,type:{}, detailType:{}, bizId:{}", noticeTypeEnum.getType().getType(), noticeTypeEnum.getDetailType(), courseInfo.getLiveId());
             notificationHandler.push();
             noticeStoreService.store(noticeInsertList);
         }
