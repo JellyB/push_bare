@@ -108,11 +108,11 @@ public abstract class AbstractPushTemplate implements PushStrategy{
                 log.error("notifications can not be empty!!");
             }
             SetOperations<String, String> setOperations = redisTemplate.opsForSet();
-            String key = NoticePushRedisKey.getCourseLiveId(bizId);
+            String key = NoticePushRedisKey.getCourseLiveId(noticeTypeEnum.getType().getType(), noticeTypeEnum.getDetailType(), bizId);
             redisTemplate.expire(key, 1, TimeUnit.HOURS);
             getNotificationList().forEach(item->{
                 if(setOperations.isMember(key, item.getClass().getSimpleName())){
-                    log.error("推送重复数据:{}", JSONObject.toJSONString(item));
+                    log.error("推送重复数据:key:{},data:{}", key, JSONObject.toJSONString(item));
                     return;
                 }else{
                     String simpleName = item.getClass().getSimpleName();

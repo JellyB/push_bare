@@ -75,7 +75,7 @@ public class CorrectFeedbackServiceImpl implements CorrectFeedbackService {
         noticeLandingManager.insertBatch(noticeReqList);
         customCastStrategyTemplate.setNotificationList(list);
         notificationHandler.setDetailType(NoticeTypeEnum.CORRECT_FEEDBACK);
-        notificationHandler.setBizId(0L);
+        notificationHandler.setBizId(correctFeedbackInfo.getBizId());
         notificationHandler.setConcurrent(true);
         notificationHandler.setPushStrategy(customCastStrategyTemplate);
         /**
