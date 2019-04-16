@@ -17,6 +17,7 @@ import org.springframework.data.redis.core.SetOperations;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 描述：
@@ -110,18 +111,21 @@ public abstract class AbstractPushTemplate implements PushStrategy{
             SetOperations<String, String> setOperations = redisTemplate.opsForSet();
             String key = NoticePushRedisKey.getCourseLiveId(noticeTypeEnum.getType().getType(), noticeTypeEnum.getDetailType(), bizId);
             redisTemplate.expire(key, 1, TimeUnit.HOURS);
-            getNotificationList().forEach(item->{
-                if(setOperations.isMember(key, item.getClass().getSimpleName())){
-                    log.error("推送重复数据:key:{},data:{}", key, JSONObject.toJSONString(item));
+            AtomicInteger pushCount = new AtomicInteger(0);
+            for (UmengNotification umengNotification : getNotificationList()) {
+                String value =  umengNotification.getClass().getSimpleName();
+                if(setOperations.isMember(key, value)){
+                    log.error("推送重复数据:key:{},data:{}", key, JSONObject.toJSONString(umengNotification));
                     return;
                 }else{
-                    String simpleName = item.getClass().getSimpleName();
-                    PushResult pushResult = httpClientStrategy.send(item);
-                    dealPushResult(simpleName, noticeTypeEnum, bizId, pushResult);
-                    setOperations.add(key, item.getClass().getSimpleName());
+                    pushCount.incrementAndGet();
+                    log.info("推送数据明细...,key:{},当前 count:{}, 内容详情:{}", key, pushCount.get(), JSONObject.toJSONString(umengNotification));
+                    PushResult pushResult = httpClientStrategy.send(key, umengNotification);
+                    dealPushResult(value, noticeTypeEnum, bizId, pushResult);
+                    setOperations.add(key, value);
                 }
-
-            });
+            }
+            log.info("当前推送任务key:{},被推送次数:count:{}", key, pushCount.get());
         }catch (Exception e){
             log.error("push main function error!", e);
         }

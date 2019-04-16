@@ -6,6 +6,7 @@ import com.huatu.tiku.push.cast.AndroidCustomCast;
 import com.huatu.tiku.push.cast.HttpClientStrategy;
 import com.huatu.tiku.push.cast.IosCustomCast;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -52,7 +53,7 @@ public class CustomCastTest  extends PushBaseTest{
             androidCustomCast.setProductionMode();
             // For how to register a test device, please see the developer doc.
             //androidCustomCast.setProductionMode(false);
-            httpClientStrategy.send(androidCustomCast);
+            httpClientStrategy.send(StringUtils.EMPTY,androidCustomCast);
         }catch (Exception e){
             log.error("android custom push error ", e);
         }
@@ -70,7 +71,7 @@ public class CustomCastTest  extends PushBaseTest{
             iosCustomCast.setCustomizedField("type","ht://noticeCenter");
             // TODO set 'production_mode' to 'true' if your app is under production mode
             iosCustomCast.setProductionMode();
-            httpClientStrategy.send(iosCustomCast);
+            httpClientStrategy.send(StringUtils.EMPTY, iosCustomCast);
         }catch (Exception e){
             log.error("ios custom push error", e);
         }
@@ -96,7 +97,7 @@ public class CustomCastTest  extends PushBaseTest{
          * Set customized fields
          */
         androidCustomCast.setExtraField("test", "helloworld");
-        httpClientStrategy.send(androidCustomCast);
+        httpClientStrategy.send(StringUtils.EMPTY, androidCustomCast);
     }
 
 

@@ -49,7 +49,7 @@ public class HttpClientStrategy implements RestPushStrategy {
 	protected static final String TASK_STATUS = "/api/status";
 
 	@Override
-	public synchronized PushResult send(UmengNotification msg) throws BizException {
+	public synchronized PushResult send(String key, UmengNotification msg) throws BizException {
 		HttpClient defaultHttpClient = new DefaultHttpClient();
 		PushResult pushResult = null;
 		try{
@@ -79,7 +79,7 @@ public class HttpClientStrategy implements RestPushStrategy {
 			}
 			log.info(result.toString());
 			if (status == 200) {
-				log.warn("消息内容调度成功，消息内容{}", postBody);
+				log.warn("消息内容调度成功，key:{}, 消息内容{}",key, postBody);
 				pushResult = JSONObject.parseObject(result.toString(), PushResult.class);
 				return pushResult;
 			} else {

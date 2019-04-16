@@ -172,7 +172,7 @@ public abstract class AbstractCourseTemplate {
                 customCastStrategyTemplate.setNotificationList(notificationList);
                 notificationHandler.setPushStrategy(customCastStrategyTemplate);
                 notificationHandler.setConcurrent(false);
-                log.info("课程推送 custom ,直播id:{}, 数据 size:{}, 待准备推送数据:{}", courseInfo.getLiveId(), noticeInsertList.size(), JSONObject.toJSONString(notificationList));
+                log.info("课程推送 custom ,直播id:{}, 数据 size:{}, 待准备推送数据:{}", courseInfo.getLiveId(), notificationList.size(), JSONObject.toJSONString(notificationList));
             }else{
                 NoticeReq noticeReq = noticePush(courseInfo, courseParams);
                 List<UmengNotification> notificationList = fileCastNotification(courseInfo.getClassId(), courseInfo.getLiveId(), noticeReq);
