@@ -30,6 +30,7 @@ public class FeedbackSuggestListener {
     @RabbitHandler
     public void onMessage(String message){
         SuggestFeedbackInfo suggestFeedbackInfo = JSONObject.parseObject(message, SuggestFeedbackInfo.class);
+        log.info("新的建议反馈信息:{}", JSONObject.toJSONString(suggestFeedbackInfo));
         suggestFeedbackService.sendSuggestNotice(suggestFeedbackInfo);
     }
 

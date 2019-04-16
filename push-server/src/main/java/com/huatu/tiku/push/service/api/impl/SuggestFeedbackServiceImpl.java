@@ -55,7 +55,7 @@ public class SuggestFeedbackServiceImpl implements SuggestFeedbackService{
         noticeLandingManager.insertBatch(noticeReqList);
         customCastStrategyTemplate.setNotificationList(list);
         notificationHandler.setDetailType(NoticeTypeEnum.SUGGEST_FEEDBACK);
-        notificationHandler.setBizId(0L);
+        notificationHandler.setBizId(suggestFeedbackInfo.getBizId());
         notificationHandler.setConcurrent(false);
         notificationHandler.setPushStrategy(customCastStrategyTemplate);
         /**
