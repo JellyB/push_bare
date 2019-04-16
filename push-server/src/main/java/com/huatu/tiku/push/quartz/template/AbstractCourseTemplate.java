@@ -1,6 +1,7 @@
 package com.huatu.tiku.push.quartz.template;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.cast.FileUploadTerminal;
@@ -18,6 +19,7 @@ import com.huatu.tiku.push.quartz.factory.CourseCastFactory;
 import com.huatu.tiku.push.request.NoticeReq;
 import com.huatu.tiku.push.service.api.NoticeStoreService;
 import com.huatu.tiku.push.service.api.SimpleUserService;
+import jdk.nashorn.internal.ir.annotations.Immutable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,8 +121,8 @@ public abstract class AbstractCourseTemplate {
      * @return
      * @throws BizException
      */
-    protected List<UmengNotification> customCastNotification(List<NoticeReq> noticePushList)throws BizException{
-        return CourseCastFactory.customCastNotifications(noticePushList);
+    protected ImmutableList<UmengNotification> customCastNotification(long liveId, List<NoticeReq> noticePushList)throws BizException{
+        return CourseCastFactory.customCastNotifications(liveId, noticePushList);
     }
 
     /**
@@ -166,7 +168,7 @@ public abstract class AbstractCourseTemplate {
             List<NoticeReq> noticePushList = noticePush(courseInfo, courseParams, noticeRelations);
             List<NoticeReq> noticeInsertList = noticeInsert(courseInfo, courseParams, noticeRelations);
             if(getUserCountInRedis() < RabbitMqKey.PUSH_STRATEGY_THRESHOLD){
-                List<UmengNotification> notificationList = customCastNotification(noticePushList);
+                List<UmengNotification> notificationList = customCastNotification(courseInfo.getLiveId(), noticePushList);
                 customCastStrategyTemplate.setNotificationList(notificationList);
                 notificationHandler.setPushStrategy(customCastStrategyTemplate);
                 notificationHandler.setConcurrent(false);

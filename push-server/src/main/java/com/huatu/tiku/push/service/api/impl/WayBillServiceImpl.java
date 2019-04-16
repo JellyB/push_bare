@@ -72,7 +72,7 @@ public class WayBillServiceImpl implements WayBillService {
         List<NoticeReq.NoticeUserRelation> noticeUserRelations = WayBillFactory.wayBillNoticeRelation(userId);
         WayBillFactory.noticeForPush(builder, noticeUserRelations, req, noticeReqList);
 
-        List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(noticeReqList);
+        List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(0L, noticeReqList);
         noticeLandingManager.insertBatch(noticeReqList);
         customCastStrategyTemplate.setNotificationList(list);
         notificationHandler.setDetailType(builder.getNoticeTypeEnum());
