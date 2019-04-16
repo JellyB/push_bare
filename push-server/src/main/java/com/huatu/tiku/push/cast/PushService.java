@@ -21,7 +21,7 @@ public interface PushService<T> {
      * @param noticeReqList
      * @return
      */
-    void push(List<NoticeReq> noticeReqList);
+    void push2(List<NoticeReq> noticeReqList);
 
 
     /**
@@ -29,7 +29,7 @@ public interface PushService<T> {
      * @param t
      * @throws BizException
      */
-    void push(T t)throws BizException;
+    void push2(T t)throws BizException;
 
 
     /**

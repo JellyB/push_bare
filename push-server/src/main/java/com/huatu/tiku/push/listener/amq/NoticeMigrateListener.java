@@ -10,19 +10,21 @@ import org.springframework.stereotype.Component;
 
 /**
  * 描述：数据转移
+ * 废弃
  *
  * @author biguodong
  * Create time 2018-11-13 上午10:26
  **/
-@Component
-@RabbitListener(queues = RabbitMqKey.NOTICE_DATA_MOVE_FROM_PANDORA_2_PUSH)
+@Deprecated
+//@Component
+//@RabbitListener(queues = RabbitMqKey.NOTICE_DATA_MOVE_FROM_PANDORA_2_PUSH)
 @Slf4j
 public class NoticeMigrateListener {
 
     @Autowired
     private MigrateManager migrateManager;
 
-    @RabbitHandler
+    //@RabbitHandler
     public void onMessage(String message){
         //return;
         log.info(message);
