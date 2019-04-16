@@ -1,5 +1,6 @@
 package com.huatu.tiku.push.service.api.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -70,6 +71,7 @@ public class CourseServiceImpl implements CourseService {
 
     /**
      * 更新直播课信息
+     * 更新课程信息，重新创建 job
      * @param courseInfo
      * @return
      */
@@ -78,12 +80,25 @@ public class CourseServiceImpl implements CourseService {
         example.and()
                 .andEqualTo("liveId", courseInfo.getLiveId())
                 .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
+        CourseInfo origin = courseInfoMapper.selectOneByExample(example);
         CourseInfo courseInfo_ = new CourseInfo();
+        /**
+         * 如果直播课上课时间被修改，重新构建任务
+         */
+        if(courseInfo.getStartTime().getTime() != origin.getStartTime().getTime() || courseInfo.getEndTime().getTime() != origin.getEndTime().getTime()){
+            log.info("直播课上课时间被更改: old:{}, new:{}", JSONObject.toJSONString(origin), JSONObject.toJSONString(courseInfo));
+            /**
+             * 移除任务
+             */
+            quartzJobInfoService.deleteJobByBizData(String.valueOf(courseInfo.getLiveId()));
+            courseInfo_.setScanned(JobScannedEnum.NOT_YET_SCANNED.getValue());
+        }
         BeanUtils.copyProperties(courseInfo, courseInfo_);
-        courseInfo_.setId(null);
+        courseInfo_.setId(origin.getId());
         courseInfo_.setStatus(null);
+        courseInfo_.setCreateTime(null);
         courseInfo_.setUpdateTime(new Timestamp(System.currentTimeMillis()));
-        return courseInfoMapper.updateByExampleSelective(courseInfo, example);
+        return courseInfoMapper.updateByPrimaryKeySelective(courseInfo_);
     }
 
 
