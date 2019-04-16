@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.cast.FileUploadTerminal;
-import com.huatu.tiku.push.cast.PushService;
 import com.huatu.tiku.push.cast.UmengNotification;
 import com.huatu.tiku.push.cast.strategy.CustomAliasCastStrategyTemplate;
 import com.huatu.tiku.push.cast.strategy.CustomFileCastStrategyTemplate;

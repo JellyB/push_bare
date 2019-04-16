@@ -49,7 +49,7 @@ public class HttpClientStrategy implements RestPushStrategy {
 	protected static final String TASK_STATUS = "/api/status";
 
 	@Override
-	public PushResult send(UmengNotification msg) throws BizException {
+	public synchronized PushResult send(UmengNotification msg) throws BizException {
 		HttpClient defaultHttpClient = new DefaultHttpClient();
 		PushResult pushResult = null;
 		try{
