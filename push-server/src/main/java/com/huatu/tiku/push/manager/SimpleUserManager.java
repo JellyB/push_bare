@@ -168,7 +168,6 @@ public class SimpleUserManager {
      * 课程用户数据降级处理，不入 mysql
      * @param simpleUser
      */
-    @Degrade(name = "课程推送数据入库", key = "saveSimpleUser")
     public void saveSimpleUserDegrade(SimpleUser simpleUser){
         log.info(">>>>>>>> storing userInfo", JSONObject.toJSONString(simpleUser));
     }
