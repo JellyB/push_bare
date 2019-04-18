@@ -18,11 +18,12 @@ public interface RestPushStrategy {
 
     /**
      * 单个消息推送
-     * @param msg
+     * @param key 推送 key
+     * @param msg 推送 内容
      * @return
      * @throws BizException
      */
-    PushResult send(UmengNotification msg) throws BizException;
+    PushResult send(String key, UmengNotification msg) throws BizException;
 
 
     /**

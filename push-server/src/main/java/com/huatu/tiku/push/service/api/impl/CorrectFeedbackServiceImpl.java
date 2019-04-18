@@ -71,12 +71,12 @@ public class CorrectFeedbackServiceImpl implements CorrectFeedbackService {
         List<NoticeReq.NoticeUserRelation> noticeUserRelations = FeedBackCastFactory.correctNoticeUserRelations(correctFeedbackInfo);
         FeedBackCastFactory.correctNoticeForPush(builder, noticeUserRelations, correctFeedbackInfo, noticeReqList);
 
-        List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(noticeReqList);
+        List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(correctFeedbackInfo.getBizId(), noticeReqList);
         noticeLandingManager.insertBatch(noticeReqList);
         customCastStrategyTemplate.setNotificationList(list);
         notificationHandler.setDetailType(NoticeTypeEnum.CORRECT_FEEDBACK);
-        notificationHandler.setBizId(0L);
-        notificationHandler.setConcurrent(false);
+        notificationHandler.setBizId(correctFeedbackInfo.getBizId());
+        notificationHandler.setConcurrent(true);
         notificationHandler.setPushStrategy(customCastStrategyTemplate);
         /**
          * 发送

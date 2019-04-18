@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 import com.huatu.tiku.push.cast.*;
 import com.huatu.tiku.push.constant.NoticePushRedisKey;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -66,7 +67,7 @@ public class CustomFileCastTest extends PushBaseTest{
             androidCustomCast.setText(   "安卓文件发送样例安卓文件发送样例安卓文件发送样例安卓文件发送样例");
             androidCustomCast.goAppAfterOpen();
             androidCustomCast.setDisplayType(AbstractAndroidNotification.DisplayType.NOTIFICATION);
-            PushResult pushResult = httpClientStrategy.send(androidCustomCast);
+            PushResult pushResult = httpClientStrategy.send(StringUtils.EMPTY, androidCustomCast);
             log.info("push result:{}", JSONObject.toJSONString(pushResult));
         }catch (Exception e){
             log.error("android custom file cast error!", e);
@@ -110,7 +111,7 @@ public class CustomFileCastTest extends PushBaseTest{
             iosCustomCast.setCustomizedField("type", "ztk://helloworld");
             // TODO set 'production_mode' to 'true' if your app is under production mode
             iosCustomCast.setTestMode();
-            PushResult pushResult = httpClientStrategy.send(iosCustomCast);
+            PushResult pushResult = httpClientStrategy.send(StringUtils.EMPTY, iosCustomCast);
             log.info("push result:{}", JSONObject.toJSONString(pushResult));
         }catch (Exception e){
             log.error("ios custom file cast error!", e);

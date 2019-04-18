@@ -2,6 +2,7 @@ package com.huatu.tiku.push.quartz.factory;
 
 import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Joiner;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.cast.*;
@@ -40,15 +41,18 @@ public abstract class AbstractFactory {
      * @return
      * @throws BizException
      */
-    public static List<UmengNotification> customCastNotifications(List<NoticeReq> list)throws BizException{
+    public static ImmutableList<UmengNotification> customCastNotifications(Long bizId, List<NoticeReq> list)throws BizException{
         List<UmengNotification> notifications = Lists.newArrayList();
         if(CollectionUtils.isEmpty(list)){
-            return notifications;
+            return ImmutableList.copyOf(notifications);
         }
 
         androidCustomCast(list, notifications);
+        log.info("组装推送数据_custom liveId:{}, 安卓:{}", bizId, JSONObject.toJSONString(notifications));
         iosCustomCast(list, notifications);
-        return notifications;
+        log.info("组装推送数据_custom liveId:{}, ios:{}", bizId, JSONObject.toJSONString(notifications));
+        log.info("当前直播推送数据, liveId:{}, 数据大小:{}, 数据内容:{}", bizId, list.size(), JSONObject.toJSONString(notifications));
+        return ImmutableList.copyOf(notifications);
     }
 
 
@@ -73,6 +77,7 @@ public abstract class AbstractFactory {
                 custom.put("content", item.getText());
                 androidCustomCast.setCustomField(custom);
                 if(!notifications.contains(androidCustomCast)){
+                    log.info("notifications 成功添加一条推送数据:{}", androidCustomCast.getClass().getSimpleName());
                     notifications.add(androidCustomCast);
                 }else {
                     log.error("尝试添加一条已经存在的推送 androidCustomCast 数据:{}", JSONObject.toJSONString(androidCustomCast));
@@ -107,6 +112,7 @@ public abstract class AbstractFactory {
                 iosCustomCast.setCustomizedField(TYPE, IOS_NOTICE_CENTER);
                 iosCustomCast.setCustomizedField(VIEW, target);
                 if(!notifications.contains(iosCustomCast)){
+                    log.info("notifications 成功添加一条推送数据:{}", iosCustomCast.getClass().getSimpleName());
                     notifications.add(iosCustomCast);
                 }else{
                     log.error("尝试添加一条已经存在的推送 iosCustomCast 数据:{}", JSONObject.toJSONString(iosCustomCast));

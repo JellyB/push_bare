@@ -61,7 +61,11 @@ public class NotificationHandler {
 
     public void push(){
         if(isConcurrent()){
-            executorService.execute(()-> pushStrategy.push(getDetailType(), getBizId()));
+            log.info("push 方法被执行了一次");
+            executorService.execute(()-> {
+                log.info("多线程并发执行当前提送...,detailType:{}, bizId:{}", getDetailType(), getBizId());
+                pushStrategy.push(getDetailType(), getBizId());
+            });
         }else{
             pushStrategy.push(getDetailType(), getBizId());
         }

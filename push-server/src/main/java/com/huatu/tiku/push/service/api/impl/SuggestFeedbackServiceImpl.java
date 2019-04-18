@@ -51,11 +51,11 @@ public class SuggestFeedbackServiceImpl implements SuggestFeedbackService{
         List<NoticeReq.NoticeUserRelation> noticeUserRelations = FeedBackCastFactory.suggestNoticeUserRelations(suggestFeedbackInfo);
         FeedBackCastFactory.suggestNoticeForPush(builder, noticeUserRelations, suggestFeedbackInfo, noticeReqList);
 
-        List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(noticeReqList);
+        List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(suggestFeedbackInfo.getBizId(), noticeReqList);
         noticeLandingManager.insertBatch(noticeReqList);
         customCastStrategyTemplate.setNotificationList(list);
         notificationHandler.setDetailType(NoticeTypeEnum.SUGGEST_FEEDBACK);
-        notificationHandler.setBizId(0L);
+        notificationHandler.setBizId(suggestFeedbackInfo.getBizId());
         notificationHandler.setConcurrent(false);
         notificationHandler.setPushStrategy(customCastStrategyTemplate);
         /**

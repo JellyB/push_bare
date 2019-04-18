@@ -3,7 +3,7 @@ package com.huatu.tiku.push.service.api.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.cast.FileUploadTerminal;
-import com.huatu.tiku.push.cast.PushService;
+import com.huatu.tiku.push.cast.FileUploadService;
 import com.huatu.tiku.push.constant.CourseParams;
 import com.huatu.tiku.push.constant.NoticePushRedisKey;
 import com.huatu.tiku.push.constant.RabbitMqKey;
@@ -46,7 +46,7 @@ public class SimpleUserServiceImpl implements SimpleUserService {
     private RabbitTemplate rabbitTemplate;
 
     @Autowired
-    private PushService pushService;
+    private FileUploadService fileUploadService;
 
     private static final Long DEFAULT_EXPIRE_TIME = 5 * 60 * 1000L;
 
@@ -119,7 +119,7 @@ public class SimpleUserServiceImpl implements SimpleUserService {
             if(size > RabbitMqKey.PUSH_STRATEGY_THRESHOLD){
                 String key = NoticePushRedisKey.getCourseFileId(String.valueOf(classId));
                 HashOperations hashOperations = redisTemplate.opsForHash();
-                FileUploadTerminal fileUploadTerminal = pushService.uploadTerminal(classId);
+                FileUploadTerminal fileUploadTerminal = fileUploadService.uploadTerminal(classId);
                 String value = JSONObject.toJSONString(fileUploadTerminal);
                 hashOperations.put(key, hasKey, value);
             }

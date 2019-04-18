@@ -57,8 +57,8 @@ public class NoticePushRedisKey {
      * @param liveId
      * @return
      */
-    public static String getCourseLiveId(long liveId){
-        return Joiner.on(".").join(COURSE_LIVE_ID, liveId);
+    public static String getCourseLiveId(String type, String detailType, long liveId){
+        return Joiner.on(".").join(COURSE_LIVE_ID, type, detailType, liveId);
     }
 
     /**

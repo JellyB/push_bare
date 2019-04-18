@@ -22,13 +22,13 @@ public class RestTemplateStrategy implements RestPushStrategy {
 
     /**
      * 单个消息推送
-     *
+     * @param key
      * @param msg
      * @return
      * @throws BizException
      */
     @Override
-    public PushResult send(UmengNotification msg) throws BizException {
+    public PushResult send(String key, UmengNotification msg) throws BizException {
         return null;
     }
 
