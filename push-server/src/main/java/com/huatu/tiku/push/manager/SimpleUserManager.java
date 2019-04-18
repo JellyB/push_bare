@@ -1,6 +1,8 @@
 package com.huatu.tiku.push.manager;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Sets;
+import com.huatu.springboot.degrade.core.Degrade;
 import com.huatu.tiku.push.dao.SimpleUserMapper;
 import com.huatu.tiku.push.entity.SimpleUser;
 import lombok.extern.slf4j.Slf4j;
@@ -151,11 +153,23 @@ public class SimpleUserManager {
      * @param simpleUser
      *
      */
+
+    @Degrade(name = "课程推送数据入库", key = "saveSimpleUser")
     public void saveSimpleUser(SimpleUser simpleUser){
         if(checkIdExist(simpleUser.getUserId(), simpleUser.getUserType(), simpleUser.getBizId())){
             return;
         }else{
             simpleUserMapper.insert(simpleUser);
         }
+    }
+
+
+    /**
+     * 课程用户数据降级处理，不入 mysql
+     * @param simpleUser
+     */
+    @Degrade(name = "课程推送数据入库", key = "saveSimpleUser")
+    public void saveSimpleUserDegrade(SimpleUser simpleUser){
+        log.info(">>>>>>>> storing userInfo", JSONObject.toJSONString(simpleUser));
     }
 }
