@@ -61,10 +61,24 @@ public class CourseServiceImpl implements CourseService {
     @Override
     public Object saveCourseInfo(CourseInfoReq.Model req) throws BizException{
         CourseInfo courseInfo = getCourseInfo(req);
-        if(checkLiveExist(courseInfo.getLiveId())){
-            return updateCourseInfo(courseInfo);
-        }else{
+        /**
+         * 如果直播课存在，删除直播课 & 推送任务，重建
+         */
+        try{
+            if(checkLiveExist(courseInfo.getLiveId())){
+                Example example = new Example(CourseInfo.class);
+                example.and()
+                        .andEqualTo("liveId", courseInfo.getLiveId())
+                        .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
+                CourseInfo origin = courseInfoMapper.selectOneByExample(example);
+                courseInfoMapper.deleteByPrimaryKey(origin.getId());
+                quartzJobInfoService.deleteJobByBizData(String.valueOf(courseInfo.getLiveId()));
+                log.info("直播课更新------>任务移除:{}", courseInfo.getLiveId());
+            }
             return courseInfoMapper.insert(courseInfo);
+        }catch (Exception e){
+            log.error("更新直播课信息失败:{}", JSONObject.toJSONString(req));
+            return 0;
         }
     }
 
@@ -75,6 +89,7 @@ public class CourseServiceImpl implements CourseService {
      * @param courseInfo
      * @return
      */
+    @Deprecated
     public int updateCourseInfo(CourseInfo courseInfo){
         Example example = new Example(CourseInfo.class);
         example.and()
