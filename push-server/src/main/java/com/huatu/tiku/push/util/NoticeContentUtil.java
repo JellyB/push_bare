@@ -142,6 +142,7 @@ public class NoticeContentUtil {
             }
             return textMsg;
         }catch (Exception e){
+            e.printStackTrace();
             log.error("parse triggerFinalized msg error, trigger msg:{},error:{}", JSONObject.toJSONString(trigger), e);
             return exceptionMst("triggerFinalized", NoticeContentUtil.class.getSimpleName());
         }
