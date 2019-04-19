@@ -13,7 +13,7 @@ public class RabbitMqKey {
 
     public static final long USER_STORE_THRESHOLD = 100;
 
-    public static final long PUSH_STRATEGY_THRESHOLD = 20;
+    public static final long PUSH_STRATEGY_THRESHOLD = 500;
 
     public static final String NOTICE_PUSH_LANDING = "notice_push_landing";
 

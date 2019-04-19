@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.base.Joiner;
 import com.huatu.tiku.push.cast.HttpClientStrategy;
 import com.huatu.tiku.push.cast.PushResult;
-import com.huatu.tiku.push.cast.RestTemplateStrategy;
 import com.huatu.tiku.push.cast.UmengNotification;
 import com.huatu.tiku.push.constant.NoticePushRedisKey;
 import com.huatu.tiku.push.enums.NoticeParentTypeEnum;
