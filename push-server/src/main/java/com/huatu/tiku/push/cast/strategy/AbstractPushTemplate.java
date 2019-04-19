@@ -104,6 +104,11 @@ public abstract class AbstractPushTemplate implements PushStrategy{
     @Override
     public final void push(NoticeTypeEnum noticeTypeEnum, long bizId) {
         try{
+
+            if(getNotificationList().size() > 2){
+                log.error("推送数据内容 size 超过 2: bizId:{}, {}", bizId, JSONObject.toJSONString(getNotificationList()));
+                return;
+            }
             log.info("推送任务当前线程名:{}", Thread.currentThread().getName());
             if(CollectionUtils.isEmpty(getNotificationList())){
                 log.error("notifications can not be empty!!");
