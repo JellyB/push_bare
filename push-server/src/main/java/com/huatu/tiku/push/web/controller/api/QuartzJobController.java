@@ -6,7 +6,10 @@ import com.huatu.tiku.push.service.api.QuartzJobInfoService;
 import com.huatu.tiku.push.service.api.impl.QuartzJobInfoServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * 描述：
@@ -87,5 +90,17 @@ public class QuartzJobController {
     @GetMapping(value = "list")
     public Object list(@RequestParam(value = "page", defaultValue = "1") int page, @RequestParam(value = "size", defaultValue = "20") int size) throws BizException {
         return quartzJobInfoService.list(page, size);
+    }
+
+    /**
+     * 根据 bizId 删除 job
+     * @param bizId
+     * @return
+     * @throws BizException
+     */
+    @DeleteMapping(value = "{id}")
+    public Object removeCourseInfo(@Validated @NotNull(message = "直播id不能为空！") @PathVariable(value = "id") String bizId)throws BizException{
+        quartzJobInfoService.deleteJobByBizData(bizId);
+        return SuccessMessage.create("删除成功！");
     }
 }
