@@ -2,6 +2,7 @@ package com.huatu.tiku.push.service.api;
 
 
 import com.huatu.common.exception.BizException;
+import com.huatu.tiku.push.entity.CourseInfo;
 import com.huatu.tiku.push.request.CourseInfoReq;
 
 /**
@@ -57,4 +58,12 @@ public interface CourseService {
      * @throws BizException
      */
     Object removeCourseInfoBatch(String liveIds) throws BizException;
+
+    /**
+     * 根据 liveId 查询 课程信息
+     * @param liveId
+     * @return
+     * @throws BizException
+     */
+    CourseInfo findCourseById(long liveId) throws BizException;
 }

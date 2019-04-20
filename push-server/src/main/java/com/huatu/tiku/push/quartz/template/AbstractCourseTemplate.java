@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.huatu.common.exception.BizException;
+import com.huatu.common.utils.reflect.BeanUtil;
 import com.huatu.tiku.push.cast.FileUploadTerminal;
 import com.huatu.tiku.push.cast.UmengNotification;
 import com.huatu.tiku.push.cast.strategy.CustomAliasCastStrategyTemplate;
@@ -12,16 +13,19 @@ import com.huatu.tiku.push.cast.strategy.NotificationHandler;
 import com.huatu.tiku.push.constant.CourseParams;
 import com.huatu.tiku.push.constant.NoticePushRedisKey;
 import com.huatu.tiku.push.constant.RabbitMqKey;
+import com.huatu.tiku.push.dao.CourseInfoMapper;
 import com.huatu.tiku.push.entity.CourseInfo;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.manager.SimpleUserManager;
 import com.huatu.tiku.push.quartz.factory.CourseCastFactory;
 import com.huatu.tiku.push.request.NoticeReq;
+import com.huatu.tiku.push.service.api.CourseService;
 import com.huatu.tiku.push.service.api.NoticeStoreService;
 import com.huatu.tiku.push.service.api.SimpleUserService;
 import jdk.nashorn.internal.ir.annotations.Immutable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -60,6 +64,9 @@ public abstract class AbstractCourseTemplate {
 
     @Autowired
     private NoticeStoreService noticeStoreService;
+
+    @Autowired
+    private CourseService courseService;
 
     @Value("${notice.push.white.list}")
     private String whiteUserId;
@@ -147,6 +154,15 @@ public abstract class AbstractCourseTemplate {
      */
     public final void dealDetailJob(NoticeTypeEnum noticeTypeEnum, String bizData)throws BizException{
         CourseInfo courseInfo = JSONObject.parseObject(bizData, CourseInfo.class);
+        try{
+            CourseInfo courseInfo_ = courseService.findCourseById(courseInfo.getLiveId());
+            if(null != courseInfo_){
+                BeanUtils.copyProperties(courseInfo_, courseInfo);
+            }
+        }catch (Exception e){
+            log.error("课程推送前获取课程信息异常:{}", JSONObject.toJSONString(courseInfo));
+        }
+
         String key = NoticePushRedisKey.getCourseClassId(courseInfo.getClassId());
         Set<Integer> users = redisTemplate.opsForSet().members(key);
         if(CollectionUtils.isEmpty(users)){

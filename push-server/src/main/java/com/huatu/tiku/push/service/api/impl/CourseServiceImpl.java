@@ -319,4 +319,21 @@ public class CourseServiceImpl implements CourseService {
        }
        return SuccessMessage.create("操作成功");
     }
+
+
+    /**
+     * 根据 id 查询 课程信息
+     *
+     * @param liveId
+     * @return
+     * @throws BizException
+     */
+    @Override
+    public CourseInfo findCourseById(long liveId) throws BizException {
+        Example example = new Example(CourseInfo.class);
+        example.and()
+                .andEqualTo("liveId", liveId)
+                .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
+        return courseInfoMapper.selectOneByExample(example);
+    }
 }
