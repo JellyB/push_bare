@@ -180,6 +180,7 @@ public abstract class AbstractCourseTemplate {
         }else{
             setUserCountInRedis(users.size());
             CourseParams.Builder courseParams = CourseCastFactory.courseParams(courseInfo_);
+            log.info("直播课 liveId:{},params:{}", origin.getLiveId(), JSONObject.toJSONString(courseParams));
             List<NoticeReq.NoticeUserRelation> noticeRelations = CourseCastFactory.noticeRelation(users);
             List<NoticeReq> noticePushList = noticePush(courseInfo_, courseParams, noticeRelations);
             List<NoticeReq> noticeInsertList = noticeInsert(courseInfo_, courseParams, noticeRelations);

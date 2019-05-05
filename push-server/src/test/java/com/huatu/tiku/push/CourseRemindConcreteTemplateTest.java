@@ -8,6 +8,7 @@ import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.quartz.template.CourseRemindConcreteTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
@@ -62,5 +63,19 @@ public class CourseRemindConcreteTemplateTest extends PushBaseTest{
         courseInfo.setEndTime(new Timestamp(1643240800000L));
         courseInfo.setIsLive("1");
         courseRemindConcreteTemplate.dealDetailJob(NoticeTypeEnum.COURSE_READY, JSONObject.toJSONString(courseInfo));
+    }
+
+    @Test
+    public void copyProperties(){
+        CourseInfo origin = new CourseInfo();
+        origin.setTeacher("私有先生");
+
+        CourseInfo newInfo = new CourseInfo();
+        newInfo.setTeacher("新的先生");
+        newInfo.setSection("hello section!!");
+
+        BeanUtils.copyProperties(newInfo, origin);
+        log.info("origin:{}", JSONObject.toJSONString(origin));
+        log.info("new:{}", JSONObject.toJSONString(newInfo));
     }
 }
