@@ -153,20 +153,20 @@ public abstract class AbstractCourseTemplate {
      * @param bizData
      */
     public final void dealDetailJob(NoticeTypeEnum noticeTypeEnum, String bizData)throws BizException{
-        CourseInfo courseInfo = JSONObject.parseObject(bizData, CourseInfo.class);
-        try{
-            CourseInfo courseInfo_ = courseService.findCourseById(courseInfo.getLiveId());
-            if(null != courseInfo_){
-                BeanUtils.copyProperties(courseInfo_, courseInfo);
-            }
-        }catch (Exception e){
-            log.error("课程推送前获取课程信息异常:{}", JSONObject.toJSONString(courseInfo));
+        CourseInfo origin = JSONObject.parseObject(bizData, CourseInfo.class);
+
+        //数据库重新查取课程信息
+        CourseInfo courseInfo_ = courseService.findCourseById(origin.getLiveId());
+        log.info("数据库中重新查新出来的任务信息:{}", JSONObject.toJSONString(courseInfo_));
+        log.info("跟随任务一起绑定过来的课程信息:{}", JSONObject.toJSONString(origin));
+        if(!origin.getTeacher().equals(courseInfo_.getTeacher())){
+            log.error("课程信息不一致!!!, liveId:{}, teacher origin:{}, teacher data base:{}", courseInfo_.getLiveId(), origin.getTeacher(), courseInfo_.getTeacher());
         }
 
-        String key = NoticePushRedisKey.getCourseClassId(courseInfo.getClassId());
+        String key = NoticePushRedisKey.getCourseClassId(courseInfo_.getClassId());
         Set<Integer> users = redisTemplate.opsForSet().members(key);
         if(CollectionUtils.isEmpty(users)){
-            users.addAll(simpleUserManager.selectByBizId(CourseParams.TYPE, courseInfo.getClassId()));
+            users.addAll(simpleUserManager.selectByBizId(CourseParams.TYPE, courseInfo_.getClassId()));
         }
         try{
             Set<Integer> whiteList = Stream.of(whiteUserId.split(",")).map(i -> Integer.valueOf(i)).collect(Collectors.toSet());
@@ -175,31 +175,31 @@ public abstract class AbstractCourseTemplate {
             log.error("添加白名单用户异常:{}", whiteUserId);
         }
         if(CollectionUtils.isEmpty(users)){
-            log.error("course.class.id:{}.user.list.empty", courseInfo.getClassId());
+            log.error("course.class.id:{}.user.list.empty", courseInfo_.getClassId());
             return;
         }else{
             setUserCountInRedis(users.size());
-            CourseParams.Builder courseParams = CourseCastFactory.courseParams(courseInfo);
+            CourseParams.Builder courseParams = CourseCastFactory.courseParams(courseInfo_);
             List<NoticeReq.NoticeUserRelation> noticeRelations = CourseCastFactory.noticeRelation(users);
-            List<NoticeReq> noticePushList = noticePush(courseInfo, courseParams, noticeRelations);
-            List<NoticeReq> noticeInsertList = noticeInsert(courseInfo, courseParams, noticeRelations);
+            List<NoticeReq> noticePushList = noticePush(courseInfo_, courseParams, noticeRelations);
+            List<NoticeReq> noticeInsertList = noticeInsert(courseInfo_, courseParams, noticeRelations);
             if(getUserCountInRedis() < RabbitMqKey.PUSH_STRATEGY_THRESHOLD){
-                List<UmengNotification> notificationList = customCastNotification(courseInfo.getLiveId(), noticePushList);
+                List<UmengNotification> notificationList = customCastNotification(courseInfo_.getLiveId(), noticePushList);
                 customCastStrategyTemplate.setNotificationList(notificationList);
                 notificationHandler.setPushStrategy(customCastStrategyTemplate);
                 notificationHandler.setConcurrent(false);
-                log.info("课程推送 custom ,直播id:{}, 数据 size:{}, 待准备推送数据:{}", courseInfo.getLiveId(), notificationList.size(), JSONObject.toJSONString(notificationList));
+                log.info("课程推送 custom ,直播id:{}, 数据 size:{}, 待准备推送数据:{}", courseInfo_.getLiveId(), notificationList.size(), JSONObject.toJSONString(notificationList));
             }else{
-                NoticeReq noticeReq = noticePush(courseInfo, courseParams);
-                List<UmengNotification> notificationList = fileCastNotification(courseInfo.getClassId(), courseInfo.getLiveId(), noticeReq);
+                NoticeReq noticeReq = noticePush(courseInfo_, courseParams);
+                List<UmengNotification> notificationList = fileCastNotification(courseInfo_.getClassId(), courseInfo_.getLiveId(), noticeReq);
                 fileCastStrategyTemplate.setNotificationList(notificationList);
                 notificationHandler.setPushStrategy(fileCastStrategyTemplate);
                 notificationHandler.setConcurrent(false);
-                log.info("课程推送 file ,直播id:{}, 数据 size:{}, 待准备推送数据:{}", courseInfo.getLiveId(), noticeInsertList.size(), JSONObject.toJSONString(notificationList));
+                log.info("课程推送 file ,直播id:{}, 数据 size:{}, 待准备推送数据:{}", courseInfo_.getLiveId(), noticeInsertList.size(), JSONObject.toJSONString(notificationList));
             }
             notificationHandler.setDetailType(noticeTypeEnum);
-            notificationHandler.setBizId(courseInfo.getLiveId());
-            log.warn("当前任务被执行了,type:{}, detailType:{}, bizId:{}", noticeTypeEnum.getType().getType(), noticeTypeEnum.getDetailType(), courseInfo.getLiveId());
+            notificationHandler.setBizId(courseInfo_.getLiveId());
+            log.warn("当前任务被执行了,type:{}, detailType:{}, bizId:{}", noticeTypeEnum.getType().getType(), noticeTypeEnum.getDetailType(), courseInfo_.getLiveId());
             notificationHandler.push();
             noticeStoreService.store(noticeInsertList);
         }
