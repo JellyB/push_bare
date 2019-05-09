@@ -27,6 +27,7 @@ import tk.mybatis.mapper.entity.Example;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
@@ -189,7 +190,7 @@ public class NoticeViewManager {
      * @param view
      * @return
      */
-    private int insertNewView(long userId, String view, long noticeId){
+    private synchronized int insertNewView(long userId, String view, long noticeId){
         NoticeView noticeView = new NoticeView();
         noticeView.setUserId(userId);
         noticeView.setNoticeId(noticeId);
@@ -266,22 +267,28 @@ public class NoticeViewManager {
     }
 
     public NoticeView save(NoticeView noticeView){
-        Long userId = noticeView.getUserId();
-        String view = noticeView.getView();
-        Example example = new Example(NoticeView.class);
-        example.and().andEqualTo("userId",userId)
-                .andEqualTo("view",view)
-                .andEqualTo("status",NoticeStatusEnum.NORMAL.getValue());
-        List<NoticeView> noticeEntities = noticeViewMapper.selectByExample(example);
-        if(CollectionUtils.isEmpty(noticeEntities)){
-            noticeView.setCreateTime(new Timestamp(System.currentTimeMillis()));
-            noticeViewMapper.insertSelective(noticeView);
-            log.info("insert noticeView info={}",noticeView);
-            return noticeView;
-        }else{
-            updateByExampleSelective(noticeView,example);
-            log.info("update noticeView info={}",noticeView);
-            return noticeView;
+        final ReentrantLock lock = new ReentrantLock();
+        try{
+            lock.lock();
+            Long userId = noticeView.getUserId();
+            String view = noticeView.getView();
+            Example example = new Example(NoticeView.class);
+            example.and().andEqualTo("userId",userId)
+                    .andEqualTo("view",view)
+                    .andEqualTo("status",NoticeStatusEnum.NORMAL.getValue());
+            List<NoticeView> noticeEntities = noticeViewMapper.selectByExample(example);
+            if(CollectionUtils.isEmpty(noticeEntities)){
+                noticeView.setCreateTime(new Timestamp(System.currentTimeMillis()));
+                noticeViewMapper.insertSelective(noticeView);
+                log.info("insert noticeView info={}",noticeView);
+                return noticeView;
+            }else{
+                updateByExampleSelective(noticeView,example);
+                log.info("update noticeView info={}",noticeView);
+                return noticeView;
+            }
+        }finally {
+            lock.unlock();
         }
     }
 }
