@@ -15,6 +15,7 @@ import com.huatu.tiku.push.enums.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -156,15 +157,30 @@ public class NoticeViewManager {
      * @param view
      * @return
      */
-    private Optional<NoticeView> obtainNoticeView(long userId, String view){
+    public Optional<NoticeView> obtainNoticeView(long userId, String view){
         Example example = new Example(NoticeView.class);
         example.and()
                 .andEqualTo("userId", userId)
                 .andEqualTo("view", view)
                 .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue());
-
-        NoticeView noticeView = noticeViewMapper.selectOneByExample(example);
-        return Optional.ofNullable(noticeView);
+        try{
+            NoticeView noticeView = noticeViewMapper.selectOneByExample(example);
+            return Optional.ofNullable(noticeView);
+        }catch (Exception exception){
+            log.error("获取用户 view 数据异常，userId:{}, view:{}", userId, view);
+            List<NoticeView> listView = noticeViewMapper.selectByExample(example);
+            NoticeView returnView = listView.get(0);
+            List<NoticeView> otherViews = listView.subList(1, listView.size());
+            for (NoticeView  noticeView : otherViews) {
+                NoticeView record = new NoticeView();
+                record.setStatus(NoticeStatusEnum.DELETE_LOGIC.getValue());
+                record.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+                record.setModifier(userId);
+                record.setId(noticeView.getId());
+                noticeViewMapper.updateByPrimaryKeySelective(record);
+            }
+            return Optional.ofNullable(returnView);
+        }
     }
 
     /**
