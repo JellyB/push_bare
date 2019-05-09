@@ -92,7 +92,7 @@ public class NoticeContentUtil {
             String name = trigger.getJobKey().getName();
             String group = trigger.getJobKey().getGroup();
             Date nextFireTime = trigger.getNextFireTime();
-            String content = String.format(NEW_JOB, name, group, NoticeTimeParseUtil.localDateFormat.format(nextFireTime));
+            String content = String.format(NEW_JOB, name, group, NoticeTimeParseUtil.localDateFormat.print(nextFireTime.getTime()));
             TextMsg textMsg = TextMsg.builder().content(content).atAll(false).build();
             if(StringUtils.isNotEmpty(mobiles)){
                 textMsg.setAt(mobiles);
@@ -135,7 +135,7 @@ public class NoticeContentUtil {
             String name = trigger.getJobKey().getName();
             String group = trigger.getJobKey().getGroup();
             Date endTime = trigger.getPreviousFireTime();
-            String content = String.format(JOB_FINISH, name, group, NoticeTimeParseUtil.localDateFormat.format(endTime));
+            String content = String.format(JOB_FINISH, name, group, NoticeTimeParseUtil.localDateFormat.print(endTime.getTime()));
             TextMsg textMsg = TextMsg.builder().content(content).atAll(false).build();
             if(StringUtils.isNotEmpty(mobiles)){
                 textMsg.setAt(mobiles);
@@ -159,11 +159,11 @@ public class NoticeContentUtil {
             String group = trigger.getJobKey().getGroup();
             Date date;
             if(null == trigger.getNextFireTime()){
-                date = NoticeTimeParseUtil.localDateFormat.parse("1990-01-01 00:00:00");
+                date = NoticeTimeParseUtil.localDateFormat.parseDateTime("1990-01-01 00:00:00").toDate();
             }else{
                 date = trigger.getNextFireTime();
             }
-            String content = String.format(JOB_FIRED, name, group, NoticeTimeParseUtil.localDateFormat.format(date));
+            String content = String.format(JOB_FIRED, name, group, NoticeTimeParseUtil.localDateFormat.print(date.getTime()));
             if(name.equals(BossJob.BossJob)){
                 return null;
             }
@@ -188,7 +188,7 @@ public class NoticeContentUtil {
             String name = trigger.getJobKey().getName();
             String group = trigger.getJobKey().getGroup();
             Date date = trigger.getPreviousFireTime();
-            String content = String.format(JOB_COMPLETE, name, group, NoticeTimeParseUtil.localDateFormat.format(date));
+            String content = String.format(JOB_COMPLETE, name, group, NoticeTimeParseUtil.localDateFormat.print(date.getTime()));
             if(name.equals(BossJob.BossJob)){
                 return null;
             }

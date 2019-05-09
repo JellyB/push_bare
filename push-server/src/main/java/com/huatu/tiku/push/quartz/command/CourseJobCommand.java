@@ -184,7 +184,7 @@ public class CourseJobCommand extends Command {
         try{
             Date date = scheduler.scheduleJob(jobParent.getJobDetail(), jobParent.getTrigger());
             scheduler.getListenerManager().addTriggerListener(quartzTriggerListener);
-            log.info("job 执行时间:{}", NoticeTimeParseUtil.wholeDateFormat.format(date));
+            log.info("job 执行时间:{}", NoticeTimeParseUtil.wholeDateFormat.print(date.getTime()));
             log.info("add new job:{}", jobParent.getJobDetail().getKey().getName());
         }catch (SchedulerException e){
             log.error("启动任务失败！jobName:{}, triggerName:{},e:{}",

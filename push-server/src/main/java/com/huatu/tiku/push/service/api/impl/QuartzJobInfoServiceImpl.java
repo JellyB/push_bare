@@ -245,10 +245,10 @@ public class QuartzJobInfoServiceImpl implements QuartzJobInfoService {
         list.forEach((JobAndTriggers item) ->{
             JobAndTriggersResp resp = new JobAndTriggersResp();
             BeanUtils.copyProperties(item, resp);
-            String startDate = NoticeTimeParseUtil.localDateFormat.format(new Date(item.getStartTime()));
-            String endDate = NoticeTimeParseUtil.localDateFormat.format(new Date(item.getEndTime()));
-            String prevFireDate = NoticeTimeParseUtil.localDateFormat.format(item.getPrevFireTime());
-            String nextFireDate = NoticeTimeParseUtil.localDateFormat.format(item.getNextFireTime());
+            String startDate = NoticeTimeParseUtil.localDateFormat.print(item.getStartTime());
+            String endDate = NoticeTimeParseUtil.localDateFormat.print(item.getEndTime());
+            String prevFireDate = NoticeTimeParseUtil.localDateFormat.print(item.getPrevFireTime());
+            String nextFireDate = NoticeTimeParseUtil.localDateFormat.print(item.getNextFireTime());
 
             resp.setStartDate(startDate);
             resp.setEndDate(endDate);

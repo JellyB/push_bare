@@ -128,7 +128,7 @@ public class FeedBackCastFactory extends AbstractFactory{
                                             CorrectFeedbackInfo correctFeedbackInfo, List<NoticeReq> noticeReqList ){
         CorrectDealEnum status = correctFeedbackInfo.getStatus() == null ? CorrectDealEnum.NORMAL : correctFeedbackInfo.getStatus();
         Date dealDate = correctFeedbackInfo.getDealDate() == null ? new Date() : correctFeedbackInfo.getDealDate();
-        String replyTime = NoticeTimeParseUtil.localDateFormat.format(dealDate);
+        String replyTime = NoticeTimeParseUtil.localDateFormat.print(dealDate.getTime());
         StringBuffer noticeText = new StringBuffer();
         if(StringUtils.isNotEmpty(correctFeedbackInfo.getSource()) && !EMPTY_STRING.equals(correctFeedbackInfo.getSource())){
             noticeText.append(String.format(CORRECT_SOURCE, correctFeedbackInfo.getSource()));
@@ -224,7 +224,7 @@ public class FeedBackCastFactory extends AbstractFactory{
         }
         String replyContent = Joiner.on("#").join(text);
         long time = suggestFeedbackInfo.getCreateTime() == 0 ? System.currentTimeMillis() : suggestFeedbackInfo.getCreateTime();
-        String replyTime = NoticeTimeParseUtil.dayTimeDateFormat.format(new Date(time));
+        String replyTime = NoticeTimeParseUtil.dayTimeDateFormat.print(time);
 
         NoticeReq noticeReq = NoticeReq.builder()
                 .title(NoticeTypeEnum.SUGGEST_FEEDBACK.getTitle())

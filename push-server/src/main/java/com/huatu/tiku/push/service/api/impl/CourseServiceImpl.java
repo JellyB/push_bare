@@ -231,10 +231,10 @@ public class CourseServiceImpl implements CourseService {
         courseInfos.forEach(item -> {
             CourseInfoResp courseInfoResp = new CourseInfoResp();
             BeanUtils.copyProperties(item, courseInfoResp);
-            courseInfoResp.setStartDate(NoticeTimeParseUtil.localDateFormat.format(item.getStartTime()));
-            courseInfoResp.setEndDate(NoticeTimeParseUtil.localDateFormat.format(item.getEndTime()));
-            courseInfoResp.setCreateDate(NoticeTimeParseUtil.localDateFormat.format(item.getCreateTime()));
-            courseInfoResp.setUpdateDate(NoticeTimeParseUtil.localDateFormat.format(item.getUpdateTime()));
+            courseInfoResp.setStartDate(NoticeTimeParseUtil.localDateFormat.print(item.getStartTime().getTime()));
+            courseInfoResp.setEndDate(NoticeTimeParseUtil.localDateFormat.print(item.getEndTime().getTime()));
+            courseInfoResp.setCreateDate(NoticeTimeParseUtil.localDateFormat.print(item.getCreateTime().getTime()));
+            courseInfoResp.setUpdateDate(NoticeTimeParseUtil.localDateFormat.print(item.getUpdateTime().getTime()));
             courseInfoResps.add(courseInfoResp);
         });
     }

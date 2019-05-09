@@ -80,7 +80,7 @@ public class NoticeRespPcStrategy extends AbstractNoticeResp {
         String starTimeStr = String.valueOf(starTimeObj);
         long time = Long.valueOf(starTimeStr);
         Date date = new Date(time);
-        return NoticeTimeParseUtil.simpleDateFormat.format(date);
+        return NoticeTimeParseUtil.simpleDateFormat.print(date.getTime());
     }
 
     private static String dealCourseClassTitle(BaseMsg baseMsg){

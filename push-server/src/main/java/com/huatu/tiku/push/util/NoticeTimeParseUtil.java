@@ -4,7 +4,9 @@ import com.huatu.tiku.push.enums.JobScannedEnum;
 import com.huatu.tiku.push.enums.NoticeParentTypeEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.util.Times;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
@@ -21,13 +23,13 @@ import java.util.Locale;
 @Slf4j
 public class NoticeTimeParseUtil {
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd HH:mm");
-    public static final SimpleDateFormat wholeDateFormat = new SimpleDateFormat("YYYY-MM-dd HH:mm:ss");
-    public static final SimpleDateFormat localDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
-    public static final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm", Locale.CHINESE);
-    private static final SimpleDateFormat noSecondDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.CHINESE);
-    public static final SimpleDateFormat dayTimeDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINESE);
-    private static final SimpleDateFormat minuteSecond = new SimpleDateFormat("mm:ss", Locale.CHINESE);
+    private static final DateTimeFormatter dateFormat = DateTimeFormat.forPattern("MM-dd HH:mm");
+    public static final DateTimeFormatter wholeDateFormat = DateTimeFormat.forPattern("YYYY-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter localDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    public static final DateTimeFormatter simpleDateFormat = DateTimeFormat.forPattern("HH:mm");
+    private static final DateTimeFormatter noSecondDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm");
+    public static final DateTimeFormatter dayTimeDateFormat = DateTimeFormat.forPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter minuteSecond = DateTimeFormat.forPattern("mm:ss");
 
     private static final long HOUR_1 = 60 * 60 * 1000L;
     private static final long MINUTE_30 = 30 * 60 * 1000L;
@@ -81,9 +83,9 @@ public class NoticeTimeParseUtil {
         thisYear.set(todayCalender.get(Calendar.YEAR), 00, 01,0,0,0);
         final Date thisYearDay = thisYear.getTime();
 
-        log.debug("today 0 clock:{}", localDateFormat.format(today));
-        log.debug("yesterday 0 clock:{}", localDateFormat.format(yesterday));
-        log.debug("this year's firs day:{}", localDateFormat.format(thisYearDay));
+        log.debug("today 0 clock:{}", localDateFormat.print(today.getTime()));
+        log.debug("yesterday 0 clock:{}", localDateFormat.print(yesterday.getTime()));
+        log.debug("this year's firs day:{}", localDateFormat.print(thisYearDay.getTime()));
 
         final long currentTime = System.currentTimeMillis();
         final long difference = currentTime - noticeTime;
@@ -96,13 +98,13 @@ public class NoticeTimeParseUtil {
             long minutes = difference/1000/60;
             return String.format(MANY_MINUTES_BEFORE, minutes);
         }else if((noticeTime > today.getTime()) && difference > HOUR_1){
-            return simpleDateFormat.format(new Date(noticeTime));
+            return simpleDateFormat.print(noticeTime);
         }else if(noticeTime < today.getTime() && noticeTime > yesterday.getTime()){
-            return "昨天" + simpleDateFormat.format(new Date(noticeTime));
+            return "昨天" + simpleDateFormat.print(noticeTime);
         }else if(noticeTime < yesterday.getTime() && noticeTime > thisYearDay.getTime()){
-            return dateFormat.format(new Date(noticeTime));
+            return dateFormat.print(noticeTime);
         }else{
-            return noSecondDateFormat.format(new Date(noticeTime));
+            return noSecondDateFormat.print(noticeTime);
         }
     }
 
@@ -114,7 +116,7 @@ public class NoticeTimeParseUtil {
      * @return
      */
     public static NoticeTypeEnum parseTime2NoticeType(long starTime, NoticeParentTypeEnum noticeParentTypeEnum, JobScannedEnum jobScannedEnum){
-        log.info("start time:{}", wholeDateFormat.format(new Date(starTime)));
+        log.info("start time:{}", wholeDateFormat.print(starTime));
         final long currentTime = System.currentTimeMillis();
         if(starTime < currentTime){
             return null;
@@ -177,7 +179,7 @@ public class NoticeTimeParseUtil {
     }
 
     public static String noticeViewTime(Timestamp timestamp){
-        return minuteSecond.format(timestamp);
+        return minuteSecond.print(timestamp.getTime());
     }
     /**
      * 根据时间返回模考消息类型
