@@ -44,6 +44,7 @@ public class FileUploadServiceImpl implements FileUploadService {
         SetOperations setOperations = redisTemplate.opsForSet();
         Set<Long> userIds = setOperations.members(key);
         String alias = Joiner.on("\n").join(userIds);
+        log.info("file Upload classId:{}, alias:{}", classId, alias);
         String androidFileId = androidCustomCast.uploadContents(alias);
         String iosFileId = iosCustomCast.uploadContents(alias);
         return FileUploadTerminal
