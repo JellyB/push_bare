@@ -9,5 +9,4 @@ package com.huatu.tiku.push.constant;
 public abstract class  WayBillParams extends Params {
 
     public static final String TYPE = "order";
-
 }

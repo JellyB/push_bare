@@ -23,7 +23,9 @@ public enum NoticeTypeEnum{
     ORDER_SEND("发货提醒", "", NoticeParentTypeEnum.ORDER, WayBillSendParams.DETAIL_TYPE),
     ORDER_SIGN("订单已签收", "", NoticeParentTypeEnum.ORDER, WayBillSignParams.DETAIL_TYPE),
     CORRECT_FEEDBACK("您的纠错有反馈啦~", "", NoticeParentTypeEnum.FEEDBACK, FeedBackCorrectParams.DETAIL_TYPE),
-    SUGGEST_FEEDBACK("您的建议有反馈啦~", "您于 %s 日提交的意见反馈收到了回复：%s", NoticeParentTypeEnum.FEEDBACK, FeedBackSuggestParams.DETAIL_TYPE);
+    SUGGEST_FEEDBACK("您的建议有反馈啦~", "您于 %s 日提交的意见反馈收到了回复：%s", NoticeParentTypeEnum.FEEDBACK, FeedBackSuggestParams.DETAIL_TYPE),
+    CORRECT_RETURN("订单退回", "", NoticeParentTypeEnum.CORRECT, CorrectReturnParams.DETAIL_TYPE),
+    CORRECT_REPORT("报告出炉", "", NoticeParentTypeEnum.CORRECT, CorrectReportParams.DETAIL_TYPE);
 
     private String title;
 

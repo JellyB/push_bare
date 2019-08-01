@@ -23,6 +23,12 @@ public class RabbitMqKey {
 
     public static final String NOTICE_FEEDBACK_CORRECT = "notice_push_feedback_correct";
 
+    //申论批改退回队列
+    public static final String NOTICE_CORRECT_RETURN = "notice_push_correct_return";
+    //申论批改查看报告队列
+    public static final String NOTICE_CORRECT_REPORT = "notice_push_correct_report";
+
+
     public static final String NOTICE_FEEDBACK_SUGGEST = "notice_push_feedback_suggest";
 
     public static final String NOTICE_COURSE_USER_INFO_UNAME = "notice_course_userInfo_uName";

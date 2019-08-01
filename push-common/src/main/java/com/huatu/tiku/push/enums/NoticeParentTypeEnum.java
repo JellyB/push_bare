@@ -20,7 +20,8 @@ public enum  NoticeParentTypeEnum {
     FEEDBACK(FeedBackParams.TYPE, NoticeViewEnum.FEED_BACK),
     COURSE_WORK(CourseWorkParams.TYPE, NoticeViewEnum.COURSE),
     COURSE_TEST(CourseTestParams.TYPE, NoticeViewEnum.COURSE),
-    SMALL_MOCK(SmallMockParams.TYPE, NoticeViewEnum.PLAT_FORM);
+    SMALL_MOCK(SmallMockParams.TYPE, NoticeViewEnum.PLAT_FORM),
+    CORRECT(CorrectParams.TYPE, NoticeViewEnum.PLAT_FORM);
 
     private String type;
 

@@ -14,7 +14,7 @@ import java.util.Locale;
  * Create time 2018-11-15 上午9:38
  **/
 @Slf4j
-public class UtilTest extends PushBaseTest{
+public class UtilTest{
 
     private static final SimpleDateFormat simpledateFormat = new SimpleDateFormat("HH:mm:ss MM/dd/YYYY");
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
@@ -29,7 +29,7 @@ public class UtilTest extends PushBaseTest{
     }
 
     @Test
-    public static void  dateTest() {
+    public void  dateTest() {
         long time = 1573832381326l;
         long time2 = 1542622800000l;
         System.err.println(simpledateFormat.format(new Date(time)));
@@ -43,8 +43,8 @@ public class UtilTest extends PushBaseTest{
         target = Long.valueOf(source.intValue());
         System.err.println(target);
         try{
-            Date startTime = dateFormat.parse("2019-04-09 14:18:00");
-            Date endTime = dateFormat.parse("2028-11-26 22:00:00");
+            Date startTime = dateFormat.parse("2019-01-01 00:00:00");
+            Date endTime = dateFormat.parse("2019-07-01 00:00:00");
             System.err.println("startTime:" + startTime.getTime() );
             System.err.println("endTime:" + endTime.getTime() );
         }catch (Exception e){
@@ -54,7 +54,7 @@ public class UtilTest extends PushBaseTest{
     }
 
     public static void main(String[] args) {
-        dateTest();
+        //dateTest();
     }
 
 
