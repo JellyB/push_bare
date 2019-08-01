@@ -1,6 +1,7 @@
 package com.huatu.tiku.push.constant;
 
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public class CorrectReportParams extends CorrectParams{
 
     private static final String QUESTION_TYPE = "questionType";
 
-    private static final String USER_ID = "userId";
+    private static final String ANSWER_CARD_ID = "answerCardId";
 
     /**
      * notice type
@@ -27,8 +28,6 @@ public class CorrectReportParams extends CorrectParams{
     public String getType() {
         return DETAIL_TYPE;
     }
-
-
 
 
     public static class Builder{
@@ -44,18 +43,28 @@ public class CorrectReportParams extends CorrectParams{
             return builder;
         }
 
+        public CorrectReportParams.Builder bizId(long answerCardId, int questionType){
+            this.params.put(BIZ_ID, Long.parseLong(answerCardId + "" + questionType));
+            return this;
+        }
+
+        public CorrectReportParams.Builder title(String correctTitle){
+            this.params.put(CORRECT_TITLE, correctTitle);
+            return this;
+        }
+
+        public CorrectReportParams.Builder submitTime(Date date){
+            this.params.put(SUBMIT_TIME, date);
+            return this;
+        }
+
         public CorrectReportParams.Builder answerCardId(long answerCardId){
-            this.params.put(BIZ_ID, answerCardId);
+            this.params.put(ANSWER_CARD_ID, answerCardId);
             return this;
         }
 
         public CorrectReportParams.Builder questionType(int questionType){
             this.params.put(QUESTION_TYPE, questionType);
-            return this;
-        }
-
-        public CorrectReportParams.Builder userId(long userId){
-            this.params.put(USER_ID, userId);
             return this;
         }
 

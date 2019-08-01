@@ -1,6 +1,7 @@
 package com.huatu.tiku.push.constant;
 
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public class CorrectReturnParams extends CorrectParams{
 
     private static final String QUESTION_TYPE = "questionType";
 
-    private static final String USER_ID = "userId";
+    private static final String ANSWER_CARD_ID = "answerCardId";
 
     private static final String RETURN_CONTENT = "returnContent";
 
@@ -43,18 +44,28 @@ public class CorrectReturnParams extends CorrectParams{
             return builder;
         }
 
+        public CorrectReturnParams.Builder bizId(long answerCardId, int questionType){
+            this.params.put(BIZ_ID, Long.parseLong(answerCardId + "" + questionType));
+            return this;
+        }
+
         public CorrectReturnParams.Builder answerCardId(long answerCardId){
-            this.params.put(BIZ_ID, answerCardId);
+            this.params.put(ANSWER_CARD_ID, answerCardId);
+            return this;
+        }
+
+        public CorrectReturnParams.Builder title(String correctTitle){
+            this.params.put(CORRECT_TITLE, correctTitle);
+            return this;
+        }
+
+        public CorrectReturnParams.Builder submitTime(Date date){
+            this.params.put(SUBMIT_TIME, date);
             return this;
         }
 
         public CorrectReturnParams.Builder questionType(int questionType){
             this.params.put(QUESTION_TYPE, questionType);
-            return this;
-        }
-
-        public CorrectReturnParams.Builder userId(long userId){
-            this.params.put(USER_ID, userId);
             return this;
         }
 

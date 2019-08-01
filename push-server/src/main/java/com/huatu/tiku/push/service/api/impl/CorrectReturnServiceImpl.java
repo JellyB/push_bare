@@ -54,7 +54,7 @@ public class CorrectReturnServiceImpl implements CorrectReturnService {
         CorrectReturnParams.Builder builder = CorrectFactory.correctReturnParams(correctReturnInfo);
 
         List<NoticeReq.NoticeUserRelation> noticeUserRelations = CorrectFactory.correctReturnUserRelations(correctReturnInfo);
-        CorrectFactory.correctReuturnNoticeForPush(builder, noticeUserRelations, correctReturnInfo, noticeReqList);
+        CorrectFactory.correctReturnNoticeForPush(builder, noticeUserRelations, correctReturnInfo, noticeReqList);
 
         List<UmengNotification> list = CorrectFactory.customCastNotifications(correctReturnInfo.getBizId(), noticeReqList);
         noticeLandingManager.insertBatch(noticeReqList);
@@ -64,9 +64,9 @@ public class CorrectReturnServiceImpl implements CorrectReturnService {
         notificationHandler.setConcurrent(true);
         notificationHandler.setPushStrategy(customCastStrategyTemplate);
         /**
-         * 发送
+         * 申论批改 - 被退回消息发送
          */
-        log.info("push correct feedback:{}", JSONObject.toJSONString(noticeReqList));
+        log.info("申论人工批改被退回:{}", JSONObject.toJSONString(noticeReqList));
         notificationHandler.push();
     }
 }

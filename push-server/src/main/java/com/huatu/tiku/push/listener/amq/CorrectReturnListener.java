@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
- * 描述：申论批改监听队列
+ * 描述：申论批改学员批改被退回监听队列
  *
  * @author biguodong
  * Create time 2018-12-11 下午1:51
@@ -27,9 +27,9 @@ public class CorrectReturnListener {
 
     @RabbitHandler
     public void onMessage(String message){
-        CorrectReturnInfo correctInfo = JSONObject.parseObject(message, CorrectReturnInfo.class);
-        log.info("申论批改被退回内容:{}", JSONObject.toJSONString(correctInfo));
-        correctReturnService.sendCorrectNotice(correctInfo);
+        CorrectReturnInfo correctReturnInfo = JSONObject.parseObject(message, CorrectReturnInfo.class);
+        log.info("申论批改被退回内容:{}", JSONObject.toJSONString(correctReturnInfo));
+        correctReturnService.sendCorrectNotice(correctReturnInfo);
     }
 
 }

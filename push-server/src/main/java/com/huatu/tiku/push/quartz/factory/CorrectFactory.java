@@ -1,18 +1,15 @@
 package com.huatu.tiku.push.quartz.factory;
 
-import com.alibaba.fastjson.JSONObject;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import com.huatu.common.exception.BizException;
-import com.huatu.tiku.push.cast.UmengNotification;
 import com.huatu.tiku.push.constant.*;
 import com.huatu.tiku.push.enums.DisplayTypeEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.request.NoticeReq;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 描述：申论批改工厂方法
@@ -26,28 +23,37 @@ public class CorrectFactory extends AbstractFactory{
 
 
     /**
-     * correct params builder
+     * correct return params builder
      * @param correctReturnInfo
      * @return
      */
     public static CorrectReturnParams.Builder correctReturnParams(CorrectReturnInfo correctReturnInfo){
         CorrectReturnParams.Builder builder = CorrectReturnParams.Builder
                 .builder(CorrectReturnParams.DETAIL_TYPE)
+                .bizId(correctReturnInfo.getAnswerCardId(), correctReturnInfo.getQuestionType())
+                .title(correctReturnInfo.getCorrectTitle())
+                .submitTime(correctReturnInfo.getSubmitTime())
                 .answerCardId(correctReturnInfo.getAnswerCardId())
                 .questionType(correctReturnInfo.getQuestionType())
                 .returnContent(correctReturnInfo.getReturnContent())
-                .userId(correctReturnInfo.getUserId())
                 .build();
 
         return builder;
     }
 
+    /**
+     * correct report params builder
+     * @param correctReportInfo
+     * @return
+     */
     public static CorrectReportParams.Builder correctReportParams(CorrectReportInfo correctReportInfo){
         CorrectReportParams.Builder builder = CorrectReportParams.Builder
                 .builder(CorrectReturnParams.DETAIL_TYPE)
+                .bizId(correctReportInfo.getAnswerCardId(), correctReportInfo.getQuestionType())
+                .title(correctReportInfo.getCorrectTitle())
+                .submitTime(correctReportInfo.getSubmitTime())
                 .answerCardId(correctReportInfo.getAnswerCardId())
                 .questionType(correctReportInfo.getQuestionType())
-                .userId(correctReportInfo.getUserId())
                 .build();
 
         return builder;
@@ -87,21 +93,22 @@ public class CorrectFactory extends AbstractFactory{
     }
 
     /**
-     * 推送消息--退回
+     * 推送消息--申论 批改 退回
      * @param builder
      * @param noticeUserRelations
      * @param correctReturnInfo
      * @param noticeReqList
      */
-    public static void correctReuturnNoticeForPush(CorrectReturnParams.Builder builder, List<NoticeReq.NoticeUserRelation> noticeUserRelations,
-                                            CorrectReturnInfo correctReturnInfo, List<NoticeReq> noticeReqList ){
+    public static void correctReturnNoticeForPush(CorrectReturnParams.Builder builder, List<NoticeReq.NoticeUserRelation> noticeUserRelations, CorrectReturnInfo correctReturnInfo, List<NoticeReq> noticeReqList ){
 
-        StringBuilder noticeText = new StringBuilder(correctReturnInfo.getReturnContent());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
+        String date = dateFormat.format(correctReturnInfo.getSubmitTime());
+        String text = String.format(NoticeTypeEnum.CORRECT_RETURN.getText(), date, correctReturnInfo.getCorrectTitle());
 
 
         NoticeReq noticeReq = NoticeReq.builder()
                 .title(NoticeTypeEnum.CORRECT_RETURN.getTitle())
-                .text(noticeText.toString())
+                .text(text)
                 .custom(builder.getParams())
                 .type(CorrectParams.TYPE)
                 .detailType(CorrectReturnParams.DETAIL_TYPE)
@@ -123,9 +130,13 @@ public class CorrectFactory extends AbstractFactory{
                                                    CorrectReportInfo correctReportInfo, List<NoticeReq> noticeReqList ){
 
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
+        String date = dateFormat.format(correctReportInfo.getSubmitTime());
+        String text = String.format(NoticeTypeEnum.CORRECT_REPORT.getText(), date, correctReportInfo.getCorrectTitle());
+
         NoticeReq noticeReq = NoticeReq.builder()
                 .title(NoticeTypeEnum.CORRECT_REPORT.getTitle())
-                .text(NoticeTypeEnum.CORRECT_REPORT.getText())
+                .text(text)
                 .custom(builder.getParams())
                 .type(CorrectParams.TYPE)
                 .detailType(CorrectReportParams.DETAIL_TYPE)

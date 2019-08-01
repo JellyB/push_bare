@@ -24,8 +24,8 @@ public enum NoticeTypeEnum{
     ORDER_SIGN("订单已签收", "", NoticeParentTypeEnum.ORDER, WayBillSignParams.DETAIL_TYPE),
     CORRECT_FEEDBACK("您的纠错有反馈啦~", "", NoticeParentTypeEnum.FEEDBACK, FeedBackCorrectParams.DETAIL_TYPE),
     SUGGEST_FEEDBACK("您的建议有反馈啦~", "您于 %s 日提交的意见反馈收到了回复：%s", NoticeParentTypeEnum.FEEDBACK, FeedBackSuggestParams.DETAIL_TYPE),
-    CORRECT_RETURN("订单退回", "", NoticeParentTypeEnum.CORRECT, CorrectReturnParams.DETAIL_TYPE),
-    CORRECT_REPORT("报告出炉", "", NoticeParentTypeEnum.CORRECT, CorrectReportParams.DETAIL_TYPE);
+    CORRECT_RETURN("人工批改被退回", "您于 %s 提交的 【% s】 申论人工批改被退回了！", NoticeParentTypeEnum.CORRECT, CorrectReturnParams.DETAIL_TYPE),
+    CORRECT_REPORT("人工批改出报告了~", "您于 %s 提交的 【% s】 申论人工批改出报告了！", NoticeParentTypeEnum.CORRECT, CorrectReportParams.DETAIL_TYPE);
 
     private String title;
 

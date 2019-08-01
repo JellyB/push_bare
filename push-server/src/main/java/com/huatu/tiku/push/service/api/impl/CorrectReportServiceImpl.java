@@ -62,9 +62,9 @@ public class CorrectReportServiceImpl implements CorrectReportService {
         notificationHandler.setConcurrent(true);
         notificationHandler.setPushStrategy(customCastStrategyTemplate);
         /**
-         * 发送
+         * 申论人工批改 - 报告出炉 - 消息发送
          */
-        log.info("push correct feedback:{}", JSONObject.toJSONString(noticeReqList));
+        log.info("申论人工批改报告出炉消息发送:{}", JSONObject.toJSONString(noticeReqList));
         notificationHandler.push();
     }
 }

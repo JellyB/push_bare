@@ -28,6 +28,10 @@ public class CorrectReturnInfo implements Serializable {
 
     private long answerCardId;
 
+    private String correctTitle;
+
+    private Date submitTime;
+
     private long userId;
 
     private String returnContent;
@@ -37,11 +41,12 @@ public class CorrectReturnInfo implements Serializable {
     private NoticeTypeEnum noticeType;
 
     @Builder
-
-    public CorrectReturnInfo(long bizId, int questionType, long answerCardId, long userId, String returnContent, Date dealDate, NoticeTypeEnum noticeType) {
+    public CorrectReturnInfo(long bizId, int questionType, long answerCardId, String correctTitle, Date submitTime, long userId, String returnContent, Date dealDate, NoticeTypeEnum noticeType) {
         this.bizId = bizId;
         this.questionType = questionType;
         this.answerCardId = answerCardId;
+        this.correctTitle = correctTitle;
+        this.submitTime = submitTime;
         this.userId = userId;
         this.returnContent = returnContent;
         this.dealDate = dealDate;
