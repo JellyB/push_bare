@@ -1,6 +1,5 @@
 package com.huatu.tiku.push.constant;
 
-import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,10 +35,8 @@ public class CorrectReportInfo implements Serializable {
 
     private Date dealDate;
 
-    private NoticeTypeEnum noticeType;
-
     @Builder
-    public CorrectReportInfo(long bizId, int questionType, String questionName, long answerCardId, Date submitTime, long userId, Date dealDate, NoticeTypeEnum noticeType) {
+    public CorrectReportInfo(long bizId, int questionType, String questionName, long answerCardId, Date submitTime, long userId, Date dealDate) {
         this.bizId = bizId;
         this.questionType = questionType;
         this.questionName = questionName;
@@ -47,6 +44,5 @@ public class CorrectReportInfo implements Serializable {
         this.submitTime = submitTime;
         this.userId = userId;
         this.dealDate = dealDate;
-        this.noticeType = noticeType;
     }
 }
