@@ -77,14 +77,16 @@ public class CourseCastFactory extends AbstractFactory{
         String alert = simpleDateFormat.format(new Date(courseInfo.getStartTime().getTime()));
         String title = String.format(NoticeTypeEnum.COURSE_REMIND.getTitle(), alert);
 
-        String pushText = NoticeTypeEnum.COURSE_REMIND.getText();
+        String pushText = NoticeTypeEnum.COURSE_REMIND.getText4Data();
         pushText = String.format(pushText, courseInfo.getTeacher());
+        String dataText = pushText;
 
         NoticeReq noticeForPush = NoticeReq.builder()
                 .type(CourseParams.TYPE)
                 .detailType(CourseParams.REMIND)
                 .title(title)
-                .text(pushText)
+                .text4Data(dataText)
+                .text4Push(pushText)
                 .custom(builder.getParams())
                 .users(noticeRelations)
                 .build();
@@ -101,14 +103,16 @@ public class CourseCastFactory extends AbstractFactory{
         String alert = simpleDateFormat.format(new Date(courseInfo.getStartTime().getTime()));
         String title = String.format(NoticeTypeEnum.COURSE_REMIND.getTitle(), alert);
 
-        String pushText = NoticeTypeEnum.COURSE_REMIND.getText();
+        String pushText = NoticeTypeEnum.COURSE_REMIND.getText4Data();
         pushText = String.format(pushText, courseInfo.getTeacher());
+        String dataText = pushText;
 
         NoticeReq noticeForPush = NoticeReq.builder()
                 .type(CourseParams.TYPE)
                 .detailType(CourseParams.REMIND)
                 .title(title)
-                .text(pushText)
+                .text4Push(pushText)
+                .text4Data(dataText)
                 .custom(builder.getParams())
                 .build();
         return  noticeForPush;
@@ -125,7 +129,8 @@ public class CourseCastFactory extends AbstractFactory{
                 .type(CourseParams.TYPE)
                 .detailType(CourseParams.READY)
                 .title(NoticeTypeEnum.COURSE_READY.getTitle())
-                .text(courseInfo.getSection())
+                .text4Push(courseInfo.getSection())
+                .text4Data(courseInfo.getSection())
                 .custom(builder.getParams())
                 .users(noticeRelations)
                 .build();
@@ -143,7 +148,8 @@ public class CourseCastFactory extends AbstractFactory{
                 .type(CourseParams.TYPE)
                 .detailType(CourseParams.READY)
                 .title(NoticeTypeEnum.COURSE_READY.getTitle())
-                .text(courseInfo.getSection())
+                .text4Push(courseInfo.getSection())
+                .text4Data(courseInfo.getSection())
                 .custom(builder.getParams())
                 .build();
         return  noticeForPush;
@@ -165,7 +171,8 @@ public class CourseCastFactory extends AbstractFactory{
                 .type(CourseParams.TYPE)
                 .detailType(CourseParams.REMIND)
                 .title(title)
-                .text(courseInfo.getClassTitle())
+                .text4Data(courseInfo.getClassTitle())
+                .text4Push(courseInfo.getClassTitle())
                 .custom(builder.getParams())
                 .users(noticeRelations)
                 .build();
@@ -189,7 +196,8 @@ public class CourseCastFactory extends AbstractFactory{
                 .type(CourseParams.TYPE)
                 .detailType(CourseParams.READY)
                 .title(NoticeTypeEnum.COURSE_READY.getTitle())
-                .text(courseInfo.getSection())
+                .text4Data(courseInfo.getSection())
+                .text4Push(courseInfo.getSection())
                 .custom(builder.getParams())
                 .users(noticeRelations)
                 .build();

@@ -17,6 +17,8 @@ public class CorrectReportParams extends CorrectParams{
 
     private static final String QUESTION_TYPE = "questionType";
 
+    private static final String QUESTION_NAME = "questionName";
+
     private static final String ANSWER_CARD_ID = "answerCardId";
 
     /**
@@ -48,11 +50,6 @@ public class CorrectReportParams extends CorrectParams{
             return this;
         }
 
-        public CorrectReportParams.Builder title(String correctTitle){
-            this.params.put(CORRECT_TITLE, correctTitle);
-            return this;
-        }
-
         public CorrectReportParams.Builder submitTime(Date date){
             this.params.put(SUBMIT_TIME, date);
             return this;
@@ -65,6 +62,11 @@ public class CorrectReportParams extends CorrectParams{
 
         public CorrectReportParams.Builder questionType(int questionType){
             this.params.put(QUESTION_TYPE, questionType);
+            return this;
+        }
+
+        public CorrectReportParams.Builder questionName(String questionName){
+            this.params.put(QUESTION_NAME, questionName);
             return this;
         }
 

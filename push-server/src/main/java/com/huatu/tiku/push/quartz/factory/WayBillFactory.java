@@ -109,7 +109,8 @@ public class WayBillFactory extends AbstractFactory {
 
         NoticeReq noticeReq = NoticeReq.builder()
                 .title(builder.getNoticeTypeEnum().getTitle())
-                .text(req.getClassName())
+                .text4Push(req.getClassName())
+                .text4Data(req.getClassName())
                 .custom(builder.getParams())
                 .type(builder.getNoticeTypeEnum().getType().getType())
                 .detailType(builder.getNoticeTypeEnum().getDetailType())

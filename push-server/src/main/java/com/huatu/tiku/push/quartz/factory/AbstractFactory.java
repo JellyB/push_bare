@@ -70,11 +70,11 @@ public abstract class AbstractFactory {
                 androidCustomCast.setAlias(Joiner.on(",").join(alias), UmengNotification.ALIAS_TYPE);
                 androidCustomCast.setTicker( "新的消息通知！");
                 androidCustomCast.setTitle(item.getTitle());
-                androidCustomCast.setText(item.getText());
+                androidCustomCast.setText(item.getText4Push());
                 androidCustomCast.goAppAfterOpen();
                 androidCustomCast.setDisplayType(AbstractAndroidNotification.DisplayType.CUSTOM);
                 custom.put("title", item.getTitle());
-                custom.put("content", item.getText());
+                custom.put("content", item.getText4Data());
                 androidCustomCast.setCustomField(custom);
                 if(!notifications.contains(androidCustomCast)){
                     log.info("notifications 成功添加一条推送数据:{}", androidCustomCast.getClass().getSimpleName());
@@ -108,7 +108,7 @@ public abstract class AbstractFactory {
                 if(StringUtils.isNotEmpty(item.getSubTitle())){
                     iosCustomCast.setAlertSubtitle(item.getSubTitle());
                 }
-                iosCustomCast.setAlertBody(item.getText());
+                iosCustomCast.setAlertBody(item.getText4Push());
                 iosCustomCast.setCustomizedField(TYPE, IOS_NOTICE_CENTER);
                 iosCustomCast.setCustomizedField(VIEW, target);
                 if(!notifications.contains(iosCustomCast)){
@@ -156,11 +156,11 @@ public abstract class AbstractFactory {
             androidCustomFileCast.setFileId(fileId, UmengNotification.ALIAS_TYPE);
             androidCustomFileCast.setTicker( "新的消息通知！");
             androidCustomFileCast.setTitle(noticeReq.getTitle());
-            androidCustomFileCast.setText(noticeReq.getText());
+            androidCustomFileCast.setText(noticeReq.getText4Push());
             androidCustomFileCast.goAppAfterOpen();
             androidCustomFileCast.setDisplayType(AbstractAndroidNotification.DisplayType.CUSTOM);
             custom.put("title", noticeReq.getTitle());
-            custom.put("content", noticeReq.getText());
+            custom.put("content", noticeReq.getText4Data());
             androidCustomFileCast.setCustomField(custom);
             notifications.add(androidCustomFileCast);
         }catch (Exception e){
@@ -188,7 +188,7 @@ public abstract class AbstractFactory {
             if(StringUtils.isNotEmpty(noticeReq.getSubTitle())){
                 iosCustomFileCast.setAlertSubtitle(noticeReq.getSubTitle());
             }
-            iosCustomFileCast.setAlertBody(noticeReq.getText());
+            iosCustomFileCast.setAlertBody(noticeReq.getText4Push());
             iosCustomFileCast.setCustomizedField(TYPE, IOS_NOTICE_CENTER);
             iosCustomFileCast.setCustomizedField(VIEW, target);
             notifications.add(iosCustomFileCast);

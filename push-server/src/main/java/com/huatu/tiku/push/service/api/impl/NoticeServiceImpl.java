@@ -147,7 +147,7 @@ public class NoticeServiceImpl implements NoticeService {
                 .type(req.getType())
                 .detailType(req.getDetailType())
                 .title(req.getTitle())
-                .text(req.getText())
+                .text(req.getText4Data())
                 .custom(JSONObject.toJSON(req.getCustom()).toString())
                 .createTime(new Timestamp(System.currentTimeMillis()))
                 .updateTime(new Timestamp(System.currentTimeMillis()))

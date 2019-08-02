@@ -23,32 +23,29 @@ public class CorrectReportInfo implements Serializable {
 
     //业务id 答题卡id
     private long bizId;
-    //试题类型 0 单题 1 套题
+    //试题类型 0 套题 1 单题 2 议论文
     private int questionType;
+    // 标准答案 套题 议论文
+    private String questionName;
 
     private long answerCardId;
-
-    private String correctTitle;
 
     private Date submitTime;
 
     private long userId;
-
-    private String returnContent;
 
     private Date dealDate;
 
     private NoticeTypeEnum noticeType;
 
     @Builder
-    public CorrectReportInfo(long bizId, int questionType, long answerCardId, String correctTitle, Date submitTime, long userId, String returnContent, Date dealDate, NoticeTypeEnum noticeType) {
+    public CorrectReportInfo(long bizId, int questionType, String questionName, long answerCardId, Date submitTime, long userId, Date dealDate, NoticeTypeEnum noticeType) {
         this.bizId = bizId;
         this.questionType = questionType;
+        this.questionName = questionName;
         this.answerCardId = answerCardId;
-        this.correctTitle = correctTitle;
         this.submitTime = submitTime;
         this.userId = userId;
-        this.returnContent = returnContent;
         this.dealDate = dealDate;
         this.noticeType = noticeType;
     }

@@ -41,9 +41,14 @@ public class NoticeReq extends BaseReq{
     private String subTitle;
 
     /**
-     * 消息test
+     * 需要存储的消息test
      */
-    private String text;
+    private String text4Data;
+
+    /**
+     * 需要推送的text
+     */
+    private String text4Push;
 
     /**
      * 自定义消息内容
@@ -61,12 +66,13 @@ public class NoticeReq extends BaseReq{
     private List<NoticeUserRelation> users;
 
     @Builder
-    public NoticeReq(String type, String detailType, String title, String subTitle, String text, Map<String, Object> custom, Integer displayType, List<NoticeUserRelation> users) {
+    public NoticeReq(String type, String detailType, String title, String subTitle, String text4Data, String text4Push, Map<String, Object> custom, Integer displayType, List<NoticeUserRelation> users) {
         this.type = type;
         this.detailType = detailType;
         this.title = title;
         this.subTitle = subTitle;
-        this.text = text;
+        this.text4Data = text4Data;
+        this.text4Push = text4Push;
         this.custom = custom;
         this.displayType = displayType;
         this.users = users;

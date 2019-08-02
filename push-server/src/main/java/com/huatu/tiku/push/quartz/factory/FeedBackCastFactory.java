@@ -146,7 +146,8 @@ public class FeedBackCastFactory extends AbstractFactory{
 
         NoticeReq noticeReq = NoticeReq.builder()
                 .title(NoticeTypeEnum.CORRECT_FEEDBACK.getTitle())
-                .text(noticeText.toString())
+                .text4Push(noticeText.toString())
+                .text4Data(noticeText.toString())
                 .custom(builder.getParams())
                 .type(FeedBackCorrectParams.TYPE)
                 .detailType(FeedBackCorrectParams.DETAIL_TYPE)
@@ -228,7 +229,8 @@ public class FeedBackCastFactory extends AbstractFactory{
 
         NoticeReq noticeReq = NoticeReq.builder()
                 .title(NoticeTypeEnum.SUGGEST_FEEDBACK.getTitle())
-                .text(String.format(NoticeTypeEnum.SUGGEST_FEEDBACK.getText(), replyTime, replyContent))
+                .text4Data(String.format(NoticeTypeEnum.SUGGEST_FEEDBACK.getText4Data(), replyTime, replyContent))
+                .text4Push(String.format(NoticeTypeEnum.SUGGEST_FEEDBACK.getText4Data(), replyTime, replyContent))
                 .custom(builder.getParams())
                 .type(FeedBackSuggestParams.TYPE)
                 .detailType(FeedBackSuggestParams.DETAIL_TYPE)

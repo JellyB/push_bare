@@ -54,11 +54,6 @@ public class CorrectReturnParams extends CorrectParams{
             return this;
         }
 
-        public CorrectReturnParams.Builder title(String correctTitle){
-            this.params.put(CORRECT_TITLE, correctTitle);
-            return this;
-        }
-
         public CorrectReturnParams.Builder submitTime(Date date){
             this.params.put(SUBMIT_TIME, date);
             return this;

@@ -6,6 +6,7 @@ import com.huatu.tiku.push.enums.DisplayTypeEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.request.NoticeReq;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -31,7 +32,6 @@ public class CorrectFactory extends AbstractFactory{
         CorrectReturnParams.Builder builder = CorrectReturnParams.Builder
                 .builder(CorrectReturnParams.DETAIL_TYPE)
                 .bizId(correctReturnInfo.getAnswerCardId(), correctReturnInfo.getQuestionType())
-                .title(correctReturnInfo.getCorrectTitle())
                 .submitTime(correctReturnInfo.getSubmitTime())
                 .answerCardId(correctReturnInfo.getAnswerCardId())
                 .questionType(correctReturnInfo.getQuestionType())
@@ -50,10 +50,10 @@ public class CorrectFactory extends AbstractFactory{
         CorrectReportParams.Builder builder = CorrectReportParams.Builder
                 .builder(CorrectReturnParams.DETAIL_TYPE)
                 .bizId(correctReportInfo.getAnswerCardId(), correctReportInfo.getQuestionType())
-                .title(correctReportInfo.getCorrectTitle())
                 .submitTime(correctReportInfo.getSubmitTime())
                 .answerCardId(correctReportInfo.getAnswerCardId())
                 .questionType(correctReportInfo.getQuestionType())
+                .questionName(correctReportInfo.getQuestionName())
                 .build();
 
         return builder;
@@ -103,12 +103,14 @@ public class CorrectFactory extends AbstractFactory{
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
         String date = dateFormat.format(correctReturnInfo.getSubmitTime());
-        String text = String.format(NoticeTypeEnum.CORRECT_RETURN.getText(), date, correctReturnInfo.getCorrectTitle());
+        String text4Push = StringUtils.EMPTY;
+        String text4Data = String.format(NoticeTypeEnum.CORRECT_RETURN.getText4Data(), date, correctReturnInfo.getReturnContent());
 
 
         NoticeReq noticeReq = NoticeReq.builder()
                 .title(NoticeTypeEnum.CORRECT_RETURN.getTitle())
-                .text(text)
+                .text4Push(text4Push)
+                .text4Data(text4Data)
                 .custom(builder.getParams())
                 .type(CorrectParams.TYPE)
                 .detailType(CorrectReturnParams.DETAIL_TYPE)
@@ -132,11 +134,13 @@ public class CorrectFactory extends AbstractFactory{
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
         String date = dateFormat.format(correctReportInfo.getSubmitTime());
-        String text = String.format(NoticeTypeEnum.CORRECT_REPORT.getText(), date, correctReportInfo.getCorrectTitle());
+        String text4Push = StringUtils.EMPTY;
+        String text4Data = String.format(NoticeTypeEnum.CORRECT_REPORT.getText4Data(), date, correctReportInfo.getQuestionName());
 
         NoticeReq noticeReq = NoticeReq.builder()
                 .title(NoticeTypeEnum.CORRECT_REPORT.getTitle())
-                .text(text)
+                .text4Push(text4Push)
+                .text4Data(text4Data)
                 .custom(builder.getParams())
                 .type(CorrectParams.TYPE)
                 .detailType(CorrectReportParams.DETAIL_TYPE)
