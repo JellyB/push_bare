@@ -13,7 +13,7 @@ import java.util.Map;
  **/
 public class CorrectReturnParams extends CorrectParams{
 
-    public static final String DETAIL_TYPE = "return";
+    public static final String DETAIL_TYPE = "correctDetailList";
 
     private static final String QUESTION_TYPE = "questionType";
 
