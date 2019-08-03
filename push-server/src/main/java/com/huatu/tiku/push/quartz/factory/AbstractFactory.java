@@ -32,8 +32,8 @@ public abstract class AbstractFactory {
     public static final IosCustomCast iosCustomCast = new IosCustomCast();
     public static final IosCustomCast iosCustomFileCast = new IosCustomCast();
 
-    private static final String TYPE = "type";
-    private static final String VIEW = "view";
+    public static final String TYPE = "type";
+    public static final String VIEW = "view";
 
     /**
      * custom 消息封装
@@ -64,6 +64,7 @@ public abstract class AbstractFactory {
     private static synchronized void androidCustomCast(List<NoticeReq> list, List<UmengNotification> notifications, JumpTargetEnum jumpTargetEnum){
         list.forEach(item -> {
             try{
+
                 List<Long> alias = item.getUsers().stream().map(NoticeReq.NoticeUserRelation::getUserId).collect(Collectors.toList());
                 JSONObject custom = parseTargetForAndroid(item.getType(), item.getDetailType(), jumpTargetEnum);
 
@@ -75,6 +76,9 @@ public abstract class AbstractFactory {
                 androidCustomCast.setDisplayType(AbstractAndroidNotification.DisplayType.CUSTOM);
                 custom.put("title", item.getTitle());
                 custom.put("content", item.getText4Data());
+                for (String s : item.getCustom().keySet()) {
+                    custom.put(s, item.getCustom().get(s));
+                }
                 androidCustomCast.setCustomField(custom);
                 if(!notifications.contains(androidCustomCast)){
                     log.info("notifications 成功添加一条推送数据:{}", androidCustomCast.getClass().getSimpleName());
@@ -109,11 +113,11 @@ public abstract class AbstractFactory {
                     iosCustomCast.setAlertSubtitle(item.getSubTitle());
                 }
                 iosCustomCast.setAlertBody(item.getText4Push());
-                iosCustomCast.setCustomizedField(TYPE, jumpTargetEnum.getIosValue());
-                iosCustomCast.setCustomizedField(VIEW, target);
                 for (String s : item.getCustom().keySet()) {
                     iosCustomCast.setCustomizedField(s, String.valueOf(item.getCustom().get(s)));
                 }
+                iosCustomCast.setCustomizedField(TYPE, jumpTargetEnum.getIosValue());
+                iosCustomCast.setCustomizedField(VIEW, target);
                 if(!notifications.contains(iosCustomCast)){
                     log.info("notifications 成功添加一条推送数据:{}", iosCustomCast.getClass().getSimpleName());
                     notifications.add(iosCustomCast);
@@ -212,7 +216,9 @@ public abstract class AbstractFactory {
     public static JSONObject parseTargetForAndroid(String type, String detailType, JumpTargetEnum jumpTargetEnum){
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(TYPE, jumpTargetEnum.getAndroidValue());
-        jsonObject.put(VIEW, parseView(type, detailType));
+        if(jumpTargetEnum == JumpTargetEnum.NOTICE_CENTER){
+            jsonObject.put(VIEW, parseView(type, detailType));
+        }
         return jsonObject;
     }
 

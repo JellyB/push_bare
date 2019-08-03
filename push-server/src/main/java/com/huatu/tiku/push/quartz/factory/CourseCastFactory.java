@@ -1,5 +1,6 @@
 package com.huatu.tiku.push.quartz.factory;
 
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.constant.CourseParams;
@@ -206,8 +207,8 @@ public class CourseCastFactory extends AbstractFactory{
     }
 
 
+    @Override
+    public void parseTargetForAndroid(NoticeReq item, JSONObject jsonObject) {
 
-
-
-
+    }
 }
