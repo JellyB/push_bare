@@ -8,6 +8,7 @@ import com.huatu.tiku.push.cast.strategy.CustomAliasCastStrategyTemplate;
 import com.huatu.tiku.push.cast.strategy.NotificationHandler;
 import com.huatu.tiku.push.constant.FeedBackSuggestParams;
 import com.huatu.tiku.push.constant.SuggestFeedbackInfo;
+import com.huatu.tiku.push.enums.JumpTargetEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.manager.NoticeLandingManager;
 import com.huatu.tiku.push.quartz.factory.FeedBackCastFactory;
@@ -51,7 +52,7 @@ public class SuggestFeedbackServiceImpl implements SuggestFeedbackService{
         List<NoticeReq.NoticeUserRelation> noticeUserRelations = FeedBackCastFactory.suggestNoticeUserRelations(suggestFeedbackInfo);
         FeedBackCastFactory.suggestNoticeForPush(builder, noticeUserRelations, suggestFeedbackInfo, noticeReqList);
 
-        List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(suggestFeedbackInfo.getBizId(), noticeReqList);
+        List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(suggestFeedbackInfo.getBizId(), noticeReqList, JumpTargetEnum.NOTICE_CENTER);
         noticeLandingManager.insertBatch(noticeReqList);
         customCastStrategyTemplate.setNotificationList(list);
         notificationHandler.setDetailType(NoticeTypeEnum.SUGGEST_FEEDBACK);

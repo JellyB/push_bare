@@ -9,6 +9,7 @@ import com.huatu.tiku.push.cast.strategy.NotificationHandler;
 import com.huatu.tiku.push.constant.AbstractBuilder;
 import com.huatu.tiku.push.constant.NoticePushErrors;
 import com.huatu.tiku.push.constant.UserResponse;
+import com.huatu.tiku.push.enums.JumpTargetEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.manager.NoticeLandingManager;
 import com.huatu.tiku.push.quartz.factory.FeedBackCastFactory;
@@ -72,7 +73,7 @@ public class WayBillServiceImpl implements WayBillService {
         List<NoticeReq.NoticeUserRelation> noticeUserRelations = WayBillFactory.wayBillNoticeRelation(userId);
         WayBillFactory.noticeForPush(builder, noticeUserRelations, req, noticeReqList);
 
-        List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(0L, noticeReqList);
+        List<UmengNotification> list = FeedBackCastFactory.customCastNotifications(0L, noticeReqList, JumpTargetEnum.NOTICE_CENTER);
         noticeLandingManager.insertBatch(noticeReqList);
         customCastStrategyTemplate.setNotificationList(list);
         notificationHandler.setDetailType(builder.getNoticeTypeEnum());

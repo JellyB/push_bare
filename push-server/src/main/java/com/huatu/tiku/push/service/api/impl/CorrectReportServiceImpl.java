@@ -7,6 +7,7 @@ import com.huatu.tiku.push.cast.UmengNotification;
 import com.huatu.tiku.push.cast.strategy.CustomAliasCastStrategyTemplate;
 import com.huatu.tiku.push.cast.strategy.NotificationHandler;
 import com.huatu.tiku.push.constant.*;
+import com.huatu.tiku.push.enums.JumpTargetEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.manager.NoticeLandingManager;
 import com.huatu.tiku.push.quartz.factory.CorrectFactory;
@@ -54,7 +55,7 @@ public class CorrectReportServiceImpl implements CorrectReportService {
         List<NoticeReq.NoticeUserRelation> noticeUserRelations = CorrectFactory.correctReportUserRelations(correctReportInfo);
         CorrectFactory.correctReportNoticeForPush(builder, noticeUserRelations, correctReportInfo, noticeReqList);
 
-        List<UmengNotification> list = CorrectFactory.customCastNotifications(correctReportInfo.getBizId(), noticeReqList);
+        List<UmengNotification> list = CorrectFactory.customCastNotifications(correctReportInfo.getBizId(), noticeReqList, JumpTargetEnum.CORRECT_REPORT);
         noticeLandingManager.insertBatch(noticeReqList);
         customCastStrategyTemplate.setNotificationList(list);
         notificationHandler.setDetailType(NoticeTypeEnum.CORRECT_FEEDBACK);

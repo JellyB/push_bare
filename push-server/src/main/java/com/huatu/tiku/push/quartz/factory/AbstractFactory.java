@@ -6,6 +6,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.huatu.common.exception.BizException;
 import com.huatu.tiku.push.cast.*;
+import com.huatu.tiku.push.enums.JumpTargetEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.request.NoticeReq;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,6 @@ public abstract class AbstractFactory {
 
     private static final String TYPE = "type";
     private static final String VIEW = "view";
-    private static final String IOS_NOTICE_CENTER = "ht://noticeCenter";
 
     /**
      * custom 消息封装
@@ -41,15 +41,15 @@ public abstract class AbstractFactory {
      * @return
      * @throws BizException
      */
-    public static ImmutableList<UmengNotification> customCastNotifications(Long bizId, List<NoticeReq> list)throws BizException{
+    public static ImmutableList<UmengNotification> customCastNotifications(Long bizId, List<NoticeReq> list, JumpTargetEnum jumpTargetEnum)throws BizException{
         List<UmengNotification> notifications = Lists.newArrayList();
         if(CollectionUtils.isEmpty(list)){
             return ImmutableList.copyOf(notifications);
         }
 
-        androidCustomCast(list, notifications);
+        androidCustomCast(list, notifications, jumpTargetEnum);
         log.info("组装推送数据_custom liveId:{}, 安卓:{}", bizId, JSONObject.toJSONString(notifications));
-        iosCustomCast(list, notifications);
+        iosCustomCast(list, notifications, jumpTargetEnum);
         log.info("组装推送数据_custom liveId:{}, ios:{}", bizId, JSONObject.toJSONString(notifications));
         log.info("当前直播推送数据, liveId:{}, 数据大小:{}, 数据内容:{}", bizId, list.size(), JSONObject.toJSONString(notifications));
         return ImmutableList.copyOf(notifications);
@@ -61,11 +61,11 @@ public abstract class AbstractFactory {
      * @param list
      * @param notifications
      */
-    private static synchronized void androidCustomCast(List<NoticeReq> list, List<UmengNotification> notifications){
+    private static synchronized void androidCustomCast(List<NoticeReq> list, List<UmengNotification> notifications, JumpTargetEnum jumpTargetEnum){
         list.forEach(item -> {
             try{
                 List<Long> alias = item.getUsers().stream().map(NoticeReq.NoticeUserRelation::getUserId).collect(Collectors.toList());
-                JSONObject custom = parseTargetForAndroid(item.getType(), item.getDetailType());
+                JSONObject custom = parseTargetForAndroid(item.getType(), item.getDetailType(), jumpTargetEnum);
 
                 androidCustomCast.setAlias(Joiner.on(",").join(alias), UmengNotification.ALIAS_TYPE);
                 androidCustomCast.setTicker( "新的消息通知！");
@@ -96,7 +96,7 @@ public abstract class AbstractFactory {
      * @param notifications
      * @throws BizException
      */
-    private static synchronized void iosCustomCast(List<NoticeReq> list, List<UmengNotification> notifications)throws BizException{
+    private static synchronized void iosCustomCast(List<NoticeReq> list, List<UmengNotification> notifications, JumpTargetEnum jumpTargetEnum)throws BizException{
         list.forEach(item -> {
             try{
                 List<Long> alias = item.getUsers().stream().map(NoticeReq.NoticeUserRelation::getUserId).collect(Collectors.toList());
@@ -109,8 +109,11 @@ public abstract class AbstractFactory {
                     iosCustomCast.setAlertSubtitle(item.getSubTitle());
                 }
                 iosCustomCast.setAlertBody(item.getText4Push());
-                iosCustomCast.setCustomizedField(TYPE, IOS_NOTICE_CENTER);
+                iosCustomCast.setCustomizedField(TYPE, jumpTargetEnum.getIosValue());
                 iosCustomCast.setCustomizedField(VIEW, target);
+                for (String s : item.getCustom().keySet()) {
+                    iosCustomCast.setCustomizedField(s, String.valueOf(item.getCustom().get(s)));
+                }
                 if(!notifications.contains(iosCustomCast)){
                     log.info("notifications 成功添加一条推送数据:{}", iosCustomCast.getClass().getSimpleName());
                     notifications.add(iosCustomCast);
@@ -134,13 +137,13 @@ public abstract class AbstractFactory {
      * @return
      * @throws BizException
      */
-    public static List<UmengNotification> customFileCastNotifications(NoticeReq noticeReq, FileUploadTerminal fileUploadTerminal)throws BizException{
+    public static List<UmengNotification> customFileCastNotifications(NoticeReq noticeReq, FileUploadTerminal fileUploadTerminal, JumpTargetEnum jumpTargetEnum)throws BizException{
         List<UmengNotification> notifications = Lists.newArrayList();
         if(null == fileUploadTerminal){
             return notifications;
         }
-        androidCustomFileCast(noticeReq, fileUploadTerminal.getAndroidFileId(), notifications);
-        iosCustomFileCast(noticeReq, fileUploadTerminal.getIosFileId(), notifications);
+        androidCustomFileCast(noticeReq, fileUploadTerminal.getAndroidFileId(), notifications, jumpTargetEnum);
+        iosCustomFileCast(noticeReq, fileUploadTerminal.getIosFileId(), notifications, jumpTargetEnum);
         return notifications;
     }
 
@@ -150,9 +153,9 @@ public abstract class AbstractFactory {
      * @param fileId
      * @param notifications
      */
-    private static void androidCustomFileCast(NoticeReq noticeReq, String fileId, List<UmengNotification> notifications){
+    private static void androidCustomFileCast(NoticeReq noticeReq, String fileId, List<UmengNotification> notifications, JumpTargetEnum jumpTargetEnum){
         try{
-            JSONObject custom = parseTargetForAndroid(noticeReq.getType(), noticeReq.getDetailType());
+            JSONObject custom = parseTargetForAndroid(noticeReq.getType(), noticeReq.getDetailType(), jumpTargetEnum);
             androidCustomFileCast.setFileId(fileId, UmengNotification.ALIAS_TYPE);
             androidCustomFileCast.setTicker( "新的消息通知！");
             androidCustomFileCast.setTitle(noticeReq.getTitle());
@@ -178,7 +181,7 @@ public abstract class AbstractFactory {
      * @param notifications
      * @throws BizException
      */
-    private static void iosCustomFileCast(NoticeReq noticeReq, String fileId, List<UmengNotification> notifications)throws BizException{
+    private static void iosCustomFileCast(NoticeReq noticeReq, String fileId, List<UmengNotification> notifications, JumpTargetEnum jumpTargetEnum)throws BizException{
         try{
             String target = parseTargetForIos(noticeReq.getType(), noticeReq.getDetailType());
             iosCustomFileCast.setFileId(fileId, UmengNotification.ALIAS_TYPE);
@@ -189,7 +192,7 @@ public abstract class AbstractFactory {
                 iosCustomFileCast.setAlertSubtitle(noticeReq.getSubTitle());
             }
             iosCustomFileCast.setAlertBody(noticeReq.getText4Push());
-            iosCustomFileCast.setCustomizedField(TYPE, IOS_NOTICE_CENTER);
+            iosCustomFileCast.setCustomizedField(TYPE, jumpTargetEnum.getIosValue());
             iosCustomFileCast.setCustomizedField(VIEW, target);
             notifications.add(iosCustomFileCast);
         }catch (Exception e){
@@ -206,9 +209,9 @@ public abstract class AbstractFactory {
      * @param detailType
      * @return
      */
-    public static JSONObject parseTargetForAndroid(String type, String detailType){
+    public static JSONObject parseTargetForAndroid(String type, String detailType, JumpTargetEnum jumpTargetEnum){
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(TYPE, 12);
+        jsonObject.put(TYPE, jumpTargetEnum.getAndroidValue());
         jsonObject.put(VIEW, parseView(type, detailType));
         return jsonObject;
     }

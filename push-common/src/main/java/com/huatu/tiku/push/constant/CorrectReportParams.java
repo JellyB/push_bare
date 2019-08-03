@@ -1,7 +1,6 @@
 package com.huatu.tiku.push.constant;
 
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,11 +14,19 @@ public class CorrectReportParams extends CorrectParams{
 
     public static final String DETAIL_TYPE = "manualReport";
 
-    private static final String QUESTION_TYPE = "questionType";
-
-    private static final String QUESTION_NAME = "questionName";
+    private static final String TOPIC_TYPE = "topicType";
 
     private static final String ANSWER_CARD_ID = "answerCardId";
+
+    private static final String PAPER_NAME = "paperName";
+
+    private static final String AREA_NAME = "areaName";
+
+    private static final String PAPER_ID = "paperId";
+
+    private static final String QUESTION_BASE_ID = "questionBaseId";
+
+
 
     /**
      * notice type
@@ -39,19 +46,13 @@ public class CorrectReportParams extends CorrectParams{
             return params;
         }
 
-        public static CorrectReportParams.Builder builder(String type){
+        public static CorrectReportParams.Builder builder(){
             CorrectReportParams.Builder builder = new CorrectReportParams.Builder();
-            builder.getParams().put("type", type);
             return builder;
         }
 
-        public CorrectReportParams.Builder bizId(long answerCardId, int questionType){
-            this.params.put(BIZ_ID, Long.parseLong(answerCardId + "" + questionType));
-            return this;
-        }
-
-        public CorrectReportParams.Builder submitTime(Date date){
-            this.params.put(SUBMIT_TIME, date);
+        public CorrectReportParams.Builder topicType(int topicType){
+            this.params.put(TOPIC_TYPE, topicType);
             return this;
         }
 
@@ -60,13 +61,21 @@ public class CorrectReportParams extends CorrectParams{
             return this;
         }
 
-        public CorrectReportParams.Builder questionType(int questionType){
-            this.params.put(QUESTION_TYPE, questionType);
+        public CorrectReportParams.Builder paperName(String paperName){
+            this.params.put(PAPER_NAME, paperName);
             return this;
         }
 
-        public CorrectReportParams.Builder questionName(String questionName){
-            this.params.put(QUESTION_NAME, questionName);
+        public CorrectReportParams.Builder areaName(String areaName){
+            this.params.put(AREA_NAME, areaName);
+            return this;
+        }
+
+        public CorrectReportParams.Builder paperId(long paperId){
+            this.params.put(PAPER_ID, paperId);
+            return this;
+        } public CorrectReportParams.Builder questionBaseId(long questionBaseId){
+            this.params.put(QUESTION_BASE_ID, questionBaseId);
             return this;
         }
 

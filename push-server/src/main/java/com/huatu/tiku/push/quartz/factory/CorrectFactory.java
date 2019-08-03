@@ -30,12 +30,8 @@ public class CorrectFactory extends AbstractFactory{
      */
     public static CorrectReturnParams.Builder correctReturnParams(CorrectReturnInfo correctReturnInfo){
         CorrectReturnParams.Builder builder = CorrectReturnParams.Builder
-                .builder(CorrectReturnParams.DETAIL_TYPE)
-                .bizId(correctReturnInfo.getAnswerCardId(), correctReturnInfo.getQuestionType())
-                .submitTime(correctReturnInfo.getSubmitTime())
-                .answerCardId(correctReturnInfo.getAnswerCardId())
-                .questionType(correctReturnInfo.getQuestionType())
-                .returnContent(correctReturnInfo.getReturnContent())
+                .builder()
+                .topicType(correctReturnInfo.getTopicType())
                 .build();
 
         return builder;
@@ -48,12 +44,13 @@ public class CorrectFactory extends AbstractFactory{
      */
     public static CorrectReportParams.Builder correctReportParams(CorrectReportInfo correctReportInfo){
         CorrectReportParams.Builder builder = CorrectReportParams.Builder
-                .builder(CorrectReturnParams.DETAIL_TYPE)
-                .bizId(correctReportInfo.getAnswerCardId(), correctReportInfo.getQuestionType())
-                .submitTime(correctReportInfo.getSubmitTime())
+                .builder()
                 .answerCardId(correctReportInfo.getAnswerCardId())
-                .questionType(correctReportInfo.getQuestionType())
-                .questionName(correctReportInfo.getQuestionName())
+                .areaName(correctReportInfo.getAreaName())
+                .paperName(correctReportInfo.getPaperName())
+                .topicType(correctReportInfo.getTopicType())
+                .paperId(correctReportInfo.getPaperId())
+                .questionBaseId(correctReportInfo.getQuestionBaseId())
                 .build();
 
         return builder;

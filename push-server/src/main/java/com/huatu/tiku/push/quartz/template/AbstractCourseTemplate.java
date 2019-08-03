@@ -15,6 +15,7 @@ import com.huatu.tiku.push.constant.NoticePushRedisKey;
 import com.huatu.tiku.push.constant.RabbitMqKey;
 import com.huatu.tiku.push.dao.CourseInfoMapper;
 import com.huatu.tiku.push.entity.CourseInfo;
+import com.huatu.tiku.push.enums.JumpTargetEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.manager.SimpleUserManager;
 import com.huatu.tiku.push.quartz.factory.CourseCastFactory;
@@ -125,11 +126,12 @@ public abstract class AbstractCourseTemplate {
     /**
      * custom notification push list
      * @param noticePushList
+     * @param jumpTargetEnum
      * @return
      * @throws BizException
      */
-    protected ImmutableList<UmengNotification> customCastNotification(long liveId, List<NoticeReq> noticePushList)throws BizException{
-        return CourseCastFactory.customCastNotifications(liveId, noticePushList);
+    protected ImmutableList<UmengNotification> customCastNotification(long liveId, List<NoticeReq> noticePushList, JumpTargetEnum jumpTargetEnum)throws BizException{
+        return CourseCastFactory.customCastNotifications(liveId, noticePushList, jumpTargetEnum);
     }
 
     /**
@@ -137,15 +139,16 @@ public abstract class AbstractCourseTemplate {
      * @param noticeReq
      * @param classId
      * @param liveId
+     * @param jumpTargetEnum
      * @return
      * @throws BizException
      */
-    protected List<UmengNotification> fileCastNotification(long classId, long liveId, NoticeReq noticeReq)throws BizException{
+    protected List<UmengNotification> fileCastNotification(long classId, long liveId, NoticeReq noticeReq, JumpTargetEnum jumpTargetEnum)throws BizException{
         FileUploadTerminal fileUploadTerminal = simpleUserService.obtainFileUpload(classId, liveId);
         if(null == fileUploadTerminal){
             return Lists.newArrayList();
         }
-        return CourseCastFactory.customFileCastNotifications(noticeReq, fileUploadTerminal);
+        return CourseCastFactory.customFileCastNotifications(noticeReq, fileUploadTerminal, jumpTargetEnum);
     }
 
     /**
@@ -185,14 +188,14 @@ public abstract class AbstractCourseTemplate {
             List<NoticeReq> noticePushList = noticePush(courseInfo_, courseParams, noticeRelations);
             List<NoticeReq> noticeInsertList = noticeInsert(courseInfo_, courseParams, noticeRelations);
             if(getUserCountInRedis() < RabbitMqKey.PUSH_STRATEGY_THRESHOLD){
-                List<UmengNotification> notificationList = customCastNotification(courseInfo_.getLiveId(), noticePushList);
+                List<UmengNotification> notificationList = customCastNotification(courseInfo_.getLiveId(), noticePushList, JumpTargetEnum.NOTICE_CENTER);
                 customCastStrategyTemplate.setNotificationList(notificationList);
                 notificationHandler.setPushStrategy(customCastStrategyTemplate);
                 notificationHandler.setConcurrent(false);
                 log.info("课程推送 custom ,直播id:{}, 数据 size:{}, 待准备推送数据:{}", courseInfo_.getLiveId(), notificationList.size(), JSONObject.toJSONString(notificationList));
             }else{
                 NoticeReq noticeReq = noticePush(courseInfo_, courseParams);
-                List<UmengNotification> notificationList = fileCastNotification(courseInfo_.getClassId(), courseInfo_.getLiveId(), noticeReq);
+                List<UmengNotification> notificationList = fileCastNotification(courseInfo_.getClassId(), courseInfo_.getLiveId(), noticeReq, JumpTargetEnum.NOTICE_CENTER);
                 fileCastStrategyTemplate.setNotificationList(notificationList);
                 notificationHandler.setPushStrategy(fileCastStrategyTemplate);
                 notificationHandler.setConcurrent(false);

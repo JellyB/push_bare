@@ -1,7 +1,6 @@
 package com.huatu.tiku.push.constant;
 
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,13 +12,9 @@ import java.util.Map;
  **/
 public class CorrectReturnParams extends CorrectParams{
 
-    public static final String DETAIL_TYPE = "correctDetailList";
+    public static final String DETAIL_TYPE = "correctList";
 
-    private static final String QUESTION_TYPE = "questionType";
-
-    private static final String ANSWER_CARD_ID = "answerCardId";
-
-    private static final String RETURN_CONTENT = "returnContent";
+    private static final String TOPIC_TYPE = "topicType";
 
     /**
      * notice type
@@ -38,34 +33,13 @@ public class CorrectReturnParams extends CorrectParams{
             return params;
         }
 
-        public static CorrectReturnParams.Builder builder(String type){
+        public static CorrectReturnParams.Builder builder(){
             CorrectReturnParams.Builder builder = new CorrectReturnParams.Builder();
-            builder.getParams().put("type", type);
             return builder;
         }
 
-        public CorrectReturnParams.Builder bizId(long answerCardId, int questionType){
-            this.params.put(BIZ_ID, Long.parseLong(answerCardId + "" + questionType));
-            return this;
-        }
-
-        public CorrectReturnParams.Builder answerCardId(long answerCardId){
-            this.params.put(ANSWER_CARD_ID, answerCardId);
-            return this;
-        }
-
-        public CorrectReturnParams.Builder submitTime(Date date){
-            this.params.put(SUBMIT_TIME, date);
-            return this;
-        }
-
-        public CorrectReturnParams.Builder questionType(int questionType){
-            this.params.put(QUESTION_TYPE, questionType);
-            return this;
-        }
-
-        public CorrectReturnParams.Builder returnContent(String content){
-            this.params.put(RETURN_CONTENT, content);
+        public CorrectReturnParams.Builder topicType(int questionType){
+            this.params.put(TOPIC_TYPE, questionType);
             return this;
         }
 
