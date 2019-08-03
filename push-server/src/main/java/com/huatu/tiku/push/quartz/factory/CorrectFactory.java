@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -130,7 +131,7 @@ public class CorrectFactory extends AbstractFactory{
 
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
-        String date = dateFormat.format(correctReportInfo.getSubmitTime());
+        String date = dateFormat.format(correctReportInfo.getSubmitTime() == null ? new Date() : correctReportInfo.getSubmitTime());
         String text4Push = StringUtils.EMPTY;
         String text4Data = String.format(NoticeTypeEnum.CORRECT_REPORT.getText4Data(), date, correctReportInfo.getQuestionName());
 
