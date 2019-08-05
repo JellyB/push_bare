@@ -58,7 +58,7 @@ public class CorrectReturnServiceImpl implements CorrectReturnService {
         CorrectFactory.correctReturnNoticeForPush(builder, noticeUserRelations, correctReturnInfo, noticeReqList);
 
         List<UmengNotification> list = CorrectFactory.customCastNotifications(correctReturnInfo.getBizId(), noticeReqList, JumpTargetEnum.CORRECT_LIST);
-        //noticeLandingManager.insertBatch(noticeReqList);
+        noticeLandingManager.insertBatch(noticeReqList);
         customCastStrategyTemplate.setNotificationList(list);
         notificationHandler.setDetailType(NoticeTypeEnum.CORRECT_FEEDBACK);
         notificationHandler.setBizId(correctReturnInfo.getBizId());
