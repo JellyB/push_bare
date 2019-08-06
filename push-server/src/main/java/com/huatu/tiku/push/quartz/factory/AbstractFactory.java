@@ -75,7 +75,7 @@ public abstract class AbstractFactory {
                 androidCustomCast.goAppAfterOpen();
                 androidCustomCast.setDisplayType(AbstractAndroidNotification.DisplayType.CUSTOM);
                 custom.put("title", item.getTitle());
-                custom.put("content", item.getText4Data());
+                custom.put("content", item.getText4Push());
                 for (String s : item.getCustom().keySet()) {
                     custom.put(s, item.getCustom().get(s));
                 }
