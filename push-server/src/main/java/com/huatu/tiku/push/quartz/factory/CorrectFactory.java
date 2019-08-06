@@ -132,12 +132,11 @@ public class CorrectFactory extends AbstractFactory{
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
         String date = dateFormat.format(correctReportInfo.getSubmitTime() == null ? new Date() : correctReportInfo.getSubmitTime());
-        String text4Push = StringUtils.EMPTY;
         String text4Data = String.format(NoticeTypeEnum.CORRECT_REPORT.getText4Data(), date, correctReportInfo.getQuestionName());
 
         NoticeReq noticeReq = NoticeReq.builder()
                 .title(NoticeTypeEnum.CORRECT_REPORT.getTitle())
-                .text4Push(text4Push)
+                .text4Push(null)
                 .text4Data(text4Data)
                 .custom(builder.getParams())
                 .type(CorrectParams.TYPE)
