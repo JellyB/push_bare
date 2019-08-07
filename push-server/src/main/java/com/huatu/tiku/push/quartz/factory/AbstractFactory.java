@@ -12,6 +12,7 @@ import com.huatu.tiku.push.request.NoticeReq;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,9 +29,9 @@ import java.util.stream.Collectors;
 public abstract class AbstractFactory {
 
     public static final AndroidCustomCast androidCustomCast = new AndroidCustomCast();
-    public static final AndroidCustomCast androidCustomFileCast = new AndroidCustomCast();
+    //public static final AndroidCustomCast androidCustomFileCast = new AndroidCustomCast();
     public static final IosCustomCast iosCustomCast = new IosCustomCast();
-    public static final IosCustomCast iosCustomFileCast = new IosCustomCast();
+    //public static final IosCustomCast iosCustomFileCast = new IosCustomCast();
 
     public static final String TYPE = "type";
     public static final String VIEW = "view";
@@ -65,28 +66,30 @@ public abstract class AbstractFactory {
         list.forEach(item -> {
             try{
 
+                AndroidCustomCast androidCustomCast_ = new AndroidCustomCast();
+                BeanUtils.copyProperties(androidCustomCast, androidCustomCast_);
                 List<Long> alias = item.getUsers().stream().map(NoticeReq.NoticeUserRelation::getUserId).collect(Collectors.toList());
                 JSONObject custom = parseTargetForAndroid(item.getType(), item.getDetailType(), jumpTargetEnum);
 
-                androidCustomCast.setAlias(Joiner.on(",").join(alias), UmengNotification.ALIAS_TYPE);
-                androidCustomCast.setTicker( "新的消息通知！");
-                androidCustomCast.setTitle(item.getTitle());
-                androidCustomCast.setText(item.getText4Push());
-                androidCustomCast.goAppAfterOpen();
-                androidCustomCast.setDisplayType(AbstractAndroidNotification.DisplayType.CUSTOM);
+                androidCustomCast_.setAlias(Joiner.on(",").join(alias), UmengNotification.ALIAS_TYPE);
+                androidCustomCast_.setTicker( "新的消息通知！");
+                androidCustomCast_.setTitle(item.getTitle());
+                androidCustomCast_.setText(item.getText4Push());
+                androidCustomCast_.goAppAfterOpen();
+                androidCustomCast_.setDisplayType(AbstractAndroidNotification.DisplayType.CUSTOM);
                 custom.put("title", item.getTitle());
                 custom.put("content", item.getText4Push());
                 for (String s : item.getCustom().keySet()) {
                     custom.put(s, item.getCustom().get(s));
                 }
-                androidCustomCast.setCustomField(custom);
-                if(!notifications.contains(androidCustomCast)){
-                    log.info("notifications 成功添加一条推送数据:{}", androidCustomCast.getClass().getSimpleName());
-                    notifications.add(androidCustomCast);
+                androidCustomCast_.setCustomField(custom);
+                if(!notifications.contains(androidCustomCast_)){
+                    log.info("notifications 成功添加一条推送数据:{}", androidCustomCast_.getClass().getSimpleName());
+                    notifications.add(androidCustomCast_);
                 }else {
-                    log.error("尝试添加一条已经存在的推送 androidCustomCast 数据:{}", JSONObject.toJSONString(androidCustomCast));
+                    log.error("尝试添加一条已经存在的推送 androidCustomCast_ 数据:{}", JSONObject.toJSONString(androidCustomCast_));
                 }
-                log.info("notifications contains current object:{}", notifications.contains(androidCustomCast));
+                log.info("notifications contains current object:{}", notifications.contains(androidCustomCast_));
             }catch (Exception e){
                 log.error("push msg error", e);
             }
@@ -103,28 +106,30 @@ public abstract class AbstractFactory {
     private static synchronized void iosCustomCast(List<NoticeReq> list, List<UmengNotification> notifications, JumpTargetEnum jumpTargetEnum)throws BizException{
         list.forEach(item -> {
             try{
+                IosCustomCast iosCustomCast_ = new IosCustomCast();
+                BeanUtils.copyProperties(iosCustomCast, iosCustomCast_);
                 List<Long> alias = item.getUsers().stream().map(NoticeReq.NoticeUserRelation::getUserId).collect(Collectors.toList());
                 String target = parseTargetForIos(item.getType(), item.getDetailType());
-                iosCustomCast.setAlias(Joiner.on(",").join(alias), UmengNotification.ALIAS_TYPE);
-                iosCustomCast.setBadge( 1);
-                iosCustomCast.setSound( "default");
-                iosCustomCast.setAlertTitle(item.getTitle());
+                iosCustomCast_.setAlias(Joiner.on(",").join(alias), UmengNotification.ALIAS_TYPE);
+                iosCustomCast_.setBadge( 1);
+                iosCustomCast_.setSound( "default");
+                iosCustomCast_.setAlertTitle(item.getTitle());
                 if(StringUtils.isNotEmpty(item.getSubTitle())){
-                    iosCustomCast.setAlertSubtitle(item.getSubTitle());
+                    iosCustomCast_.setAlertSubtitle(item.getSubTitle());
                 }
-                iosCustomCast.setAlertBody(item.getText4Push());
+                iosCustomCast_.setAlertBody(item.getText4Push());
                 for (String s : item.getCustom().keySet()) {
-                    iosCustomCast.setCustomizedField(s, String.valueOf(item.getCustom().get(s)));
+                    iosCustomCast_.setCustomizedField(s, String.valueOf(item.getCustom().get(s)));
                 }
-                iosCustomCast.setCustomizedField(TYPE, jumpTargetEnum.getIosValue());
-                iosCustomCast.setCustomizedField(VIEW, target);
-                if(!notifications.contains(iosCustomCast)){
-                    log.info("notifications 成功添加一条推送数据:{}", iosCustomCast.getClass().getSimpleName());
-                    notifications.add(iosCustomCast);
+                iosCustomCast_.setCustomizedField(TYPE, jumpTargetEnum.getIosValue());
+                iosCustomCast_.setCustomizedField(VIEW, target);
+                if(!notifications.contains(iosCustomCast_)){
+                    log.info("notifications 成功添加一条推送数据:{}", iosCustomCast_.getClass().getSimpleName());
+                    notifications.add(iosCustomCast_);
                 }else{
-                    log.error("尝试添加一条已经存在的推送 iosCustomCast 数据:{}", JSONObject.toJSONString(iosCustomCast));
+                    log.error("尝试添加一条已经存在的推送 iosCustomCast_ 数据:{}", JSONObject.toJSONString(iosCustomCast_));
                 }
-                log.info("notifications contains current object:{}", notifications.contains(iosCustomCast));
+                log.info("notifications contains current object:{}", notifications.contains(iosCustomCast_));
             }catch (Exception e){
                 log.error("ios custom push error", e);
             }
@@ -159,17 +164,19 @@ public abstract class AbstractFactory {
      */
     private static void androidCustomFileCast(NoticeReq noticeReq, String fileId, List<UmengNotification> notifications, JumpTargetEnum jumpTargetEnum){
         try{
+            AndroidCustomCast androidCustomFileCast_ = new AndroidCustomCast();
+            BeanUtils.copyProperties(androidCustomCast, androidCustomFileCast_);
             JSONObject custom = parseTargetForAndroid(noticeReq.getType(), noticeReq.getDetailType(), jumpTargetEnum);
-            androidCustomFileCast.setFileId(fileId, UmengNotification.ALIAS_TYPE);
-            androidCustomFileCast.setTicker( "新的消息通知！");
-            androidCustomFileCast.setTitle(noticeReq.getTitle());
-            androidCustomFileCast.setText(noticeReq.getText4Push());
-            androidCustomFileCast.goAppAfterOpen();
-            androidCustomFileCast.setDisplayType(AbstractAndroidNotification.DisplayType.CUSTOM);
+            androidCustomFileCast_.setFileId(fileId, UmengNotification.ALIAS_TYPE);
+            androidCustomFileCast_.setTicker( "新的消息通知！");
+            androidCustomFileCast_.setTitle(noticeReq.getTitle());
+            androidCustomFileCast_.setText(noticeReq.getText4Push());
+            androidCustomFileCast_.goAppAfterOpen();
+            androidCustomFileCast_.setDisplayType(AbstractAndroidNotification.DisplayType.CUSTOM);
             custom.put("title", noticeReq.getTitle());
             custom.put("content", noticeReq.getText4Data());
-            androidCustomFileCast.setCustomField(custom);
-            notifications.add(androidCustomFileCast);
+            androidCustomFileCast_.setCustomField(custom);
+            notifications.add(androidCustomFileCast_);
         }catch (Exception e){
             log.error("push msg error", e);
         }
@@ -187,18 +194,20 @@ public abstract class AbstractFactory {
      */
     private static void iosCustomFileCast(NoticeReq noticeReq, String fileId, List<UmengNotification> notifications, JumpTargetEnum jumpTargetEnum)throws BizException{
         try{
+            IosCustomCast iosCustomFileCast_ = new IosCustomCast();
+            BeanUtils.copyProperties(iosCustomCast, iosCustomFileCast_);
             String target = parseTargetForIos(noticeReq.getType(), noticeReq.getDetailType());
-            iosCustomFileCast.setFileId(fileId, UmengNotification.ALIAS_TYPE);
-            iosCustomFileCast.setBadge( 1);
-            iosCustomFileCast.setSound( "default");
-            iosCustomFileCast.setAlertTitle(noticeReq.getTitle());
+            iosCustomFileCast_.setFileId(fileId, UmengNotification.ALIAS_TYPE);
+            iosCustomFileCast_.setBadge( 1);
+            iosCustomFileCast_.setSound( "default");
+            iosCustomFileCast_.setAlertTitle(noticeReq.getTitle());
             if(StringUtils.isNotEmpty(noticeReq.getSubTitle())){
-                iosCustomFileCast.setAlertSubtitle(noticeReq.getSubTitle());
+                iosCustomFileCast_.setAlertSubtitle(noticeReq.getSubTitle());
             }
-            iosCustomFileCast.setAlertBody(noticeReq.getText4Push());
-            iosCustomFileCast.setCustomizedField(TYPE, jumpTargetEnum.getIosValue());
-            iosCustomFileCast.setCustomizedField(VIEW, target);
-            notifications.add(iosCustomFileCast);
+            iosCustomFileCast_.setAlertBody(noticeReq.getText4Push());
+            iosCustomFileCast_.setCustomizedField(TYPE, jumpTargetEnum.getIosValue());
+            iosCustomFileCast_.setCustomizedField(VIEW, target);
+            notifications.add(iosCustomFileCast_);
         }catch (Exception e){
             log.error("ios custom push error", e);
         }

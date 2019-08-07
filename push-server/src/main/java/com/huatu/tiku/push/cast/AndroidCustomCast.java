@@ -39,17 +39,17 @@ public class AndroidCustomCast extends AbstractAndroidNotification{
         AbstractFactory.androidCustomCast.setPredefinedKeyValue("appkey", androidAppKey);
         AbstractFactory.androidCustomCast.setPredefinedKeyValue("type", CUSTOM_CAST);
         AbstractFactory.androidCustomCast.setNoticePushEnv(getNoticePushEnv());
-        AbstractFactory.androidCustomFileCast.setAppMasterSecret(androidMasterSecret);
+        /*AbstractFactory.androidCustomFileCast.setAppMasterSecret(androidMasterSecret);
         AbstractFactory.androidCustomFileCast.setPredefinedKeyValue("appkey", androidAppKey);
         AbstractFactory.androidCustomFileCast.setPredefinedKeyValue("type", CUSTOM_CAST);
-        AbstractFactory.androidCustomFileCast.setNoticePushEnv(getNoticePushEnv());
+        AbstractFactory.androidCustomFileCast.setNoticePushEnv(getNoticePushEnv());*/
         if(isProduct()){
             AbstractFactory.androidCustomCast.setProductionMode();
-            AbstractFactory.androidCustomFileCast.setProductionMode();
+            //AbstractFactory.androidCustomFileCast.setProductionMode();
             this.setProductionMode();
         }else{
             AbstractFactory.androidCustomCast.setTestMode();
-            AbstractFactory.androidCustomFileCast.setTestMode();
+            //AbstractFactory.androidCustomFileCast.setTestMode();
             this.setTestMode();
         }
     }
