@@ -34,10 +34,14 @@ public class AndroidCustomCast extends AbstractAndroidNotification{
         this.setAppMasterSecret(androidMasterSecret);
         this.setPredefinedKeyValue("appkey", androidAppKey);
         this.setPredefinedKeyValue("type", CUSTOM_CAST);
+        this.setPredefinedKeyValue("mipush", true);
+        this.setPredefinedKeyValue("mi_activity", "com.huatu.message.MipushActivity");
 
         AbstractFactory.androidCustomCast.setAppMasterSecret(androidMasterSecret);
         AbstractFactory.androidCustomCast.setPredefinedKeyValue("appkey", androidAppKey);
         AbstractFactory.androidCustomCast.setPredefinedKeyValue("type", CUSTOM_CAST);
+        AbstractFactory.androidCustomCast.setPredefinedKeyValue("mipush", true);
+        AbstractFactory.androidCustomCast.setPredefinedKeyValue("mi_activity", "com.huatu.message.MipushActivity");
         AbstractFactory.androidCustomCast.setNoticePushEnv(getNoticePushEnv());
         /*AbstractFactory.androidCustomFileCast.setAppMasterSecret(androidMasterSecret);
         AbstractFactory.androidCustomFileCast.setPredefinedKeyValue("appkey", androidAppKey);

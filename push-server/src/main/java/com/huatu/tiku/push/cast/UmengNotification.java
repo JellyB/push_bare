@@ -54,7 +54,7 @@ public abstract class UmengNotification implements Serializable{
 	 */
 	protected static final HashSet<String> ROOT_KEYS = new HashSet<String>(Arrays.asList(new String[]{
 			"appkey", "timestamp", "type", "device_tokens", "alias", "alias_type", "file_id", 
-			"filter", "production_mode", "feedback", "description", "thirdparty_id"}));
+			"filter", "production_mode", "feedback", "description", "thirdparty_id", "mipush", "mi_activity"}));
 
 	/**
 	 * Keys can be set in the policy level
