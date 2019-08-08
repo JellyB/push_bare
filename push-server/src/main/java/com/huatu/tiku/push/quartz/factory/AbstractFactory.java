@@ -68,9 +68,10 @@ public abstract class AbstractFactory {
 
                 AndroidCustomCast androidCustomCast_ = new AndroidCustomCast();
                 BeanUtils.copyProperties(androidCustomCast, androidCustomCast_);
+                androidCustomCast_.getRootJson().putAll(androidCustomCast.getRootJson());
+                //androidCustomCast_.setAppMasterSecret(androidCustomCast.getAppMasterSecret());
                 List<Long> alias = item.getUsers().stream().map(NoticeReq.NoticeUserRelation::getUserId).collect(Collectors.toList());
                 JSONObject custom = parseTargetForAndroid(item.getType(), item.getDetailType(), jumpTargetEnum);
-
                 androidCustomCast_.setAlias(Joiner.on(",").join(alias), UmengNotification.ALIAS_TYPE);
                 androidCustomCast_.setTicker( "新的消息通知！");
                 androidCustomCast_.setTitle(item.getTitle());
@@ -108,6 +109,7 @@ public abstract class AbstractFactory {
             try{
                 IosCustomCast iosCustomCast_ = new IosCustomCast();
                 BeanUtils.copyProperties(iosCustomCast, iosCustomCast_);
+                iosCustomCast_.getRootJson().putAll(iosCustomCast.getRootJson());
                 List<Long> alias = item.getUsers().stream().map(NoticeReq.NoticeUserRelation::getUserId).collect(Collectors.toList());
                 String target = parseTargetForIos(item.getType(), item.getDetailType());
                 iosCustomCast_.setAlias(Joiner.on(",").join(alias), UmengNotification.ALIAS_TYPE);

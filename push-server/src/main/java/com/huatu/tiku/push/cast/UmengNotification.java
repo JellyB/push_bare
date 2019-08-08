@@ -84,7 +84,7 @@ public abstract class UmengNotification implements Serializable{
 		return rootJson.toString();
 	}
 	
-	protected final String getAppMasterSecret(){
+	public String getAppMasterSecret(){
 		return appMasterSecret;
 	}
 
@@ -159,4 +159,8 @@ public abstract class UmengNotification implements Serializable{
 	public String getNoticePushEnv() {
 		return noticePushEnv;
 	}
+
+    public JSONObject getRootJson() {
+        return rootJson;
+    }
 }
