@@ -25,10 +25,11 @@ public enum NoticeTypeEnum{
     CORRECT_FEEDBACK("您的纠错有反馈啦~", "", NoticeParentTypeEnum.FEEDBACK, FeedBackCorrectParams.DETAIL_TYPE),
     SUGGEST_FEEDBACK("您的建议有反馈啦~", "您于 %s 日提交的意见反馈收到了回复：%s", NoticeParentTypeEnum.FEEDBACK, FeedBackSuggestParams.DETAIL_TYPE),
     CORRECT_RETURN("您有申论人工批改申请被退回，火速查看~", "您于 %s 提交的申论人工批改申请因 “%s” 被驳回。", NoticeParentTypeEnum.CORRECT, CorrectReturnParams.DETAIL_TYPE),
-    CORRECT_REPORT("您的申论人工批改出报告了，快来看看吧~", "您于 %s 提交的申论%s人工批改申请报告已出。", NoticeParentTypeEnum.CORRECT, CorrectReportParams.DETAIL_TYPE);
+    CORRECT_REPORT("您的申论人工批改出报告了，快来看看吧~", "您于 %s 提交的申论%s人工批改申请报告已出。", NoticeParentTypeEnum.CORRECT, CorrectReportParams.DETAIL_TYPE),
+    CORRECT_RETURN_COURSE_WORK("", "您的申论人工批改课后作业被退回，火速查看~", NoticeParentTypeEnum.CORRECT_COURSE_WORK, CorrectCourseWorkParams.TYPE),
+    CORRECT_REPORT_COURSE_WORK("", "您的申论人工批改课后作业出报告了，快去看看吧~", NoticeParentTypeEnum.CORRECT_COURSE_WORK, CorrectCourseWorkParams.TYPE);
 
     private String title;
-
     private String text4Data;
 
     private NoticeParentTypeEnum type;

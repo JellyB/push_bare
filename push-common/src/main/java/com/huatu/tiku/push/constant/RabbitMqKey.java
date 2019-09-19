@@ -28,6 +28,7 @@ public class RabbitMqKey {
     //申论批改查看报告队列
     public static final String NOTICE_CORRECT_REPORT = "notice_push_correct_report";
 
+    public static final String NOTICE_CORRECT_COURSE_WORK = "notice_push_correct_course_work";
 
     public static final String NOTICE_FEEDBACK_SUGGEST = "notice_push_feedback_suggest";
 
