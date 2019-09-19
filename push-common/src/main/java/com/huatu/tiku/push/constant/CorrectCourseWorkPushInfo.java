@@ -24,12 +24,12 @@ public class CorrectCourseWorkPushInfo implements Serializable {
 
     private long userId;
 
-    private int netClassId;
+    private long netClassId;
 
     private long syllabusId;
 
     @Builder
-    public CorrectCourseWorkPushInfo(long bizId, long userId, int netClassId, long syllabusId) {
+    public CorrectCourseWorkPushInfo(long bizId, long userId, long netClassId, long syllabusId) {
         this.bizId = bizId;
         this.userId = userId;
         this.netClassId = netClassId;
