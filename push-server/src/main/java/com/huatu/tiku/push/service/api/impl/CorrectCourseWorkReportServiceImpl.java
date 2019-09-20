@@ -8,7 +8,6 @@ import com.huatu.tiku.push.cast.strategy.CustomAliasCastStrategyTemplate;
 import com.huatu.tiku.push.cast.strategy.NotificationHandler;
 import com.huatu.tiku.push.constant.CorrectCourseWorkPushInfo;
 import com.huatu.tiku.push.constant.CorrectCourseWorkReportParams;
-import com.huatu.tiku.push.constant.CorrectCourseWorkReturnParams;
 import com.huatu.tiku.push.enums.JumpTargetEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.manager.NoticeLandingManager;

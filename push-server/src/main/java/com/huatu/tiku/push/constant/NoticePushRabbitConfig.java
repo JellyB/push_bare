@@ -49,6 +49,11 @@ public class NoticePushRabbitConfig {
     }
 
     @Bean
+    public Queue getNoticeCorrectCourseWork(){
+        return new Queue(RabbitMqKey.NOTICE_CORRECT_COURSE_WORK);
+    }
+
+    @Bean
     public Queue getNoticeSuggestFeedback(){
         return new Queue(RabbitMqKey.NOTICE_FEEDBACK_SUGGEST);
     }

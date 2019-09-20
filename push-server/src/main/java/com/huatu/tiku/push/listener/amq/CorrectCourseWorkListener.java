@@ -3,6 +3,7 @@ package com.huatu.tiku.push.listener.amq;
 import com.alibaba.fastjson.JSONObject;
 import com.huatu.tiku.push.constant.CorrectCourseWorkPushInfo;
 import com.huatu.tiku.push.constant.RabbitMqKey;
+import com.huatu.tiku.push.service.api.CorrectCourseWorkReportService;
 import com.huatu.tiku.push.service.api.CorrectCourseWorkReturnService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -22,12 +23,20 @@ import org.springframework.stereotype.Component;
 public class CorrectCourseWorkListener {
 
     @Autowired
-    private CorrectCourseWorkReturnService correctCourseWorkService;
+    private CorrectCourseWorkReturnService correctCourseWorkReturnService;
+
+    @Autowired
+    private CorrectCourseWorkReportService correctCourseWorkReportService;
 
     @RabbitHandler
     public void onMessage(String message){
         CorrectCourseWorkPushInfo pushInfo = JSONObject.parseObject(message, CorrectCourseWorkPushInfo.class);
         log.info("申论课后作业批改推送内容:{}", JSONObject.toJSONString(pushInfo));
-        correctCourseWorkService.send(pushInfo);
+        if(pushInfo.getType().equals(CorrectCourseWorkPushInfo.RETURN)){
+            correctCourseWorkReturnService.send(pushInfo);
+        }
+        if(pushInfo.getType().equals(CorrectCourseWorkPushInfo.REPORT)){
+            correctCourseWorkReportService.send(pushInfo);
+        }
     }
 }
