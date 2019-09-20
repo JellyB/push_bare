@@ -19,6 +19,10 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class CorrectCourseWorkPushInfo implements Serializable {
 
+    public static final String RETURN = "N";
+
+    public static final String REPORT = "T";
+
     //业务id 答题卡id
     private long bizId;
 
@@ -27,6 +31,12 @@ public class CorrectCourseWorkPushInfo implements Serializable {
     private long netClassId;
 
     private long syllabusId;
+
+    /**
+     * N 被退回
+     * T 出报告
+     */
+    private String type;
 
     @Builder
     public CorrectCourseWorkPushInfo(long bizId, long userId, long netClassId, long syllabusId) {
