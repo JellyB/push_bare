@@ -14,14 +14,13 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * 描述：申论批改工厂方法
+ * 描述：申论课后作业批改工厂方法
  *
  * @author biguodong
  * Create time 2019-08-01 10:13 PM
  **/
 @Slf4j
 public class CorrectCourseWorkFactory extends AbstractFactory{
-
 
 
     /**
@@ -71,18 +70,18 @@ public class CorrectCourseWorkFactory extends AbstractFactory{
     }
 
     /**
-     * 推送消息--申论 批改 退回
+     * 推送消息--申论课后作业被退回
      * @param builder
      * @param noticeUserRelations
      * @param pushInfo
      * @param noticeReqList
      */
-    public static void correctReturnNoticeForPush(CorrectCourseWorkReturnParams.Builder builder, List<NoticeReq.NoticeUserRelation> noticeUserRelations, CorrectCourseWorkPushInfo pushInfo, List<NoticeReq> noticeReqList ){
+    public static void noticeReturn4Push(CorrectCourseWorkReturnParams.Builder builder, List<NoticeReq.NoticeUserRelation> noticeUserRelations, CorrectCourseWorkPushInfo pushInfo, List<NoticeReq> noticeReqList ){
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
-        String date = dateFormat.format(correctReturnInfo.getSubmitTime());
+        String date = dateFormat.format(pushInfo.getSubmitTime());
         String text4Push = StringUtils.EMPTY;
-        String text4Data = String.format(NoticeTypeEnum.CORRECT_RETURN.getText4Data(), date, correctReturnInfo.getReturnContent());
+        String text4Data = String.format(NoticeTypeEnum.CORRECT_RETURN_COURSE_WORK.getText4Data(), date, pushInfo.getStem(), pushInfo.getReturnContent());
 
 
         NoticeReq noticeReq = NoticeReq.builder()
@@ -90,8 +89,8 @@ public class CorrectCourseWorkFactory extends AbstractFactory{
                 .text4Push(text4Push)
                 .text4Data(text4Data)
                 .custom(builder.getParams())
-                .type(CorrectParams.TYPE)
-                .detailType(CorrectReturnParams.DETAIL_TYPE)
+                .type(CorrectCourseWorkParams.TYPE)
+                .detailType(CorrectCourseWorkReturnParams.DETAIL_TYPE)
                 .displayType(DisplayTypeEnum.MESSAGE.getType())
                 .users(noticeUserRelations)
                 .build();
@@ -100,27 +99,27 @@ public class CorrectCourseWorkFactory extends AbstractFactory{
 
 
     /**
-     * 推送消息--退回
+     * 推送消息--申论课后作业出报告
      * @param builder
      * @param noticeUserRelations
-     * @param correctReportInfo
+     * @param pushInfo
      * @param noticeReqList
      */
-    public static void correctReportNoticeForPush(CorrectReportParams.Builder builder, List<NoticeReq.NoticeUserRelation> noticeUserRelations,
-                                                   CorrectReportInfo correctReportInfo, List<NoticeReq> noticeReqList ){
+    public static void noticeReport4Push(CorrectCourseWorkReportParams.Builder builder, List<NoticeReq.NoticeUserRelation> noticeUserRelations,
+                                         CorrectCourseWorkPushInfo pushInfo, List<NoticeReq> noticeReqList ){
 
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CHINESE);
-        String date = dateFormat.format(correctReportInfo.getSubmitTime() == null ? new Date() : correctReportInfo.getSubmitTime());
-        String text4Data = String.format(NoticeTypeEnum.CORRECT_REPORT.getText4Data(), date, correctReportInfo.getQuestionName());
+        String date = dateFormat.format(pushInfo.getSubmitTime() == null ? new Date() : pushInfo.getSubmitTime());
+        String text4Data = String.format(NoticeTypeEnum.CORRECT_REPORT_COURSE_WORK.getText4Data(), date, pushInfo.getStem());
 
         NoticeReq noticeReq = NoticeReq.builder()
-                .title(NoticeTypeEnum.CORRECT_REPORT.getTitle())
+                .title(NoticeTypeEnum.CORRECT_REPORT_COURSE_WORK.getTitle())
                 .text4Push(null)
                 .text4Data(text4Data)
                 .custom(builder.getParams())
-                .type(CorrectParams.TYPE)
-                .detailType(CorrectReportParams.DETAIL_TYPE)
+                .type(CorrectCourseWorkParams.TYPE)
+                .detailType(CorrectCourseWorkReportParams.DETAIL_TYPE)
                 .displayType(DisplayTypeEnum.MESSAGE.getType())
                 .users(noticeUserRelations)
                 .build();

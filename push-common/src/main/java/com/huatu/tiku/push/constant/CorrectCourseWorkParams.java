@@ -8,7 +8,7 @@ package com.huatu.tiku.push.constant;
  **/
 public abstract class CorrectCourseWorkParams extends Params{
 
-    public static final String TYPE = "syllabus";
+    public static final String TYPE = "correctCourseWork";
     /**
      * 大纲id
      */

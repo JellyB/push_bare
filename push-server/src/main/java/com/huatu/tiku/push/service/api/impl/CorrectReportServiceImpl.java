@@ -58,9 +58,9 @@ public class CorrectReportServiceImpl implements CorrectReportService {
         List<UmengNotification> list = CorrectFactory.customCastNotifications(correctReportInfo.getBizId(), noticeReqList, JumpTargetEnum.CORRECT_REPORT);
         noticeLandingManager.insertBatch(noticeReqList);
         customCastStrategyTemplate.setNotificationList(list);
-        notificationHandler.setDetailType(NoticeTypeEnum.CORRECT_FEEDBACK);
+        notificationHandler.setDetailType(NoticeTypeEnum.CORRECT_REPORT);
         notificationHandler.setBizId(correctReportInfo.getBizId());
-        notificationHandler.setConcurrent(true);
+        notificationHandler.setConcurrent(false);
         notificationHandler.setPushStrategy(customCastStrategyTemplate);
         /**
          * 申论人工批改 - 报告出炉 - 消息发送

@@ -12,7 +12,7 @@ import java.util.Map;
  **/
 public class CorrectCourseWorkReportParams extends CorrectCourseWorkParams{
 
-    public static final String DETAIL_TYPE = "courseWorkReport";
+    public static final String DETAIL_TYPE = "buyAfterSyllabus";
 
 
     /**
@@ -38,7 +38,7 @@ public class CorrectCourseWorkReportParams extends CorrectCourseWorkParams{
             return builder;
         }
 
-        public CorrectCourseWorkReportParams.Builder netClass(int netClassId){
+        public CorrectCourseWorkReportParams.Builder netClass(long netClassId){
             this.params.put(NET_CLASS_ID, netClassId);
             return this;
         }
