@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 描述：
@@ -38,11 +39,22 @@ public class CorrectCourseWorkPushInfo implements Serializable {
      */
     private String type;
 
+    private Date submitTime;
+
+    private String stem;
+
+    private String returnContent;
+
+
     @Builder
-    public CorrectCourseWorkPushInfo(long bizId, long userId, long netClassId, long syllabusId) {
+    public CorrectCourseWorkPushInfo(long bizId, long userId, long netClassId, long syllabusId, String type, Date submitTime, String stem, String returnContent) {
         this.bizId = bizId;
         this.userId = userId;
         this.netClassId = netClassId;
         this.syllabusId = syllabusId;
+        this.type = type;
+        this.submitTime = submitTime;
+        this.stem = stem;
+        this.returnContent = returnContent;
     }
 }
