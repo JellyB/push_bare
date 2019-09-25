@@ -28,11 +28,12 @@ public class CorrectCourseWorkFactory extends AbstractFactory{
      * @param pushInfo
      * @return
      */
-    public static CorrectCourseWorkReturnParams.Builder returnParmas(CorrectCourseWorkPushInfo pushInfo){
+    public static CorrectCourseWorkReturnParams.Builder returnParams(CorrectCourseWorkPushInfo pushInfo){
         CorrectCourseWorkReturnParams.Builder builder = CorrectCourseWorkReturnParams.Builder
                 .builder()
                 .netClass(pushInfo.getNetClassId())
                 .syllabus(pushInfo.getSyllabusId())
+                .img(pushInfo.getImg())
                 .build();
         return builder;
     }
@@ -47,6 +48,7 @@ public class CorrectCourseWorkFactory extends AbstractFactory{
                 .builder()
                 .netClass(pushInfo.getNetClassId())
                 .syllabus(pushInfo.getSyllabusId())
+                .img(pushInfo.getImg())
                 .build();
 
         return builder;

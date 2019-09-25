@@ -45,9 +45,11 @@ public class CorrectCourseWorkPushInfo implements Serializable {
 
     private String returnContent;
 
+    private String img;
+
 
     @Builder
-    public CorrectCourseWorkPushInfo(long bizId, long userId, long netClassId, long syllabusId, String type, Date submitTime, String stem, String returnContent) {
+    public CorrectCourseWorkPushInfo(long bizId, long userId, long netClassId, long syllabusId, String type, Date submitTime, String stem, String returnContent, String img) {
         this.bizId = bizId;
         this.userId = userId;
         this.netClassId = netClassId;
@@ -56,5 +58,6 @@ public class CorrectCourseWorkPushInfo implements Serializable {
         this.submitTime = submitTime;
         this.stem = stem;
         this.returnContent = returnContent;
+        this.img = img;
     }
 }

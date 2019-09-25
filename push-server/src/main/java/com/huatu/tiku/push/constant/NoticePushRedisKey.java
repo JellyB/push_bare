@@ -32,6 +32,8 @@ public class NoticePushRedisKey {
 
     private static final String NOTICE_ENTITY_KEY = "notice_entity_$%s";
 
+    private static final String NOTICE_COURSE_COVER_KEY = "notice.push.course.cover_$%s";
+
 
     /**
      * 获取购买课程的用户redis key
@@ -112,5 +114,14 @@ public class NoticePushRedisKey {
      */
     public static String getNoticeEntityKey(long noticeId){
         return String.format(NOTICE_ENTITY_KEY, noticeId);
+    }
+
+    /**
+     * 课程封面图
+     * @param netClassId
+     * @return
+     */
+    public static String getNoticeCourseCoverKey(long netClassId){
+        return String.format(NOTICE_COURSE_COVER_KEY, netClassId);
     }
 }

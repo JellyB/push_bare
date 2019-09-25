@@ -47,6 +47,12 @@ public class CorrectCourseWorkReportParams extends CorrectCourseWorkParams{
             this.params.put(SYLLABUS_ID, syllabusId);
             return this;
         }
+
+        public CorrectCourseWorkReportParams.Builder img(String img){
+            this.params.put(IMG, img);
+            return this;
+        }
+
         public CorrectCourseWorkReportParams.Builder build(){
             return this;
         }

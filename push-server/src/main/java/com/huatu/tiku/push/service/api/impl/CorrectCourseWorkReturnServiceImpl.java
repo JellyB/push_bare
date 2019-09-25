@@ -50,7 +50,7 @@ public class CorrectCourseWorkReturnServiceImpl implements CorrectCourseWorkRetu
     @Override
     public void send(CorrectCourseWorkPushInfo pushInfo) throws BizException {
         List<NoticeReq> noticeReqList = Lists.newArrayList();
-        CorrectCourseWorkReturnParams.Builder builder = CorrectCourseWorkFactory.returnParmas(pushInfo);
+        CorrectCourseWorkReturnParams.Builder builder = CorrectCourseWorkFactory.returnParams(pushInfo);
 
         List<NoticeReq.NoticeUserRelation> noticeUserRelations = CorrectCourseWorkFactory.correctCourseWorkRelations(pushInfo);
         CorrectCourseWorkFactory.noticeReturn4Push(builder, noticeUserRelations, pushInfo, noticeReqList);

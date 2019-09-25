@@ -47,6 +47,11 @@ public class CorrectCourseWorkReturnParams extends CorrectCourseWorkParams{
             return this;
         }
 
+        public CorrectCourseWorkReturnParams.Builder img(String img){
+            this.params.put(IMG, img);
+            return this;
+        }
+
         public CorrectCourseWorkReturnParams.Builder build(){
             return this;
         }

@@ -17,4 +17,9 @@ public abstract class CorrectCourseWorkParams extends Params{
      * 课程id
      */
     public static final String NET_CLASS_ID = "netClassId";
+
+    /**
+     * 课程封面
+     */
+    public static final String IMG = "img";
 }
