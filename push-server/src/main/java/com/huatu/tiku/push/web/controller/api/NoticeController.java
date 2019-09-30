@@ -54,7 +54,7 @@ public class NoticeController {
      * @return
      */
     @GetMapping(value = "unReadCount")
-    public Object list(@Token(required = false, defaultValue = "") UserSession userSession){
+    public Object list(@Token(check = false, defaultValue = "") UserSession userSession){
         if(null == userSession){
             return 0;
         }else{
