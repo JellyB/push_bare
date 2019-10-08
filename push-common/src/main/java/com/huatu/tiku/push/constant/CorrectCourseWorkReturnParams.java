@@ -47,13 +47,18 @@ public class CorrectCourseWorkReturnParams extends CorrectCourseWorkParams{
             return this;
         }
 
-        public CorrectCourseWorkReturnParams.Builder img(String img){
-            this.params.put(IMG, img);
+        public CorrectCourseWorkReturnParams.Builder picture(String img){
+            this.params.put(PICTURE, img);
             return this;
         }
 
         public CorrectCourseWorkReturnParams.Builder isLive(int isLive){
             this.params.put(IS_LIVE, isLive);
+            return this;
+        }
+
+        public CorrectCourseWorkReturnParams.Builder lesson(long lessonId){
+            this.params.put(COURSE_WARE_ID, lessonId);
             return this;
         }
 

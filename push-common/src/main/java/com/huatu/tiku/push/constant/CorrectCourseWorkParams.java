@@ -26,5 +26,15 @@ public abstract class CorrectCourseWorkParams extends Params{
     /**
      * 课程封面
      */
-    public static final String IMG = "img";
+    //public static final String IMG = "img";
+
+    /**
+     * 课程封面
+     */
+    public static final String PICTURE = "picture";
+
+    /**
+     * 课件 id
+     */
+    public static final String COURSE_WARE_ID = "lession_id";
 }

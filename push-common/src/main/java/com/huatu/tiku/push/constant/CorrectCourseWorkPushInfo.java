@@ -37,6 +37,8 @@ public class CorrectCourseWorkPushInfo implements Serializable {
 
     private long syllabusId;
 
+    private long lessonId;
+
     /**
      * N 被退回
      * T 出报告
@@ -55,11 +57,12 @@ public class CorrectCourseWorkPushInfo implements Serializable {
 
 
     @Builder
-    public CorrectCourseWorkPushInfo(long bizId, long userId, long netClassId, long syllabusId, String type, Date submitTime, String stem, String returnContent, String img, int isLive) {
+    public CorrectCourseWorkPushInfo(long bizId, long userId, long netClassId, long syllabusId, long lessonId, String type, Date submitTime, String stem, String returnContent, String img, int isLive) {
         this.bizId = bizId;
         this.userId = userId;
         this.netClassId = netClassId;
         this.syllabusId = syllabusId;
+        this.lessonId = lessonId;
         this.type = type;
         this.submitTime = submitTime;
         this.stem = stem;

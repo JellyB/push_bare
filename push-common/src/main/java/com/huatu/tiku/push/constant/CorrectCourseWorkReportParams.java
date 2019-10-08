@@ -48,8 +48,8 @@ public class CorrectCourseWorkReportParams extends CorrectCourseWorkParams{
             return this;
         }
 
-        public CorrectCourseWorkReportParams.Builder img(String img){
-            this.params.put(IMG, img);
+        public CorrectCourseWorkReportParams.Builder picture(String img){
+            this.params.put(PICTURE, img);
             return this;
         }
 
@@ -57,6 +57,12 @@ public class CorrectCourseWorkReportParams extends CorrectCourseWorkParams{
             this.params.put(IS_LIVE, isLive);
             return this;
         }
+
+        public CorrectCourseWorkReportParams.Builder lesson(long lessonId){
+            this.params.put(COURSE_WARE_ID, lessonId);
+            return this;
+        }
+
 
         public CorrectCourseWorkReportParams.Builder build(){
             return this;
