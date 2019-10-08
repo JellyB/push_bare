@@ -34,6 +34,7 @@ public class CorrectCourseWorkFactory extends AbstractFactory{
                 .netClass(pushInfo.getNetClassId())
                 .syllabus(pushInfo.getSyllabusId())
                 .img(pushInfo.getImg())
+                .isLive(pushInfo.getIsLive())
                 .build();
         return builder;
     }
@@ -49,6 +50,7 @@ public class CorrectCourseWorkFactory extends AbstractFactory{
                 .netClass(pushInfo.getNetClassId())
                 .syllabus(pushInfo.getSyllabusId())
                 .img(pushInfo.getImg())
+                .isLive(pushInfo.getIsLive())
                 .build();
 
         return builder;

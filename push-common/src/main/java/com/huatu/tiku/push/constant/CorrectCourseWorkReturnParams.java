@@ -52,6 +52,11 @@ public class CorrectCourseWorkReturnParams extends CorrectCourseWorkParams{
             return this;
         }
 
+        public CorrectCourseWorkReturnParams.Builder isLive(int isLive){
+            this.params.put(IS_LIVE, isLive);
+            return this;
+        }
+
         public CorrectCourseWorkReturnParams.Builder build(){
             return this;
         }

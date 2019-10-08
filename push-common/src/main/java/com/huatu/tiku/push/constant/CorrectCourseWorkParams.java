@@ -19,6 +19,11 @@ public abstract class CorrectCourseWorkParams extends Params{
     public static final String NET_CLASS_ID = "netClassId";
 
     /**
+     * 是否直播 1 直播  0 录播
+     */
+    public static final String IS_LIVE = "isLive";
+
+    /**
      * 课程封面
      */
     public static final String IMG = "img";

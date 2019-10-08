@@ -24,6 +24,10 @@ public class CorrectCourseWorkPushInfo implements Serializable {
 
     public static final String REPORT = "T";
 
+    public static final Integer IS_LIVE = 1;
+
+    public static final Integer IS_NOT_LIVE = 0;
+
     //业务id 答题卡id
     private long bizId;
 
@@ -47,9 +51,11 @@ public class CorrectCourseWorkPushInfo implements Serializable {
 
     private String img;
 
+    private int isLive;
+
 
     @Builder
-    public CorrectCourseWorkPushInfo(long bizId, long userId, long netClassId, long syllabusId, String type, Date submitTime, String stem, String returnContent, String img) {
+    public CorrectCourseWorkPushInfo(long bizId, long userId, long netClassId, long syllabusId, String type, Date submitTime, String stem, String returnContent, String img, int isLive) {
         this.bizId = bizId;
         this.userId = userId;
         this.netClassId = netClassId;
@@ -59,5 +65,6 @@ public class CorrectCourseWorkPushInfo implements Serializable {
         this.stem = stem;
         this.returnContent = returnContent;
         this.img = img;
+        this.isLive = isLive;
     }
 }
