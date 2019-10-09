@@ -22,7 +22,7 @@ public enum  NoticeParentTypeEnum {
     COURSE_TEST(CourseTestParams.TYPE, NoticeViewEnum.COURSE),
     SMALL_MOCK(SmallMockParams.TYPE, NoticeViewEnum.PLAT_FORM),
     CORRECT(CorrectParams.TYPE, NoticeViewEnum.PLAT_FORM),
-    CORRECT_COURSE_WORK(CorrectCourseWorkParams.TYPE, NoticeViewEnum.PLAT_FORM);
+    CORRECT_COURSE_WORK(CorrectCourseWorkParams.TYPE, NoticeViewEnum.COURSE);
 
     private String type;
 
