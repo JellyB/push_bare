@@ -17,7 +17,7 @@ public enum JumpTargetEnum {
     NOTICE_CENTER(12, "ht://noticeCenter", "消息中心"),
     CORRECT_LIST(13, "ht://correctList", "人工批改记录列表"),
     CORRECT_REPORT(14, "ht://manualReport", "人工批改报告"),
-    BUY_AFTER_SYLLABUS(15, "ht://buyAfterSyllabus", "申论课后作业售后大纲列表");
+    BUY_AFTER_SYLLABUS(16, "ht://buyAfterSyllabus", "申论课后作业售后大纲列表");
 
     private int androidValue;
     private String iosValue;
