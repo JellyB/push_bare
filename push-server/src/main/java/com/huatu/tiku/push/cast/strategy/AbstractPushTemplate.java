@@ -114,7 +114,7 @@ public abstract class AbstractPushTemplate implements PushStrategy{
             }
             SetOperations<String, String> setOperations = redisTemplate.opsForSet();
             String key = NoticePushRedisKey.getCourseLiveId(noticeTypeEnum.getType().getType(), noticeTypeEnum.getDetailType(), bizId);
-            redisTemplate.expire(key, 1, TimeUnit.HOURS);
+            redisTemplate.expire(key, 30, TimeUnit.MINUTES);
             AtomicInteger pushCount = new AtomicInteger(0);
             for (UmengNotification umengNotification : getNotificationList()) {
                 String value =  umengNotification.getClass().getSimpleName();

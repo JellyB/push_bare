@@ -91,7 +91,7 @@ public class CorrectCourseWorkFactory extends AbstractFactory{
 
 
         NoticeReq noticeReq = NoticeReq.builder()
-                .title(NoticeTypeEnum.CORRECT_RETURN.getTitle())
+                .title(NoticeTypeEnum.CORRECT_RETURN_COURSE_WORK.getTitle())
                 .text4Push(text4Push)
                 .text4Data(text4Data)
                 .custom(builder.getParams())
