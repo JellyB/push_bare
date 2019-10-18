@@ -92,11 +92,13 @@ public class CorrectController {
             @RequestParam(value = "bizId") long bizId,
             @RequestParam(value = "netClassId") long netClassId,
             @RequestParam(value = "lessonId") long lessonId,
+            @RequestParam(value = "syllabusId") long syllabusId,
             @RequestParam(value = "count") int count) throws Exception{
         CorrectCourseWorkPushInfo correctCourseWorkPushInfo = new CorrectCourseWorkPushInfo();
         for (int i = 0; i < count; i++) {
             correctCourseWorkPushInfo.setBizId(bizId + i);
             correctCourseWorkPushInfo.setNetClassId(netClassId);
+            correctCourseWorkPushInfo.setSyllabusId(syllabusId);
             correctCourseWorkPushInfo.setLessonId(lessonId);
             correctCourseWorkPushInfo.setType("N");
             correctCourseWorkPushInfo.setSubmitTime(new Date());
@@ -107,6 +109,7 @@ public class CorrectController {
             correctCourseWorkPushInfo.setIsLive(1);
             correctCourseWorkReturnService.send(correctCourseWorkPushInfo);
             TimeUnit.MILLISECONDS.sleep(new Random(1000).nextLong());
+            correctCourseWorkPushInfo.setBizId(bizId + count + i);
             correctCourseWorkPushInfo.setType("T");
             correctCourseWorkReportService.send(correctCourseWorkPushInfo);
         }
