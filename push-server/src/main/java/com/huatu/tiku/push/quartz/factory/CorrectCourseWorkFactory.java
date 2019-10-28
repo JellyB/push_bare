@@ -31,6 +31,7 @@ public class CorrectCourseWorkFactory extends AbstractFactory{
     public static CorrectCourseWorkReturnParams.Builder returnParams(CorrectCourseWorkPushInfo pushInfo){
         CorrectCourseWorkReturnParams.Builder builder = CorrectCourseWorkReturnParams.Builder
                 .builder()
+                .bizId(pushInfo.getBizId())
                 .netClass(pushInfo.getNetClassId())
                 .syllabus(pushInfo.getSyllabusId())
                 .picture(pushInfo.getImg())
@@ -48,6 +49,7 @@ public class CorrectCourseWorkFactory extends AbstractFactory{
     public static CorrectCourseWorkReportParams.Builder reportParams(CorrectCourseWorkPushInfo pushInfo){
         CorrectCourseWorkReportParams.Builder builder = CorrectCourseWorkReportParams.Builder
                 .builder()
+                .bizId(pushInfo.getBizId())
                 .netClass(pushInfo.getNetClassId())
                 .syllabus(pushInfo.getSyllabusId())
                 .picture(pushInfo.getImg())

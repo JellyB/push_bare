@@ -37,6 +37,11 @@ public class CorrectCourseWorkReturnParams extends CorrectCourseWorkParams{
             return builder;
         }
 
+        public CorrectCourseWorkReturnParams.Builder bizId(long bizId){
+            this.params.put(BIZ_ID, bizId);
+            return this;
+        }
+
         public CorrectCourseWorkReturnParams.Builder netClass(long netClassId){
             this.params.put(NET_CLASS_ID, netClassId);
             return this;

@@ -38,6 +38,11 @@ public class CorrectCourseWorkReportParams extends CorrectCourseWorkParams{
             return builder;
         }
 
+        public CorrectCourseWorkReportParams.Builder bizId(long bizId){
+            this.params.put(BIZ_ID, bizId);
+            return this;
+        }
+
         public CorrectCourseWorkReportParams.Builder netClass(long netClassId){
             this.params.put(NET_CLASS_ID, netClassId);
             return this;
