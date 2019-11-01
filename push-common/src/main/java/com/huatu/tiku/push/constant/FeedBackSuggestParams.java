@@ -41,6 +41,11 @@ public class FeedBackSuggestParams extends FeedBackParams {
             return builder;
         }
 
+        public FeedBackSuggestParams.Builder bizId(long bizId){
+            this.params.put(BIZ_ID, bizId);
+            return this;
+        }
+
         public FeedBackSuggestParams.Builder suggestId(long suggestId){
             this.params.put(BIZ_ID, suggestId);
             return this;

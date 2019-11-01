@@ -38,6 +38,11 @@ public class CorrectReturnParams extends CorrectParams{
             return builder;
         }
 
+        public CorrectReturnParams.Builder bizId(long bizId){
+            this.params.put(BIZ_ID, bizId);
+            return this;
+        }
+
         public CorrectReturnParams.Builder topicType(int questionType){
             this.params.put(TOPIC_TYPE, questionType);
             return this;

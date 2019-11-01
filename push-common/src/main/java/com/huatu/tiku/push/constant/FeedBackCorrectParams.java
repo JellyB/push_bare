@@ -42,6 +42,11 @@ public class FeedBackCorrectParams extends FeedBackParams {
             return builder;
         }
 
+        public FeedBackCorrectParams.Builder bizId(long bizId){
+            this.params.put(BIZ_ID, bizId);
+            return this;
+        }
+
         public FeedBackCorrectParams.Builder feedBackId(long feedBackId){
             this.params.put(BIZ_ID, feedBackId);
             return this;

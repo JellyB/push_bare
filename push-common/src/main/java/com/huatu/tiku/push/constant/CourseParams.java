@@ -47,6 +47,11 @@ public class CourseParams extends Params {
             return new Builder();
         }
 
+        public Builder bizId(long bizId){
+            this.params.put(BIZ_ID, bizId);
+            return this;
+        }
+
         public Builder courseId(String courseId){
             this.params.put(BIZ_ID, courseId);
             return this;

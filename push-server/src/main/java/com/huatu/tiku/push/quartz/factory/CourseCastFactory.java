@@ -57,6 +57,7 @@ public class CourseCastFactory extends AbstractFactory{
     public static CourseParams.Builder courseParams(CourseInfo courseInfo){
         CourseParams.Builder builder = CourseParams.Builder
                 .builder()
+                .bizId(Long.valueOf(courseInfo.getClassId().intValue() + "" + courseInfo.getLiveId()))
                 .courseId(String.valueOf(courseInfo.getClassId()))
                 .teacher(courseInfo.getTeacher())
                 .picture(courseInfo.getClassImg())

@@ -59,6 +59,7 @@ public class FeedBackCastFactory extends AbstractFactory{
     public static FeedBackCorrectParams.Builder feedbackCorrectParams(CorrectFeedbackInfo correctFeedbackInfo){
         FeedBackCorrectParams.Builder builder = FeedBackCorrectParams.Builder
                 .builder(FeedBackCorrectParams.DETAIL_TYPE)
+                .bizId(correctFeedbackInfo.getBizId())
                 .questionId(correctFeedbackInfo.getQuestionId())
                 .feedBackId(correctFeedbackInfo.getBizId())
                 .source(StringUtils.trimToEmpty(correctFeedbackInfo.getSource()))
@@ -76,6 +77,7 @@ public class FeedBackCastFactory extends AbstractFactory{
     public static FeedBackSuggestParams.Builder feedbackSuggestParams(SuggestFeedbackInfo suggestFeedbackInfo){
         FeedBackSuggestParams.Builder builder = FeedBackSuggestParams.Builder
                 .builder(FeedBackSuggestParams.DETAIL_TYPE)
+                .bizId(suggestFeedbackInfo.getBizId())
                 .suggestId(suggestFeedbackInfo.getBizId())
                 .title(StringUtils.trimToEmpty(suggestFeedbackInfo.getReplyTitle()))
                 .reply(StringUtils.trimToEmpty(suggestFeedbackInfo.getReplyContent()))

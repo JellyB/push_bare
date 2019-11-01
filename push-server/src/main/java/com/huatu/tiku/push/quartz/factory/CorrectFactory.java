@@ -46,6 +46,7 @@ public class CorrectFactory extends AbstractFactory{
     public static CorrectReportParams.Builder correctReportParams(CorrectReportInfo correctReportInfo){
         CorrectReportParams.Builder builder = CorrectReportParams.Builder
                 .builder()
+                .bizId(correctReportInfo.getBizId())
                 .answerCardId(correctReportInfo.getAnswerCardId())
                 .areaName(correctReportInfo.getAreaName())
                 .paperName(correctReportInfo.getPaperName())

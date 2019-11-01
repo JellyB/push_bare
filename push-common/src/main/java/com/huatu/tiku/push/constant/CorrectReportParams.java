@@ -56,6 +56,11 @@ public class CorrectReportParams extends CorrectParams{
             return this;
         }
 
+        public CorrectReportParams.Builder bizId(long bizId){
+            this.params.put(BIZ_ID, bizId);
+            return this;
+        }
+
         public CorrectReportParams.Builder answerCardId(long answerCardId){
             this.params.put(ANSWER_CARD_ID, answerCardId);
             return this;
