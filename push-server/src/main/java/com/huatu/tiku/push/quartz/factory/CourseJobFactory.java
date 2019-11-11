@@ -91,24 +91,30 @@ public class CourseJobFactory extends AbstractFactory{
      * @param courseInfo
      */
     public static JobParent alert(NoticeTypeEnum noticeTypeEnum, final CourseInfo courseInfo) throws BizException{
-        final long jobStartTime = getTimeInAdvance(noticeTypeEnum, courseInfo);
 
-        JobDetail jobDetail = JobBuilder
-                .newJob(CourseWorkConcreteJob.class)
-                .withIdentity(JobKeyUtil.jobName(noticeTypeEnum, String.valueOf(courseInfo.getLiveId())), JobKeyUtil.jobGroup(noticeTypeEnum))
-                .usingJobData(BaseQuartzJob.CourseBizData, JSONObject.toJSONString(courseInfo))
-                .usingJobData(BaseQuartzJob.BizDataClass, CourseInfo.class.getName())
-                .build();
-        /**
-         * 只执行一次
-         */
-        SimpleTrigger simpleTrigger = (SimpleTrigger) TriggerBuilder.newTrigger()
-                .withIdentity(JobKeyUtil.triggerName(noticeTypeEnum, String.valueOf(courseInfo.getLiveId())), JobKeyUtil.triggerGroup(noticeTypeEnum))
-                .startAt(new Date(jobStartTime))
-                .usingJobData(CourseRemindConcreteJob.CourseBizData, JSONObject.toJSONString(courseInfo))
-                .build();
+        try{
+            final long jobStartTime = getTimeInAdvance(noticeTypeEnum, courseInfo);
 
-        return JobParent.builder().jobDetail(jobDetail).trigger(simpleTrigger).build();
+            JobDetail jobDetail = JobBuilder
+                    .newJob(CourseWorkConcreteJob.class)
+                    .withIdentity(JobKeyUtil.jobName(noticeTypeEnum, String.valueOf(courseInfo.getLiveId())), JobKeyUtil.jobGroup(noticeTypeEnum))
+                    .usingJobData(BaseQuartzJob.CourseBizData, JSONObject.toJSONString(courseInfo))
+                    .usingJobData(BaseQuartzJob.BizDataClass, CourseInfo.class.getName())
+                    .build();
+            /**
+             * 只执行一次
+             */
+            SimpleTrigger simpleTrigger = (SimpleTrigger) TriggerBuilder.newTrigger()
+                    .withIdentity(JobKeyUtil.triggerName(noticeTypeEnum, String.valueOf(courseInfo.getLiveId())), JobKeyUtil.triggerGroup(noticeTypeEnum))
+                    .startAt(new Date(jobStartTime))
+                    .usingJobData(CourseRemindConcreteJob.CourseBizData, JSONObject.toJSONString(courseInfo))
+                    .build();
+
+            return JobParent.builder().jobDetail(jobDetail).trigger(simpleTrigger).build();
+        }catch (Exception e){
+            log.error("创建课后作业任务失败:{}", e);
+            return null;
+        }
     }
 
 

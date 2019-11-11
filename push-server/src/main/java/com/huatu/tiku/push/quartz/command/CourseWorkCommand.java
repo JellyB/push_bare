@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import tk.mybatis.mapper.entity.Example;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -55,8 +56,9 @@ public class CourseWorkCommand extends Command {
         Example example = new Example(CourseInfo.class);
         example.and()
                 .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue())
-                .andEqualTo("scanned", JobScannedEnum.JOB_WAITING)
-                .andGreaterThanOrEqualTo("startTime", System.currentTimeMillis());
+                .andEqualTo("scanned", JobScannedEnum.JOB_WAITING.getValue())
+                .andLessThanOrEqualTo("startTime", System.currentTimeMillis())
+                .andGreaterThanOrEqualTo("endTime", System.currentTimeMillis());
 
         example.orderBy("createTime").desc();
 
@@ -78,7 +80,7 @@ public class CourseWorkCommand extends Command {
     }
 
     /**
-     * 更新job信息
+     * 更新job信息 2->3
      *
      * @param o
      * @return
@@ -86,7 +88,15 @@ public class CourseWorkCommand extends Command {
      */
     @Override
     protected int updateEntityScannedStatus(Object o) throws BizException {
-        return 0;
+        CourseInfo courseInfo = (CourseInfo) o;
+        CourseInfo courseInfo_ = new CourseInfo();
+        courseInfo_.setId(courseInfo.getId());
+        courseInfo_.setUpdateTime(new Timestamp(System.currentTimeMillis()));
+        JobScannedEnum jobScannedEnum = JobScannedEnum.create(courseInfo.getScanned());
+        if(jobScannedEnum.equals(JobScannedEnum.JOB_WAITING)){
+            courseInfo_.setScanned(JobScannedEnum.COURSE_WORK_JOB_CREATED.getValue());
+        }
+        return courseInfoMapper.updateByPrimaryKeySelective(courseInfo_);
     }
 
     /**
@@ -127,6 +137,9 @@ public class CourseWorkCommand extends Command {
      */
     @Override
     protected void scheduleJob(JobParent jobParent) throws BizException {
+        if(null == jobParent){
+            return;
+        }
         try{
             Date date = scheduler.scheduleJob(jobParent.getJobDetail(), jobParent.getTrigger());
             scheduler.getListenerManager().addTriggerListener(quartzTriggerListener);

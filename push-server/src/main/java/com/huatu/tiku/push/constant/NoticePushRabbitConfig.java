@@ -63,4 +63,9 @@ public class NoticePushRabbitConfig {
     public Queue getNoticeLandingHikariCpTest(){
         return new Queue(RabbitMqKey.NOTICE_USER_LANDING_HIKARICP_TEST);
     }
+
+    @Bean
+    public Queue getLiveCourseEndNotice(){
+        return new Queue(RabbitMqKey.LIVE_COURSE_END_NOTICE);
+    }
 }

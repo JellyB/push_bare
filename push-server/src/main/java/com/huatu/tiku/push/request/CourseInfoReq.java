@@ -83,9 +83,6 @@ public class CourseInfoReq extends BaseReq{
          */
         @NotNull(message = "课程封面不能为空！")
         private String classImg;
-
-        @NotNull(message = "大纲id不能为空！")
-        private String syllabusId;
     }
 
 }

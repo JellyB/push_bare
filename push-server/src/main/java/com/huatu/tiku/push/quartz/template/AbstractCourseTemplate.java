@@ -4,29 +4,28 @@ import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.huatu.common.exception.BizException;
-import com.huatu.common.utils.reflect.BeanUtil;
 import com.huatu.tiku.push.cast.FileUploadTerminal;
 import com.huatu.tiku.push.cast.UmengNotification;
 import com.huatu.tiku.push.cast.strategy.CustomAliasCastStrategyTemplate;
 import com.huatu.tiku.push.cast.strategy.CustomFileCastStrategyTemplate;
 import com.huatu.tiku.push.cast.strategy.NotificationHandler;
 import com.huatu.tiku.push.constant.CourseParams;
+import com.huatu.tiku.push.constant.LiveCourseInfo;
 import com.huatu.tiku.push.constant.NoticePushRedisKey;
 import com.huatu.tiku.push.constant.RabbitMqKey;
-import com.huatu.tiku.push.dao.CourseInfoMapper;
 import com.huatu.tiku.push.entity.CourseInfo;
 import com.huatu.tiku.push.enums.JumpTargetEnum;
 import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.manager.SimpleUserManager;
 import com.huatu.tiku.push.quartz.factory.CourseCastFactory;
 import com.huatu.tiku.push.request.NoticeReq;
+import com.huatu.tiku.push.service.api.CourseInfoComponent;
 import com.huatu.tiku.push.service.api.CourseService;
 import com.huatu.tiku.push.service.api.NoticeStoreService;
 import com.huatu.tiku.push.service.api.SimpleUserService;
-import jdk.nashorn.internal.ir.annotations.Immutable;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.BeanUtils;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -44,6 +43,12 @@ import java.util.stream.Stream;
  **/
 @Slf4j
 public abstract class AbstractCourseTemplate {
+
+    @Autowired
+    private CourseInfoComponent courseInfoComponent;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -156,14 +161,31 @@ public abstract class AbstractCourseTemplate {
      * @param bizData
      * @throws BizException
      */
-    public final void dealNoticeRemote(String bizData) throws BizException{
+    public final void alert(String bizData) throws BizException{
         CourseInfo courseInfo_ = bizDataFix(bizData);
-
-        // todo user info
-
-        // todo put into mq
-
-        // todo insert data base;
+        Long liveCourseWareId = courseInfo_.getLiveId();
+        Long classId = courseInfo_.getClassId();
+        LiveCourseInfo liveCourseInfo = courseInfoComponent.fetchCourseInfo(classId, liveCourseWareId);
+        if(liveCourseInfo == null){
+            return;
+        }
+        if(liveCourseInfo.getAfterExercisesNum() == 0 || liveCourseInfo.getSubjectType() != 2){
+            return;
+        }
+        Set<Integer> users = usersData(courseInfo_.getClassId());
+        if(CollectionUtils.isEmpty(users)){
+            log.error("暂无学员购此课程:{}", classId);
+            return;
+        }
+        //数据放入队列中
+        for (Integer user : users) {
+            JSONObject userInfo = new JSONObject();
+            userInfo.put("classId", classId);
+            userInfo.put("userId", user);
+            userInfo.put("syllabusId",liveCourseInfo.getSyllabusId());
+            userInfo.put("courseWareId", liveCourseWareId);
+            rabbitTemplate.convertAndSend(RabbitMqKey.LIVE_COURSE_END_NOTICE,  userInfo.toJSONString());
+        }
     }
 
     /**
@@ -185,15 +207,16 @@ public abstract class AbstractCourseTemplate {
     }
 
     /**
-     * 处理逻辑
-     * @param bizData
+     * 获取购买此课程的 userId
+     * @param classId
+     * @return
+     * @throws BizException
      */
-    public final void dealDetailJob(NoticeTypeEnum noticeTypeEnum, String bizData)throws BizException{
-        CourseInfo courseInfo_ = bizDataFix(bizData);
-        String key = NoticePushRedisKey.getCourseClassId(courseInfo_.getClassId());
+    private Set<Integer> usersData(Long classId) throws BizException{
+        String key = NoticePushRedisKey.getCourseClassId(classId);
         Set<Integer> users = redisTemplate.opsForSet().members(key);
         if(CollectionUtils.isEmpty(users)){
-            users.addAll(simpleUserManager.selectByBizId(CourseParams.TYPE, courseInfo_.getClassId()));
+            users.addAll(simpleUserManager.selectByBizId(CourseParams.TYPE, classId));
         }
         try{
             Set<Integer> whiteList = Stream.of(whiteUserId.split(",")).map(i -> Integer.valueOf(i)).collect(Collectors.toSet());
@@ -201,6 +224,16 @@ public abstract class AbstractCourseTemplate {
         }catch (Exception e){
             log.error("添加白名单用户异常:{}", whiteUserId);
         }
+        return users;
+    }
+
+    /**
+     * 处理逻辑
+     * @param bizData
+     */
+    public final void dealDetailJob(NoticeTypeEnum noticeTypeEnum, String bizData)throws BizException{
+        CourseInfo courseInfo_ = bizDataFix(bizData);
+        Set<Integer> users = usersData(courseInfo_.getClassId());
         if(CollectionUtils.isEmpty(users)){
             log.error("course.class.id:{}.user.list.empty", courseInfo_.getClassId());
             return;

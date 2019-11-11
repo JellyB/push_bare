@@ -1,8 +1,6 @@
 package com.huatu.tiku.push.quartz.job;
 
-import com.huatu.tiku.push.enums.NoticeTypeEnum;
 import com.huatu.tiku.push.quartz.template.CourseEndConcreteTemplate;
-import com.huatu.tiku.push.quartz.template.CourseRemindConcreteTemplate;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -30,7 +28,7 @@ public class CourseWorkConcreteJob implements BaseQuartzJob{
         try{
             String bizData = String.valueOf(executionContext.getJobDetail().getJobDataMap().get(CourseBizData));
             log.info("课后作业推送数据:{}", bizData);
-            courseEndConcreteTemplate.dealNoticeRemote(bizData);
+            courseEndConcreteTemplate.alert(bizData);
         }catch (Exception e){
             log.error(e.getMessage(), e);
         }
