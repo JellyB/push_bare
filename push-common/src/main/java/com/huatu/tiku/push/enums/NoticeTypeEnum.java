@@ -14,7 +14,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum NoticeTypeEnum{
-
+    REMOTE_NOTICE("通知远程服务", "调度远程服务", NoticeParentTypeEnum.REMOTE, RemoteParams.DETAIL_TYPE),
     COURSE_REMIND("%s 您有一节直播课，不要迟到哦~", "主讲老师:  %s", NoticeParentTypeEnum.COURSE, CourseParams.REMIND),
     COURSE_READY("您的直播课马上开始，立即进入！", "",  NoticeParentTypeEnum.COURSE, CourseParams.READY),
     MOCK_ONLINE("%s报名开始啦~", "", NoticeParentTypeEnum.MOCK, MockParams.ON_LINE),

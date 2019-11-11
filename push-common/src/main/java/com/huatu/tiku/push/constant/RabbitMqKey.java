@@ -37,6 +37,10 @@ public class RabbitMqKey {
     public static final String NOTICE_COURSE_USER_INFO_UiD = "notice_course_userInfo_uId";
 
     /**
+     * 直播结束后定时任务通知
+     */
+    public static final String LIVE_COURSE_END_NOTICE = "live.course.end.notice";
+    /**
      * 数据迁移队列
      */
 

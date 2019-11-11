@@ -58,7 +58,7 @@ public class CourseInfoReq extends BaseReq{
         /**
          * 直播开始时间
          */
-        @NotNull(message = "直播考试时间不能为空！")
+        @NotNull(message = "直播考试开始时间不能为空！")
         private String startTime;
 
         /**
@@ -75,14 +75,17 @@ public class CourseInfoReq extends BaseReq{
         /**
          * 授课老师
          */
-        @NotNull(message = "授课老师不能！")
+        @NotNull(message = "授课老师不能为空！")
         private String teacher;
 
         /**
          * 课程缩略图
          */
-        @NotNull(message = "直播结束时间不能为空！")
+        @NotNull(message = "课程封面不能为空！")
         private String classImg;
+
+        @NotNull(message = "大纲id不能为空！")
+        private String syllabusId;
     }
 
 }

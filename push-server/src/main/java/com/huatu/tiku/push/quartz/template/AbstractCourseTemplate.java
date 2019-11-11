@@ -152,20 +152,44 @@ public abstract class AbstractCourseTemplate {
     }
 
     /**
-     * 处理逻辑
+     * 课后作业数据处理逻辑
      * @param bizData
+     * @throws BizException
      */
-    public final void dealDetailJob(NoticeTypeEnum noticeTypeEnum, String bizData)throws BizException{
-        CourseInfo origin = JSONObject.parseObject(bizData, CourseInfo.class);
+    public final void dealNoticeRemote(String bizData) throws BizException{
+        CourseInfo courseInfo_ = bizDataFix(bizData);
 
+        // todo user info
+
+        // todo put into mq
+
+        // todo insert data base;
+    }
+
+    /**
+     * 数据库重新查取课程信息
+     * @param bizData
+     * @return
+     * @throws BizException
+     */
+    private CourseInfo bizDataFix(String bizData) throws BizException{
+        CourseInfo origin = JSONObject.parseObject(bizData, CourseInfo.class);
         //数据库重新查取课程信息
         CourseInfo courseInfo_ = courseService.findCourseById(origin.getLiveId());
         log.info("数据库中重新查新出来的任务信息:{}", JSONObject.toJSONString(courseInfo_));
         log.info("跟随任务一起绑定过来的课程信息:{}", JSONObject.toJSONString(origin));
-        if(!origin.getTeacher().equals(courseInfo_.getTeacher())){
+        if(!origin.getTeacher().equals(courseInfo_.getTeacher())) {
             log.error("课程信息不一致!!!, liveId:{}, teacher origin:{}, teacher data base:{}", courseInfo_.getLiveId(), origin.getTeacher(), courseInfo_.getTeacher());
         }
+        return courseInfo_;
+    }
 
+    /**
+     * 处理逻辑
+     * @param bizData
+     */
+    public final void dealDetailJob(NoticeTypeEnum noticeTypeEnum, String bizData)throws BizException{
+        CourseInfo courseInfo_ = bizDataFix(bizData);
         String key = NoticePushRedisKey.getCourseClassId(courseInfo_.getClassId());
         Set<Integer> users = redisTemplate.opsForSet().members(key);
         if(CollectionUtils.isEmpty(users)){
@@ -183,7 +207,7 @@ public abstract class AbstractCourseTemplate {
         }else{
             setUserCountInRedis(users.size());
             CourseParams.Builder courseParams = CourseCastFactory.courseParams(courseInfo_);
-            log.info("直播课 liveId:{},params:{}", origin.getLiveId(), JSONObject.toJSONString(courseParams));
+            log.info("直播课 liveId:{},params:{}", courseInfo_.getLiveId(), JSONObject.toJSONString(courseParams));
             List<NoticeReq.NoticeUserRelation> noticeRelations = CourseCastFactory.noticeRelation(users);
             List<NoticeReq> noticePushList = noticePush(courseInfo_, courseParams, noticeRelations);
             List<NoticeReq> noticeInsertList = noticeInsert(courseInfo_, courseParams, noticeRelations);

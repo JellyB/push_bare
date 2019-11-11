@@ -18,9 +18,10 @@ public enum  JobScannedEnum {
     REMIND_JOB_HAS_CREATED_OR_OBSOLETE(-1, "已经创建了提醒任务或错过提醒任务时间"),
     READY_JOB_CREATED(0, "创建了准备好任务"),
     SCANNED_CAN_NOT_CREATE_JOB(1, "扫描过，但是不符合创建任务条件!"),
-    JOB_WAITING(2, "任务等待执行"),
+    JOB_WAITING(2, "课前任务等待执行"),
     PROCESS_AND_SUCCESS(4, "处理且成功"),
-    PROCESS_AND_ERROR(5, "处理并且失败");
+    PROCESS_AND_ERROR(5, "处理并且失败"),
+    COURSE_WORK_JOB_CREATED(3, "课后作业任务创建就绪");
 
 
     private int value;

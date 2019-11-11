@@ -13,7 +13,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum  NoticeParentTypeEnum {
-
+    REMOTE(RemoteParams.TYPE, null),
     COURSE(CourseParams.TYPE, NoticeViewEnum.COURSE),
     MOCK(MockParams.TYPE, NoticeViewEnum.PLAT_FORM),
     ORDER(WayBillParams.TYPE, NoticeViewEnum.LOGISTICS),

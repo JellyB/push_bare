@@ -1,6 +1,7 @@
 package com.huatu.tiku.push.service.command;
 
 import com.huatu.tiku.push.quartz.command.CourseJobCommand;
+import com.huatu.tiku.push.quartz.command.CourseWorkCommand;
 import com.huatu.tiku.push.quartz.command.MockJobCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,9 @@ public class ConcreteReceiver implements Receiver{
     @Autowired
     private MockJobCommand mockJobCommand;
 
+    @Autowired
+    private CourseWorkCommand courseWorkCommand;
+
 
     /**
      * 接收命令
@@ -31,6 +35,7 @@ public class ConcreteReceiver implements Receiver{
 
         courseJobCommand.work();
         mockJobCommand.work();
+        courseWorkCommand.work();
 
     }
 }

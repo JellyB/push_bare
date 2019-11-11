@@ -10,6 +10,7 @@ import com.huatu.tiku.push.quartz.constant.JobParent;
 import com.huatu.tiku.push.quartz.job.BaseQuartzJob;
 import com.huatu.tiku.push.quartz.job.CourseReadyConcreteJob;
 import com.huatu.tiku.push.quartz.job.CourseRemindConcreteJob;
+import com.huatu.tiku.push.quartz.job.CourseWorkConcreteJob;
 import com.huatu.tiku.push.util.JobKeyUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobBuilder;
@@ -84,6 +85,33 @@ public class CourseJobFactory extends AbstractFactory{
     }
 
 
+    /**
+     * 创建job 工厂方法
+     * @param noticeTypeEnum
+     * @param courseInfo
+     */
+    public static JobParent alert(NoticeTypeEnum noticeTypeEnum, final CourseInfo courseInfo) throws BizException{
+        final long jobStartTime = getTimeInAdvance(noticeTypeEnum, courseInfo);
+
+        JobDetail jobDetail = JobBuilder
+                .newJob(CourseWorkConcreteJob.class)
+                .withIdentity(JobKeyUtil.jobName(noticeTypeEnum, String.valueOf(courseInfo.getLiveId())), JobKeyUtil.jobGroup(noticeTypeEnum))
+                .usingJobData(BaseQuartzJob.CourseBizData, JSONObject.toJSONString(courseInfo))
+                .usingJobData(BaseQuartzJob.BizDataClass, CourseInfo.class.getName())
+                .build();
+        /**
+         * 只执行一次
+         */
+        SimpleTrigger simpleTrigger = (SimpleTrigger) TriggerBuilder.newTrigger()
+                .withIdentity(JobKeyUtil.triggerName(noticeTypeEnum, String.valueOf(courseInfo.getLiveId())), JobKeyUtil.triggerGroup(noticeTypeEnum))
+                .startAt(new Date(jobStartTime))
+                .usingJobData(CourseRemindConcreteJob.CourseBizData, JSONObject.toJSONString(courseInfo))
+                .build();
+
+        return JobParent.builder().jobDetail(jobDetail).trigger(simpleTrigger).build();
+    }
+
+
 
     /**
      * 根据类型获取job 执行时间
@@ -98,6 +126,9 @@ public class CourseJobFactory extends AbstractFactory{
                 break;
             case COURSE_READY:
                 startTime = courseInfo.getStartTime().getTime() - READY_START_TIME;
+                break;
+            case REMOTE_NOTICE:
+                startTime = courseInfo.getEndTime().getTime();
                 break;
             default:
                 log.error("获取job执行时间失败！");
