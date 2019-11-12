@@ -57,7 +57,7 @@ public class CourseWorkCommand extends Command {
         example.and()
                 .andEqualTo("status", NoticeStatusEnum.NORMAL.getValue())
                 .andEqualTo("scanned", JobScannedEnum.JOB_WAITING.getValue())
-                .andLessThanOrEqualTo("startTime", System.currentTimeMillis())
+                .andGreaterThanOrEqualTo("startTime", System.currentTimeMillis())
                 .andGreaterThanOrEqualTo("endTime", System.currentTimeMillis());
 
         example.orderBy("createTime").desc();
